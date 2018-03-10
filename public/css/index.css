@@ -1,0 +1,96 @@
+body
+{
+    background: url('../car.jpg') fixed;
+    background-size: cover;
+    padding: 0;
+    margin: 0;
+}
+
+.tab-content
+{
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 99;
+}
+
+
+form
+{
+    width: 70%;
+    height: 500px;
+    margin: 0 auto;
+}
+
+[name='registerForm'] {
+  width: 100%;
+  height: 535px;
+  margin: 0 auto;
+}
+
+h2 {
+  text-align: center;
+}
+
+[name='loginForm'] input[type="text"], [name='loginForm'] input[type="password"], [name='loginForm'] input[type="email"], [name='registerForm']  input
+{
+    width: 100%;
+    height: 15%;
+    padding: 5px 10px;
+    background: 0;
+    border: 0;
+    border-bottom: 2px solid #000;
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    color: #000;
+}
+
+[name='registerForm'] label {
+  background: 0;
+  border: 0;
+  font-size: 22px;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  color: #000;
+}
+
+[name='loginForm'] input[type="submit"], [name='loginForm'] button
+{
+    width: 25%;
+    font-size: 20px;
+    text-transform: uppercase;
+    margin-top: 16px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    margin-left: 30%;
+}
+
+[name='loginForm'] input[type="submit"]:hover
+{
+    transition: background-color 0.5s ease;
+}
+
+
+.pr-wrap
+{
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    display: none;
+}
+
+.modal-backdrop {
+  z-index: 0;
+}
+
+.help-block {
+  font-size: 16px;
+}

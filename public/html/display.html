@@ -1,0 +1,149 @@
+<html>
+<!DOCTYPE html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Admin page</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+   <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+   <link rel="stylesheet" type="text/css" href="../js/fullcalendar/fullcalendar.css">
+   <link rel="stylesheet" href="../css/display.css">
+   <link rel="stylesheet" href="../css/calendar.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="row overflownone">
+      <div class="col-md-4 information nopaddingleft nopaddingright hidden-sm hidden-xs">
+        <h3>Menu</h3>
+        <ul class="information_menu">
+          <li class="active" data-id="1"><a href="#"><i class="fa fa-calendar"></i> Calendar </a></li>
+          <li data-id="2"><a href="#"><i class="fa fa-commenting-o"></i> Reservations</a></li>
+          <li data-id="3"><a href="#"><i class="fa fa-medkit"></i> Users </a></li>
+          <li data-id="4"><a href="#"><i class="fa fa-sign-out"></i> Services </a></li>
+          <li data-id="6"><a href="#"><i class="fa fa-sign-out"></i> Edit profile </a></li>
+          <li data-id="7"><a href="index.html"><i class="fa fa-sign-out"></i> Logout </a></li>
+        </ul>
+      </div>
+      <div class="col-md-8 nopaddingleft nopaddingright">
+        <div class="slideshow">
+          <div class="overlay-id1 overlay-item active">
+            <div id='wrap'>
+              <div id='calendar'></div>
+            </div>
+          </div>
+          <div class="overlay-id2 overlay-item">
+            <table id="resTable" class="display stripe table" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Client details</th>
+                        <th>Day</th>
+                        <th>Start hour</th>
+                        <th>End hour</th>
+                        <th>Employee details</th>
+                        <th>Status</th>
+                        <th>Rating</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+          </div>
+          <div class="overlay-id3 overlay-item">
+            <table id="userTable" class="display stripe table" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+          </div>
+          <div class="overlay-id4 overlay-item">
+
+          </div>
+          <div class="overlay-id5 overlay-item">
+            <form name='registerForm' action="/register" method='POST' role="form">
+              <div class="form-group">
+                <input type='text' name='firstName' class="form-control" class="form-control" placeholder="First name" required>
+              </div>
+              <div class="form-group">
+                <input type='text' name='lastName' class="form-control" placeholder="Last name" required>
+              </div>
+              <div class="form-group">
+                <input type='email' name='username' class="form-control" placeholder="Email address" required>
+              </div>
+              <div class="form-group">
+                <input type='password' name='password' class="form-control" placeholder="Password" required/>
+              </div>
+              <div class="form-group">
+                <input type='password' name='password2' class="form-control" placeholder="Confirm password" required/>
+              </div>
+              <div class="form-group">
+                <input type="text" name="phoneNumber" class="form-control" placeholder="Phone number" required>
+              </div>
+              <div class="form-group">
+                <label class="col-xs-3 control-label">Options</label>
+                <div class="col-xs-5">
+                  <input type="text" class="form-control" name="option[]" />
+                </div>
+                <div class="col-xs-4">
+                  <button type="button" class="btn btn-default addButton"><i class="fa fa-plus"></i></button>
+                </div>
+              </div>
+              <div class="form-group hide" id="optionTemplate">
+                <div class="col-xs-offset-3 col-xs-5">
+                  <input class="form-control" type="text" name="option[]" />
+                </div>
+                <div class="col-xs-4">
+                  <button type="button" class="btn btn-default removeButton"><i class="fa fa-minus"></i></button>
+                </div>
+               </div>
+              <!-- <div class="form-group">
+                  <input type="checkbox" name="checkboxTC" value="termsAcons" />
+                  <a href="#" id="termsAcons" data-toggle="modal" data-target="#termsCons"> I agree to the Terms and Conditions</a>
+                </div> -->
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row visible-xs visible-sm ">
+      <div class="col-md-12 mobile-menu-bg">
+        <ul class="information_menu_mobile">
+          <li class="active"><a href="#"><i class="fa fa-calendar-plus-o"></i> <span class="hidden-xs">Lorem ipsum</span></a></li>
+          <li><a href="#"><i class="fa fa-commenting-o"></i> <span class="hidden-xs">Praesent posuere</span></a></li>
+          <li><a href="#"><i class="fa fa-medkit"></i> <span class="hidden-xs">Phasellus imperdiet</span></a></li>
+          <li><a href="#"><i class="fa fa-heartbeat"></i> <span class="hidden-xs">In accumsan</span></a></li>
+        </ul>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../server/src/node_modules/socket.io-client/dist/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js" charset="utf-8"></script>
+  <script type="text/javascript" src="../js/config.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="http://formvalidation.io/vendor/formvalidation/js/formValidation.min.js"></script>
+  <script src="http://formvalidation.io/vendor/formvalidation/js/framework/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+  <script src="https://momentjs.com/downloads/moment.min.js"></script>
+  <script src="https://use.fontawesome.com/5a638b4cc0.js"></script>
+  <script type="text/javascript" src="../js/fullcalendar/fullCalendar.js"></script>
+  <script type="text/javascript" src="../js/calendar.js"></script>
+  <script type="text/javascript" src="../js/display.js"></script>
+</body>
+
+</html>
