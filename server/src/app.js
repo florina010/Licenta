@@ -108,7 +108,7 @@ function register (data, callback) {
           });
           return;
       }
-      connection.query("INSERT INTO users (firstName, lastName, email, password, phone, cars, admin) VALUES ('" + data.firstName + "', '" + data.lastName + "', '" + data.email + "', '" + data.password + "', '" + data.phone + "', '" + data.options + "',   '" + 0 + "')", function(err, rows) {
+      connection.query("INSERT INTO users (firstName, lastName, isActive, mail, password, phone, cars, admin) VALUES ('" + data.firstName + "', '" + data.lastName + "', 1, '" + data.email + "', '" + data.password + "', '" + data.phone + "', '" + data.cars + "',   '" + 0 + "')", function(err, rows) {
         connection.release();
           if (err) {
               console.log(err);
@@ -130,7 +130,7 @@ function login(req, res) {
         response,
         result,
         hash = sha256.create();
-        console.log(params);
+
     hash.update(Math.random().toString(36).substr(2, 5));
     var token = hash.hex();
 
@@ -151,6 +151,7 @@ function login(req, res) {
                         setToken(token, user.userId);
                         user.token = token
                     }
+                    console.log(user);
                     res.json(user);
                 } else {
                     res.json({
