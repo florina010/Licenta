@@ -272,28 +272,36 @@ $(document).ready(function() {
     if ($("[name='changePassForm']").data('formValidation').isValid()) {
       $('[name="changePass"]').attr('disabled', false);
     }
-  }).on('submit', function(e, data) {
-
-    var socket = io.connect('http://127.0.0.1:4000');
-
-    var hashObj = new jsSHA("SHA-512", "TEXT", {
-      numRounds: 1
-    });
+  }).off().on('submit', function(e, data) {
+    var socket = io.connect('http://127.0.0.1:4000'),
+        hashObj = new jsSHA("SHA-512", "TEXT", {
+          numRounds: 1
+        }),
+        hashObjC = new jsSHA("SHA-512", "TEXT", {
+          numRounds: 1
+        });
     hashObj.update($("[name='ePasswordUser']").val());
+    hashObjC.update($("[name='cPasswordUser']").val());
     var password = hashObj.getHash("HEX"),
-      email = $("[name='eEmail']").val();
+        currentPassword =  hashObjC.getHash("HEX"),
+        email = $("[name='eEmail']").val();
 
-    // socket.emit('/register', {
-    //   firstName: firstName,
-    //   lastName: lastName,
-    //   email: email,
-    //   password: password,
-    //   phone: phone,
-    //   cars: JSON.stringify(carsObj)
-    // });
-    // socket.on('/resRegister', function(data) {
-    //         console.log(data);
-    //     });
+    if (currentPassword !== user.password) {
+      alert("Current password is incorrect.");
+      $("[name='cPasswordUser']").val('');
+    } else {
+      $.post(appConfig.url + appConfig.api + "changePassword", {
+          token: token,
+          email: email,
+          password: password
+      }).done(function(data) {
+        user.password = password;
+        sessionStorage.setItem('user', JSON.stringify(user));
+        $(".overlay-id6 .alert-success").css('display', 'block');
+      });
+    }
+
+
   });
 
   function addCars(carsNr) {

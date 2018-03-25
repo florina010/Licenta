@@ -15,11 +15,15 @@ body {
   margin: 0 auto;
 }
 
-[name='editProfileForm'], [name='changePassForm'] {
+[name='editProfileForm']{
   width: 100%;
   height: 500px;
 }
 
+[name='changePassForm'] {
+  width: 100%;
+  height: 400px;
+}
 
 [name='editProfileForm'] input, [name='changePassForm'] input {
   width: 45%;
@@ -34,6 +38,10 @@ body {
   color: #000;
 }
 
+[name='changePassForm'] input {
+  height: 10%;
+}
+
 [name='editUser'], [name='changePassForm'] button {
   width: 30%;
 }
@@ -45,6 +53,10 @@ body {
   letter-spacing: 1px;
   margin-bottom: 5px;
   color: #000;
+}
+
+[name='editProfileForm'] i, [name='changePassForm'] i {
+  right: 52%;
 }
 
 [name='registerForm']  input {
