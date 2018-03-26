@@ -64,9 +64,27 @@ router.use(function(req, res, next) {
 // Provide all routes here, this is for Home page.
 io.on('connection', function(socket) {
   socket.on('/register', function(data) {
-    console.log(data);
     register(data, function(res) {
       io.emit('/resRegister', data);
+    });
+  }, function(error) {
+      res.json({
+          "code": 110,
+          "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
+  });
+
+  socket.on('/addUser', function(data) {
+    isValidToken(data.token).then(function(result) {
+      register(data, function(res) {
+        io.emit('/resAddUser', data);
+      });
+    }, function(error) {
+        console.log(error);
+        res.json({
+            "code": 110,
+            "status": "Your session has expired and you are loged out. - redirect la index in FE"
+        })
     });
   }, function(error) {
       res.json({
@@ -78,6 +96,7 @@ io.on('connection', function(socket) {
 
 
 function register (data, callback) {
+  var query;
   pool.getConnection(function(err, connection) {
       if (err) {
           res.json({
@@ -86,7 +105,12 @@ function register (data, callback) {
           });
           return;
       }
-      connection.query("INSERT INTO users (firstName, lastName, isActive, mail, password, phone, cars, admin) VALUES ('" + data.firstName + "', '" + data.lastName + "', 1, '" + data.email + "', '" + data.password + "', '" + data.phone + "', '" + data.cars + "',   '" + 0 + "')", function(err, rows) {
+      if (data.token) {
+       query = "INSERT INTO users (firstName, lastName, isActive, email, password, phone, admin) VALUES ('" + data.firstName + "', '" + data.lastName + "', 1, '" + data.email + "', '" + data.password + "', '" + data.phone + "',   '" + 0 + "')";
+      } else {
+        query = "INSERT INTO users (firstName, lastName, isActive, email, password, phone, cars, admin) VALUES ('" + data.firstName + "', '" + data.lastName + "', 1, '" + data.email + "', '" + data.password + "', '" + data.phone + "', '" + data.cars + "',   '" + 0 + "')";
+      }
+      connection.query(query, function(err, rows) {
         connection.release();
           if (err) {
               console.log(err);

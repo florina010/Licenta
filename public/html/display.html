@@ -55,6 +55,7 @@
               </table>
           </div>
           <div class="overlay-id3 overlay-item">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newUser">New user</button>
             <table id="userTable" class="display stripe table" cellspacing="0" width="100%">
                 <thead>
                     <tr>
@@ -69,6 +70,7 @@
                 </tbody>
             </table>
           </div>
+
           <div class="overlay-id4 overlay-item">
 
           </div>
@@ -161,6 +163,54 @@
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="newUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            <h3 class="modal-title" id="exampleModalLabel">Add new user</h3>
+          </div>
+          <div class="modal-body">
+            <form name='addUserForm' action="/addUser" method='POST' role="form">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="uFirstName"><span class="glyphicon glyphicon-user"></span> First Name</label>
+                  <input autocomplete="off" type="text" class="form-control" name="uFirstName" required>
+                </div>
+                <div class="form-group">
+                  <label for="uLastName"><span class="glyphicon glyphicon-user"></span> Last Name</label>
+                  <input autocomplete="off" type="text" class="form-control" name="uLastName" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="uEmail"><i class="fa fa-envelope" aria-hidden="true"></i> Email</label>
+                <input autocomplete="off" type="text" class="form-control disabled-button" name="uEmail" required>
+              </div>
+
+              <div class="form-group">
+                <label for="uPhoneNumber"><i class="fa fa-phone" aria-hidden="true"></i> Phone</label>
+                <input autocomplete="off" type="tel" class="form-control disabled-button" name="uPhoneNumber" required>
+              </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" name="submitAdd" disabled="disabled">Save</button>
+          </div>
+          <!-- <div class="form-group">
+                    <input type="checkbox" name="checkboxTC" value="termsAcons" />
+                    <a href="#" id="termsAcons" data-toggle="modal" data-target="#termsCons"> I agree to the Terms and Conditions</a>
+                  </div> -->
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
     <!-- <div class="row visible-xs visible-sm ">
       <div class="col-md-12 mobile-menu-bg">
         <ul class="information_menu_mobile">

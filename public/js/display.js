@@ -10,6 +10,82 @@ $(document).ready(function() {
 
   addCars(user.cars.length);
 
+  $("[name='addUserForm']").formValidation({
+    framework: 'bootstrap',
+    excluded: ':disabled',
+    icon: {
+      valid: 'glyphicon glyphicon-ok',
+      invalid: 'glyphicon glyphicon-remove',
+      validating: 'glyphicon glyphicon-refresh'
+    },
+    fields: {
+      'uFirstName': {
+        validators: {
+          regexp: {
+            regexp: '[a-zA-Z]+$',
+            message: "Firstname should not contain numbers or special characters."
+          }
+        }
+      },
+      'uLastName': {
+        validators: {
+          regexp: {
+            regexp: '[a-zA-Z]+$',
+            message: "Lastname should not contain numbers or special characters."
+          }
+        }
+      },
+      'uEmail': {
+        validators: {
+          regexp: {
+            regexp: '^[^@\\s]+@([^@\\s]+\\.)+[^@\\s]+$',
+            message: 'The value is not a valid email address'
+          }
+        }
+      },
+      'uPhoneNumber': {
+        validators: {
+          phone: {
+            country: 'Ro',
+            message: 'The value entered is an %s phone number'
+          }
+        }
+      }
+    }
+  }).on('change', function(e, data) {
+    $("[name='addUserForm']").formValidation('revalidateField', 'uFirstName');
+    $("[name='addUserForm']").formValidation('revalidateField', 'uLastName');
+    $("[name='addUserForm']").formValidation('revalidateField', 'uEmail');
+    $("[name='registerForm']").formValidation('revalidateField', 'uPhoneNumber');
+    if ($("[name='addUserForm']").data('formValidation').isValid()) {
+      $("[name='submitAdd']").attr('disabled', false);
+    }
+  }).on('submit', function(e, data) {
+    var socket = io.connect('http://127.0.0.1:4000');
+
+    var hashObj = new jsSHA("SHA-512", "TEXT", {
+      numRounds: 1
+    });
+    hashObj.update('washyourcar');
+    var password = hashObj.getHash("HEX"),
+      firstName = $("[name='uFirstName']").val(),
+      lastName = $("[name='uLastName']").val(),
+      email = $("[name='uEmail']").val(),
+      phone = $("[name='uPhoneNumber']").val();
+    socket.emit('/addUser', {
+      token: token,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      password: password,
+      phone: phone
+    });
+    socket.on('/resAddUser', function(data) {
+            console.log(data);
+            //functie care aduce iar userii
+        });
+  });
+
   $("[name='editProfileForm']").formValidation({
     framework: 'bootstrap',
     excluded: ':disabled',
@@ -233,6 +309,9 @@ $(document).ready(function() {
       },
       'ePasswordUser': {
         validators: {
+          notEmpty: {
+            message: 'The password is required and cannot be empty'
+          },
           identical: {
             field: 'eConfirmPassword',
             message: 'The password and its confirm are not the same'
@@ -249,6 +328,9 @@ $(document).ready(function() {
       },
       'eConfirmPassword': {
         validators: {
+          notEmpty: {
+            message: 'The password is required and cannot be empty'
+          },
           identical: {
             field: 'ePasswordUser',
             message: 'The password and its confirm are not the same'
@@ -298,6 +380,9 @@ $(document).ready(function() {
         user.password = password;
         sessionStorage.setItem('user', JSON.stringify(user));
         $(".overlay-id6 .alert-success").css('display', 'block');
+        setTimeout(function() {
+          $('.overlay-id6 .alert-success').fadeOut('fast');
+        }, 5000);
       });
     }
 
@@ -305,6 +390,7 @@ $(document).ready(function() {
   });
 
   function addCars(carsNr) {
+    var currentHeight = $("[name='editProfileForm']").height();
     if (carsNr > 1) {
       for (var i = 0; i < carsNr; i++) {
         var $template = $('[name="editProfileForm"] #eCarsTemplate'),
@@ -317,11 +403,13 @@ $(document).ready(function() {
         $option.val(user.cars[i].number);
 
         $("[name='editProfileForm']").formValidation('addField', $option);
-        var currentHeight = $("[name='editProfileForm']").height();
         $("[name='editProfileForm']").css('height', currentHeight + 40);
       }
-    } else {
+    } else if (carsNr == 1) {
       $("[name='editProfileForm'] [name='cars[]']:first").val(user.cars[0].number);
+    } else {
+      $("[name='editProfileForm'] .form-group:nth-child(4)").css('display', 'none');
+      $("[name='editProfileForm']").css('height', currentHeight);
     }
   }
 
