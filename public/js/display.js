@@ -1,14 +1,67 @@
+"use strict";
+
 $(document).ready(function() {
   var user = JSON.parse(sessionStorage.getItem('user')),
     token = sessionStorage.getItem('token'),
+    currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
     MAX_OPTIONS = 5;
 
   $("[name='eFirstName']").val(user.firstName);
   $("[name='eLastName']").val(user.lastName);
   $("[name='eEmail']").val(user.email);
   $("[name='ePhoneNumber']").val(user.phone);
+  if (user.cars) {
+    addCars(user.cars.length);
+  }
 
-  addCars(user.cars.length);
+  populateTable(currentPage);
+
+  function populateTable(page) {
+    $.get(appConfig.url + appConfig.api + 'getAllEmployees?token=' + token, function(employees) {
+      $("#userTable").DataTable().clear();
+      // out(freeDays.code);
+      var table = $('#userTable').DataTable({
+        "aoColumnDefs": [{
+          bSortable: false,
+          aTargets: [-1]
+        }, ],
+        "columnDefs": [{
+          orderable: false,
+          targets: -1
+        }],
+        "bDestroy": true
+      });
+
+      var j = 1,
+        active;
+      for (var i = 0; i < employees.length; i++) {
+        if (employees[i].isActive) {
+          active = 'Yes';
+        } else {
+          active = 'No';
+        }
+
+        table.row.add([
+            // '<span style="width: 0px; float: left">' + j + '</span>' + avatar,
+            j,
+            employees[i].firstName,
+            employees[i].lastName,
+            employees[i].email,
+            employees[i].phone,
+            active,
+            '<a class="btn btn-defaul glyphicon glyphicon-pencil" href="#" data-toggle="modal" data-target="#editUser" onclick="editUserA(this, ' + employees[i].userId + ')"></a>'
+          ]).draw(false)
+          .nodes()
+          .to$()
+          .attr('role', 'button');
+        j++;
+      }
+    }).done(function() {
+      page--;
+      $("#userTble").DataTable().page(page).draw(false);
+    });
+  }
+
 
   $("[name='addUserForm']").formValidation({
     framework: 'bootstrap',
@@ -81,10 +134,11 @@ $(document).ready(function() {
       phone: phone
     });
     socket.on('/resAddUser', function(data) {
-            console.log(data);
-            //functie care aduce iar userii
-        });
+      console.log(data);
+      //functie care aduce iar userii
+    });
   });
+
 
   $("[name='editProfileForm']").formValidation({
     framework: 'bootstrap',
@@ -356,26 +410,26 @@ $(document).ready(function() {
     }
   }).off().on('submit', function(e, data) {
     var socket = io.connect('http://127.0.0.1:4000'),
-        hashObj = new jsSHA("SHA-512", "TEXT", {
-          numRounds: 1
-        }),
-        hashObjC = new jsSHA("SHA-512", "TEXT", {
-          numRounds: 1
-        });
+      hashObj = new jsSHA("SHA-512", "TEXT", {
+        numRounds: 1
+      }),
+      hashObjC = new jsSHA("SHA-512", "TEXT", {
+        numRounds: 1
+      });
     hashObj.update($("[name='ePasswordUser']").val());
     hashObjC.update($("[name='cPasswordUser']").val());
     var password = hashObj.getHash("HEX"),
-        currentPassword =  hashObjC.getHash("HEX"),
-        email = $("[name='eEmail']").val();
+      currentPassword = hashObjC.getHash("HEX"),
+      email = $("[name='eEmail']").val();
 
     if (currentPassword !== user.password) {
       alert("Current password is incorrect.");
       $("[name='cPasswordUser']").val('');
     } else {
       $.post(appConfig.url + appConfig.api + "changePassword", {
-          token: token,
-          email: email,
-          password: password
+        token: token,
+        email: email,
+        password: password
       }).done(function(data) {
         user.password = password;
         sessionStorage.setItem('user', JSON.stringify(user));
@@ -385,8 +439,6 @@ $(document).ready(function() {
         }, 5000);
       });
     }
-
-
   });
 
   function addCars(carsNr) {
@@ -427,3 +479,32 @@ $(document).ready(function() {
     $('.carousel').carousel();
   })(jQuery);
 });
+
+function editUserA(elem, employee) {
+  var tr = $(elem).closest("tr");
+  var userInfo = tr.find("td");
+  var firstName = userInfo.eq(1).text(),
+      lastName = userInfo.eq(2).text(),
+      email = userInfo.eq(3).text(),
+      phone = userInfo.eq(4).text(),
+      isActive = userInfo.eq(5).text();
+  $("[name='editUserForm']").find("input[name='euFirstName']").val(firstName);
+  $("[name='editUserForm']").find("input[name='euLastName']").val(lastName);
+  $("[name='editUserForm']").find("input[name='euEmail']").val(email);
+  $("[name='editUserForm']").find("input[name='euPhoneNumber']").val(phone);
+
+  if (isActive == 'Yes') {
+    $("[name='editUserForm'] #active").attr('checked', true);
+    $("[name='editUserForm'] #active").parent().addClass('active focus');
+    $("[name='editUserForm'] #inactive").attr('checked', false);
+    $("[name='editUserForm'] #inactive").parent().removeClass('active focus');
+  } else {
+    $("[name='editUserForm'] #inactive").attr('checked', true);
+    $("[name='editUserForm'] #inactive").parent().addClass('active focus');
+    $("[name='editUserForm'] #active").attr('checked', false);
+    $("[name='editUserForm'] #active").parent().removeClass('active focus');
+  }
+
+
+
+}

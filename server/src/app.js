@@ -106,7 +106,7 @@ function register (data, callback) {
           return;
       }
       if (data.token) {
-       query = "INSERT INTO users (firstName, lastName, isActive, email, password, phone, admin) VALUES ('" + data.firstName + "', '" + data.lastName + "', 1, '" + data.email + "', '" + data.password + "', '" + data.phone + "',   '" + 0 + "')";
+       query = "INSERT INTO users (firstName, lastName, isActive, email, password, phone, admin) VALUES ('" + data.firstName + "', '" + data.lastName + "', 1, '" + data.email + "', '" + data.password + "', '" + data.phone + "',   '" + 1 + "')";
       } else {
         query = "INSERT INTO users (firstName, lastName, isActive, email, password, phone, cars, admin) VALUES ('" + data.firstName + "', '" + data.lastName + "', 1, '" + data.email + "', '" + data.password + "', '" + data.phone + "', '" + data.cars + "',   '" + 0 + "')";
       }
@@ -202,6 +202,36 @@ function changePassword(req, res) {
                     return;
                 }
             } else {
+                res.json(rows);
+            }
+        });
+        connection.on('error', function(err) {
+            res.json({
+                "code": 100,
+                "status": "Error in connection database"
+            });
+            return;
+        });
+    });
+}
+
+function getAllEmployees(req, res) {
+  var params = req.query;
+    pool.getConnection(function(err, connection) {
+        if (err) {
+            res.json({
+                "code": 100,
+                "status": "Error in connection database"
+            });
+            return;
+        }
+
+        var queryString = "SELECT * FROM users WHERE token != '" + params.token + "' AND users.admin = 1  ORDER BY users.isActive DESC";
+
+        connection.query(queryString, function(err, rows) {
+            connection.release();
+            console.log(err);
+            if (!err) {
                 res.json(rows);
             }
         });
@@ -324,6 +354,19 @@ router.post("/changePassword", function(req, res) {
   var token = req.body.token;
     isValidToken(token).then(function(result) {
         changePassword(req, res);
+    }, function(error) {
+        console.log(error);
+        res.json({
+            "code": 110,
+            "status": "Your session has expired and you are loged out. - redirect la index in FE"
+        })
+    });
+});
+
+router.get("/getAllEmployees", function(req, res) {
+  var token = req.query.token;
+    isValidToken(token).then(function(result) {
+        getAllEmployees(req, res);
     }, function(error) {
         console.log(error);
         res.json({

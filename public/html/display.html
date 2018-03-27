@@ -1,17 +1,17 @@
-<html>
 <!DOCTYPE html>
+<html>
 
 <head>
   <meta charset="utf-8">
   <title>Admin page</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-   <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
-   <link rel="stylesheet" type="text/css" href="../js/fullcalendar/fullcalendar.css">
-   <link rel="stylesheet" href="../css/display.css">
-   <link rel="stylesheet" href="../css/calendar.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+  <link rel="stylesheet" type="text/css" href="../js/fullcalendar/fullcalendar.css">
+  <link rel="stylesheet" href="../css/display.css">
+  <link rel="stylesheet" href="../css/calendar.css">
 </head>
 
 <body>
@@ -38,36 +38,38 @@
           </div>
           <div class="overlay-id2 overlay-item">
             <table id="resTable" class="display stripe table" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Client details</th>
-                        <th>Day</th>
-                        <th>Start hour</th>
-                        <th>End hour</th>
-                        <th>Employee details</th>
-                        <th>Status</th>
-                        <th>Rating</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-              </table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Client details</th>
+                  <th>Day</th>
+                  <th>Start hour</th>
+                  <th>End hour</th>
+                  <th>Employee details</th>
+                  <th>Status</th>
+                  <th>Rating</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
           </div>
           <div class="overlay-id3 overlay-item">
             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newUser">New user</button>
             <table id="userTable" class="display stripe table" cellspacing="0" width="100%">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Edit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>First name</th>
+                  <th>Last name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Active</th>
+                  <th>Edit</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
             </table>
           </div>
 
@@ -76,87 +78,87 @@
           </div>
 
           <div class="overlay-id5 overlay-item">
-          	<div class="modal-content">
-            		<div class="modal-body" style="padding:40px 50px;">
-            			<div class="alert alert-success" style="display: none">
-            				<strong>Success!</strong>
-            			</div>
-            			<form role="form" name="editProfileForm" method="POST" onsubmit="return false">
-            				<div class="form-group">
-                      <div class="form-group">
-                        <label for="eFirstName"><span class="glyphicon glyphicon-user"></span> First Name</label>
-            					  <input autocomplete="off" type="text" class="form-control" name="eFirstName" required>
-                      </div>
-                      <div class="form-group">
-                        <label for="eLastName"><span class="glyphicon glyphicon-user"></span> Last Name</label>
-            					  <input autocomplete="off" type="text" class="form-control" name="eLastName" required>
-                      </div>
-                    </div>
-
+            <div class="modal-content">
+              <div class="modal-body" style="padding:40px 50px;">
+                <div class="alert alert-success" style="display: none">
+                  <strong>Success!</strong>
+                </div>
+                <form role="form" name="editProfileForm" method="POST" onsubmit="return false">
+                  <div class="form-group">
                     <div class="form-group">
-            					<label for="eEmail"><i class="fa fa-envelope" aria-hidden="true"></i> Email</label>
-            					<input autocomplete="off" type="text" class="form-control disabled-button" name="eEmail" required>
-            				</div>
-
-                    <div class="form-group">
-            					<label for="phoneUser"><i class="fa fa-phone" aria-hidden="true"></i> Phone</label>
-            					<input autocomplete="off" type="tel" class="form-control disabled-button" name="ePhoneNumber" required>
-            				</div>
-
-
-                    <div class="form-group">
-                      <label class="col-xs-3 control-label" style="padding-left: 0"><i class="fas fa-car" aria-hidden="true"></i>Cars</label>
-                      <div class="col-xs-5" id="myCars">
-                        <input type="text" class="form-control" name="cars[]" style="margin-left: -300px" />
-                      </div>
-                      <div class="col-xs-4">
-                        <button type="button" class="btn btn-default addButton" style="margin-left: -600px"><i class="fa fa-plus"></i></button>
-                      </div>
+                      <label for="eFirstName"><span class="glyphicon glyphicon-user"></span> First Name</label>
+                      <input autocomplete="off" type="text" class="form-control" name="eFirstName" required>
                     </div>
-                    <div class="form-group hide" id="eCarsTemplate">
-                      <div class="col-xs-offset-3 col-xs-5">
-                        <input class="form-control" type="text" name="cars[]" style="margin-left: -300px" value=""/>
-                      </div>
-                      <div class="col-xs-4">
-                        <button type="button" class="btn btn-default removeButton" style="margin-left: -600px"><i class="fa fa-minus"></i></button>
-                      </div>
-                    </div>
-
-                  </form>
                     <div class="form-group">
-                      <button type="submit" class="btn btn-success btn-block" name="editUser" disabled="disabled"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
+                      <label for="eLastName"><span class="glyphicon glyphicon-user"></span> Last Name</label>
+                      <input autocomplete="off" type="text" class="form-control" name="eLastName" required>
                     </div>
+                  </div>
 
-            		</div>
-            	</div>
+                  <div class="form-group">
+                    <label for="eEmail"><i class="fa fa-envelope" aria-hidden="true"></i> Email</label>
+                    <input autocomplete="off" type="text" class="form-control disabled-button" name="eEmail" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="phoneUser"><i class="fa fa-phone" aria-hidden="true"></i> Phone</label>
+                    <input autocomplete="off" type="tel" class="form-control disabled-button" name="ePhoneNumber" required>
+                  </div>
+
+
+                  <div class="form-group">
+                    <label class="col-xs-3 control-label" style="padding-left: 0"><i class="fas fa-car" aria-hidden="true"></i>Cars</label>
+                    <div class="col-xs-5" id="myCars">
+                      <input type="text" class="form-control" name="cars[]" style="margin-left: -300px" />
+                    </div>
+                    <div class="col-xs-4">
+                      <button type="button" class="btn btn-default addButton" style="margin-left: -600px"><i class="fa fa-plus"></i></button>
+                    </div>
+                  </div>
+                  <div class="form-group hide" id="eCarsTemplate">
+                    <div class="col-xs-offset-3 col-xs-5">
+                      <input class="form-control" type="text" name="cars[]" style="margin-left: -300px" value="" />
+                    </div>
+                    <div class="col-xs-4">
+                      <button type="button" class="btn btn-default removeButton" style="margin-left: -600px"><i class="fa fa-minus"></i></button>
+                    </div>
+                  </div>
+
+                </form>
+                <div class="form-group">
+                  <button type="submit" class="btn btn-success btn-block" name="editUser" disabled="disabled"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
+                </div>
+
+              </div>
+            </div>
           </div>
 
           <div class="overlay-id6 overlay-item">
             <div class="modal-content">
-            		<div class="modal-body" style="padding:40px 50px;">
-            			<div class="alert alert-success" style="display: none">
-            				<strong>Success!</strong>
-            			</div>
-            			<form role="form" name="changePassForm" method="POST" onsubmit="return false">
-                    <div class="form-group">
-                      <label><i class="fa fa-unlock-alt" aria-hidden="true"></i>Current Password</label>
-					            <input type="password" class="form-control" name="cPasswordUser" autocomplete="off" required>
-                    </div>
-                    <div class="form-group">
-                      <label><i class="fa fa-unlock-alt" aria-hidden="true"></i>New Password</label>
-					            <input type="password" class="form-control" name="ePasswordUser" autocomplete="off" required>
-                    </div>
+              <div class="modal-body" style="padding:40px 50px;">
+                <div class="alert alert-success" style="display: none">
+                  <strong>Success!</strong>
+                </div>
+                <form role="form" name="changePassForm" method="POST" onsubmit="return false">
+                  <div class="form-group">
+                    <label><i class="fa fa-unlock-alt" aria-hidden="true"></i>Current Password</label>
+                    <input type="password" class="form-control" name="cPasswordUser" autocomplete="off" required>
+                  </div>
+                  <div class="form-group">
+                    <label><i class="fa fa-unlock-alt" aria-hidden="true"></i>New Password</label>
+                    <input type="password" class="form-control" name="ePasswordUser" autocomplete="off" required>
+                  </div>
 
-                    <div class="form-group">
-                      <label><i class="fa fa-unlock-alt" aria-hidden="true"></i> Confirm Password</label>
-                      <input type="password" class="form-control" name="eConfirmPassword" autocomplete="off" required>
-                    </div>
-                    <div class="form-group">
-                      <button type="submit" class="btn btn-success btn-block" name="changePass" disabled="disabled"><span class="glyphicon glyphicon-pencil"></span>Apply changes</button>
-                    </div>
-            			</form>
-            		</div>
-            	</div>
+                  <div class="form-group">
+                    <label><i class="fa fa-unlock-alt" aria-hidden="true"></i> Confirm Password</label>
+                    <input type="password" class="form-control" name="eConfirmPassword" autocomplete="off" required>
+                  </div>
+                  <div class="form-group">
+                    <button type="submit" class="btn btn-success btn-block" name="changePass" disabled="disabled"><span class="glyphicon glyphicon-pencil"></span>Apply changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
 
           </div>
 
@@ -201,6 +203,58 @@
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary" name="submitAdd" disabled="disabled">Save</button>
           </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            <h3 class="modal-title" id="exampleModalLabel">Edit user</h3>
+          </div>
+          <div class="modal-body">
+            <form name='editUserForm' action="/addUser" method='POST' role="form">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="uFirstName"><span class="glyphicon glyphicon-user"></span> First Name</label>
+                  <input autocomplete="off" type="text" class="form-control" name="euFirstName" required>
+                </div>
+                <div class="form-group">
+                  <label for="uLastName"><span class="glyphicon glyphicon-user"></span> Last Name</label>
+                  <input autocomplete="off" type="text" class="form-control" name="euLastName" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="uEmail"><i class="fa fa-envelope" aria-hidden="true"></i> Email</label>
+                <input autocomplete="off" type="text" class="form-control disabled-button" name="euEmail" required>
+              </div>
+
+              <div class="form-group">
+                <label for="uPhoneNumber"><i class="fa fa-phone" aria-hidden="true"></i> Phone</label>
+                <input autocomplete="off" type="tel" class="form-control disabled-button" name="euPhoneNumber" required>
+              </div>
+
+              <div class="form-group". data-toggle="buttons">
+                <label class="btn btn-primary active">
+                  <input type="radio" name="options" id="active" autocomplete="off" > Active
+                </label>
+                <label class="btn btn-primary">
+                  <input type="radio" name="options" id="inactive" autocomplete="off"> Inactive
+                </label>
+              </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" name="submitEdit" disabled="disabled">Edit</button>
+          </div>
           <!-- <div class="form-group">
                     <input type="checkbox" name="checkboxTC" value="termsAcons" />
                     <a href="#" id="termsAcons" data-toggle="modal" data-target="#termsCons"> I agree to the Terms and Conditions</a>
@@ -209,9 +263,11 @@
         </div>
       </div>
     </div>
+
+
   </div>
 
-    <!-- <div class="row visible-xs visible-sm ">
+  <!-- <div class="row visible-xs visible-sm ">
       <div class="col-md-12 mobile-menu-bg">
         <ul class="information_menu_mobile">
           <li class="active"><a href="#"><i class="fa fa-calendar-plus-o"></i> <span class="hidden-xs">Lorem ipsum</span></a></li>
@@ -235,10 +291,10 @@
   <script src="http://formvalidation.io/vendor/formvalidation/js/framework/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
   <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
-  <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
-  <script type="text/javascript" src="../js/fullcalendar/fullCalendar.js"></script>
-  <script type="text/javascript" src="../js/calendar.js"></script>
-  <script type="text/javascript" src="../js/display.js"></script>
+  <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" https://use.fontawesome.com/releases/v5.0.8/js/all.js "></script>
+  <script type="text/javascript " src="../js/fullcalendar/fullCalendar.js "></script>
+  <script type="text/javascript " src="../js/calendar.js "></script>
+  <script type="text/javascript " src="../js/display.js "></script>
 
 </body>
 
