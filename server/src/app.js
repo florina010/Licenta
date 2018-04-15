@@ -57,7 +57,6 @@ var router = express.Router();
 // Router middleware, mentioned it before defining routes.
 
 router.use(function(req, res, next) {
-    console.log("/" + req.method);
     next();
 });
 
@@ -80,7 +79,24 @@ io.on('connection', function(socket) {
         io.emit('/resAddUser', data);
       });
     }, function(error) {
-        console.log(error);
+        res.json({
+            "code": 110,
+            "status": "Your session has expired and you are loged out. - redirect la index in FE"
+        })
+    });
+  }, function(error) {
+      res.json({
+          "code": 110,
+          "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
+  });
+
+  socket.on('/editUser', function(data) {
+    isValidToken(data.token).then(function(result) {
+      editUser(data, function(res) {
+        io.emit('/resEditUser', data);
+      });
+    }, function(error) {
         res.json({
             "code": 110,
             "status": "Your session has expired and you are loged out. - redirect la index in FE"
@@ -173,6 +189,33 @@ function login(req, res) {
             return;
         });
     });
+}
+
+function editUser (data, callback) {
+  var query;
+  pool.getConnection(function(err, connection) {
+      if (err) {
+          res.json({
+              "code": 100,
+              "status": "Error in connection database"
+          });
+          return;
+      }
+
+      query = "UPDATE users SET firstName = '" + data.firstName + "', lastName = '" + data.lastName + "', email = '" + data.email  + "', phone = '" + data.phone + "', isActive = '" + data.isActive + "'  WHERE userId = '" + data.id + "'";
+
+      connection.query(query, function(err, rows) {
+        connection.release();
+          callback(rows);
+      });
+      connection.on('error', function(err) {
+          var err = ({
+              "code": 100,
+              "status": "Error in connection database"
+          });
+          callback(err);
+      });
+  });
 }
 
 function changePassword(req, res) {
@@ -355,7 +398,6 @@ router.post("/changePassword", function(req, res) {
     isValidToken(token).then(function(result) {
         changePassword(req, res);
     }, function(error) {
-        console.log(error);
         res.json({
             "code": 110,
             "status": "Your session has expired and you are loged out. - redirect la index in FE"
@@ -368,7 +410,6 @@ router.get("/getAllEmployees", function(req, res) {
     isValidToken(token).then(function(result) {
         getAllEmployees(req, res);
     }, function(error) {
-        console.log(error);
         res.json({
             "code": 110,
             "status": "Your session has expired and you are loged out. - redirect la index in FE"

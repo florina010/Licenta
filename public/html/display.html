@@ -22,7 +22,7 @@
         <ul class="information_menu">
           <li class="active" data-id="1"><a href="#"><i class="fa fa-calendar-alt"></i> Calendar </a></li>
           <li data-id="2"><a href="#"><i class="far fa-calendar-check"></i> Reservations</a></li>
-          <li data-id="3"><a href="#"><i class="fa fa-users"></i> Users </a></li>
+          <li data-id="3"><a href="#"><i class="fa fa-users"></i> Employees </a></li>
           <li data-id="4"><a href="#"><i class="fa fa-align-center"></i> Services </a></li>
           <li data-id="5"><a href="#"><i class="fa fa-edit"></i> Edit profile </a></li>
           <li data-id="6"><a href="#"><i class="fa fa-edit"></i> Change password </a></li>
@@ -55,7 +55,8 @@
             </table>
           </div>
           <div class="overlay-id3 overlay-item">
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newUser">New user</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newUser">New employee</button>
+            <br><br>
             <table id="userTable" class="display stripe table" cellspacing="0" width="100%">
               <thead>
                 <tr>
@@ -74,6 +75,7 @@
           </div>
 
           <div class="overlay-id4 overlay-item">
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newService">New service</button>
 
           </div>
 
@@ -208,6 +210,48 @@
       </div>
     </div>
 
+    <div class="modal fade" id="newService" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            <h3 class="modal-title" id="exampleModalLabel">Add new service</h3>
+          </div>
+          <div class="modal-body">
+            <form name='addServiceForm' method='POST' role="form">
+              <div class="form-group">
+                <div class="form-group">
+                  <label for="sTitle"><span class="glyphicon glyphicon-pencil"></span> Title</label>
+                  <input autocomplete="off" type="text" class="form-control" name="sTitle" required>
+                </div>
+                <div class="form-group">
+                  <label for="sDescription"><span class="glyphicon glyphicon-info-sign"></span> Description</label>
+                  <input autocomplete="off" type="text" class="form-control" name="sDescription" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="sDuration"><i class="fa fa-clock" aria-hidden="true"></i> Duration</label>
+                <input autocomplete="off" type="text" class="form-control disabled-button" name="sDuration" required>
+              </div>
+
+              <div class="form-group">
+                <label for="sPrice"><i class="fa fa-money-bill-alt" aria-hidden="true"></i> Price</label>
+                <input autocomplete="off" class="form-control disabled-button" name="sPrice" required>
+              </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" name="submitAdd" disabled="disabled">Save</button>
+          </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
 
     <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
@@ -219,7 +263,7 @@
             <h3 class="modal-title" id="exampleModalLabel">Edit user</h3>
           </div>
           <div class="modal-body">
-            <form name='editUserForm' action="/addUser" method='POST' role="form">
+            <form name='editUserForm' method='POST' role="form">
               <div class="form-group">
                 <div class="form-group">
                   <label for="uFirstName"><span class="glyphicon glyphicon-user"></span> First Name</label>
@@ -241,7 +285,7 @@
                 <input autocomplete="off" type="tel" class="form-control disabled-button" name="euPhoneNumber" required>
               </div>
 
-              <div class="form-group". data-toggle="buttons">
+              <div class="form-group" data-toggle="buttons">
                 <label class="btn btn-primary active">
                   <input type="radio" name="options" id="active" autocomplete="off" > Active
                 </label>
@@ -255,10 +299,6 @@
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary" name="submitEdit" disabled="disabled">Edit</button>
           </div>
-          <!-- <div class="form-group">
-                    <input type="checkbox" name="checkboxTC" value="termsAcons" />
-                    <a href="#" id="termsAcons" data-toggle="modal" data-target="#termsCons"> I agree to the Terms and Conditions</a>
-                  </div> -->
           </form>
         </div>
       </div>

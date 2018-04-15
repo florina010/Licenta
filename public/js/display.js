@@ -4,7 +4,8 @@ $(document).ready(function() {
   var user = JSON.parse(sessionStorage.getItem('user')),
     token = sessionStorage.getItem('token'),
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
-    MAX_OPTIONS = 5;
+    MAX_OPTIONS = 5,
+    socket = io.connect('http://127.0.0.1:4000');
 
   $("[name='eFirstName']").val(user.firstName);
   $("[name='eLastName']").val(user.lastName);
@@ -13,6 +14,17 @@ $(document).ready(function() {
   if (user.cars) {
     addCars(user.cars.length);
   }
+  socket.on('/resEditUser', function(data) {
+    var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
+    populateTable(currentPage);
+     $('#editUser').modal('toggle');
+  });
+
+  socket.on('/resAddUser', function(data) {
+    var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
+    populateTable(currentPage);
+     $('#newUser').modal('toggle');
+  });
 
   populateTable(currentPage);
 
@@ -42,7 +54,6 @@ $(document).ready(function() {
         }
 
         table.row.add([
-            // '<span style="width: 0px; float: left">' + j + '</span>' + avatar,
             j,
             employees[i].firstName,
             employees[i].lastName,
@@ -114,8 +125,6 @@ $(document).ready(function() {
       $("[name='submitAdd']").attr('disabled', false);
     }
   }).on('submit', function(e, data) {
-    var socket = io.connect('http://127.0.0.1:4000');
-
     var hashObj = new jsSHA("SHA-512", "TEXT", {
       numRounds: 1
     });
@@ -132,10 +141,6 @@ $(document).ready(function() {
       email: email,
       password: password,
       phone: phone
-    });
-    socket.on('/resAddUser', function(data) {
-      console.log(data);
-      //functie care aduce iar userii
     });
   });
 
@@ -332,17 +337,6 @@ $(document).ready(function() {
     };
     alert(JSON.stringify(carsObj));
 
-    // socket.emit('/register', {
-    //   firstName: firstName,
-    //   lastName: lastName,
-    //   email: email,
-    //   password: password,
-    //   phone: phone,
-    //   cars: JSON.stringify(carsObj)
-    // });
-    // socket.on('/resRegister', function(data) {
-    //         console.log(data);
-    //     });
   });
 
   $("[name='changePassForm']").formValidation({
@@ -484,10 +478,12 @@ function editUserA(elem, employee) {
   var tr = $(elem).closest("tr");
   var userInfo = tr.find("td");
   var firstName = userInfo.eq(1).text(),
-      lastName = userInfo.eq(2).text(),
-      email = userInfo.eq(3).text(),
-      phone = userInfo.eq(4).text(),
-      isActive = userInfo.eq(5).text();
+    lastName = userInfo.eq(2).text(),
+    email = userInfo.eq(3).text(),
+    phone = userInfo.eq(4).text(),
+    isActive = userInfo.eq(5).text(),
+    currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
+
   $("[name='editUserForm']").find("input[name='euFirstName']").val(firstName);
   $("[name='editUserForm']").find("input[name='euLastName']").val(lastName);
   $("[name='editUserForm']").find("input[name='euEmail']").val(email);
@@ -505,6 +501,78 @@ function editUserA(elem, employee) {
     $("[name='editUserForm'] #active").parent().removeClass('active focus');
   }
 
+  $("[name='editUserForm']").formValidation({
+    framework: 'bootstrap',
+    excluded: ':disabled',
+    icon: {
+      valid: 'glyphicon glyphicon-ok',
+      invalid: 'glyphicon glyphicon-remove',
+      validating: 'glyphicon glyphicon-refresh'
+    },
+    fields: {
+      'euFirstName': {
+        validators: {
+          regexp: {
+            regexp: '[a-zA-Z]+$',
+            message: "Firstname should not contain numbers or special characters."
+          }
+        }
+      },
+      'euLastName': {
+        validators: {
+          regexp: {
+            regexp: '[a-zA-Z]+$',
+            message: "Lastname should not contain numbers or special characters."
+          }
+        }
+      },
+      'euEmail': {
+        validators: {
+          regexp: {
+            regexp: '^[^@\\s]+@([^@\\s]+\\.)+[^@\\s]+$',
+            message: 'The value is not a valid email address'
+          }
+        }
+      },
+      'euPhoneNumber': {
+        validators: {
+          phone: {
+            country: 'Ro',
+            message: 'The value entered is an %s phone number'
+          }
+        }
+      }
+    }
+  }).on('change', function(e, data) {
+    $("[name='editUserForm']").formValidation('revalidateField', 'euFirstName');
+    $("[name='editUserForm']").formValidation('revalidateField', 'euLastName');
+    $("[name='editUserForm']").formValidation('revalidateField', 'euEmail');
+    $("[name='editUserForm']").formValidation('revalidateField', 'euPhoneNumber');
+    if ($("[name='editUserForm']").data('formValidation').isValid()) {
+      $("[name='submitEdit']").attr('disabled', false);
+    }
+  }).on('submit', function(e, data) {
+    var socket = io.connect('http://127.0.0.1:4000'), isActive;
+
+    if (($("#active").parent().hasClass('active'))) {
+      isActive = 1;
+    } else if ($("#inactive").parent().hasClass('active')) {
+      isActive = 0;
+    }
 
 
+    var firstName = $("[name='euFirstName']").val(),
+      lastName = $("[name='euLastName']").val(),
+      email = $("[name='euEmail']").val(),
+      phone = $("[name='euPhoneNumber']").val();
+    socket.emit('/editUser', {
+      token: token,
+      id: employee,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      isActive: isActive,
+      phone: phone
+    });
+  });
 }

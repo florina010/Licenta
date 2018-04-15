@@ -25,7 +25,7 @@ body {
   height: 400px;
 }
 
-[name='editProfileForm'] input, [name='changePassForm'] input, [name='addUserForm'] input {
+[name='editProfileForm'] input, [name='changePassForm'] input, [name='addUserForm'] input, [name='editUserForm'] input, [name='addServiceForm'] input {
   padding: 5px 10px;
   background: 0;
   border: 0;
@@ -54,7 +54,7 @@ body {
   height: 10%;
 }
 
-[name='editProfileForm'] label, [name='changePassForm'] label, [name='addUserForm'] label {
+[name='editProfileForm'] label, [name='changePassForm'] label, [name='addUserForm'] label, [name='editUserForm'] label:not(.btn), [name='addServiceForm'] label {
   background: 0;
   border: 0;
   font-size: 17px;
