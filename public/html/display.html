@@ -19,151 +19,159 @@
     <div class="row overflownone">
       <div class="col-md-4 information nopaddingleft nopaddingright hidden-sm hidden-xs">
         <h3>Menu</h3>
-        <ul class="information_menu">
-          <li class="active" data-id="1"><a href="#"><i class="fa fa-calendar-alt"></i> Calendar </a></li>
-          <li data-id="2"><a href="#"><i class="far fa-calendar-check"></i> Reservations</a></li>
-          <li data-id="3"><a href="#"><i class="fa fa-users"></i> Employees </a></li>
-          <li data-id="4"><a href="#"><i class="fa fa-align-center"></i> Services </a></li>
-          <li data-id="5"><a href="#"><i class="fa fa-edit"></i> Edit profile </a></li>
-          <li data-id="6"><a href="#"><i class="fa fa-edit"></i> Change password </a></li>
-          <li data-id="7"><a href="index.html"><i class="fas fa-sign-out-alt"></i> Logout </a></li>
+        <ul class="nav nav-pills nav-stacked admin-menu">
+          <li class="active" data-target-id="target1"><a href="#"><i class="fa fa-calendar-alt"></i> Calendar </a></li>
+          <li data-target-id="target2"><a href="#"><i class="far fa-calendar-check"></i> Reservations</a></li>
+          <li data-target-id="target3"><a href="#"><i class="fa fa-users"></i> Employees </a></li>
+          <li data-target-id="target4"><a href="#"><i class="fa fa-align-center"></i> Services </a></li>
+          <li data-target-id="target5"><a href="#"><i class="fa fa-edit"></i> Edit profile </a></li>
+          <li data-target-id="target6"><a href="#"><i class="fa fa-edit"></i> Change password </a></li>
+          <li data-target-id="target7"><a href="index.html"><i class="fas fa-sign-out-alt"></i> Logout </a></li>
         </ul>
       </div>
-      <div class="col-md-8 nopaddingleft nopaddingright">
-        <div class="slideshow">
-          <div class="overlay-id1 overlay-item active">
-            <div id='wrap'>
-              <div id='calendar'></div>
+      <div class="col-md-9 well admin-content" id="target1">
+        <div id='wrap'>
+          <div id='calendar'></div>
+        </div>
+      </div>
+      <div class="col-md-9 well admin-content" id="target2">
+        <table id="resTable" class="display stripe table" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Client details</th>
+              <th>Day</th>
+              <th>Start hour</th>
+              <th>End hour</th>
+              <th>Employee details</th>
+              <th>Status</th>
+              <th>Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-9 well admin-content" id="target3">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newUser">New employee</button>
+        <br><br>
+        <table id="userTable" class="display stripe table" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>First name</th>
+              <th>Last name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Active</th>
+              <th>Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-md-9 well admin-content" id="target4">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newService">New service</button>
+        <br><br>
+        <table id="servicesTable" class="display stripe table" cellspacing="0" width="100%">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Duration</th>
+              <th>Price</th>
+              <th>Edit</th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="col-md-9 well admin-content" id="target5">
+        <div class="modal-content">
+          <div class="modal-body" style="padding:40px 50px;">
+            <div class="alert alert-success" style="display: none">
+              <strong>Success!</strong>
             </div>
-          </div>
-          <div class="overlay-id2 overlay-item">
-            <table id="resTable" class="display stripe table" cellspacing="0" width="100%">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Client details</th>
-                  <th>Day</th>
-                  <th>Start hour</th>
-                  <th>End hour</th>
-                  <th>Employee details</th>
-                  <th>Status</th>
-                  <th>Rating</th>
-                </tr>
-              </thead>
-              <tbody>
-              </tbody>
-            </table>
-          </div>
-          <div class="overlay-id3 overlay-item">
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newUser">New employee</button>
-            <br><br>
-            <table id="userTable" class="display stripe table" cellspacing="0" width="100%">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>First name</th>
-                  <th>Last name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Active</th>
-                  <th>Edit</th>
-                </tr>
-              </thead>
-              <tbody>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="overlay-id4 overlay-item">
-            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newService">New service</button>
-
-          </div>
-
-          <div class="overlay-id5 overlay-item">
-            <div class="modal-content">
-              <div class="modal-body" style="padding:40px 50px;">
-                <div class="alert alert-success" style="display: none">
-                  <strong>Success!</strong>
-                </div>
-                <form role="form" name="editProfileForm" method="POST" onsubmit="return false">
-                  <div class="form-group">
-                    <div class="form-group">
-                      <label for="eFirstName"><span class="glyphicon glyphicon-user"></span> First Name</label>
-                      <input autocomplete="off" type="text" class="form-control" name="eFirstName" required>
-                    </div>
-                    <div class="form-group">
-                      <label for="eLastName"><span class="glyphicon glyphicon-user"></span> Last Name</label>
-                      <input autocomplete="off" type="text" class="form-control" name="eLastName" required>
-                    </div>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="eEmail"><i class="fa fa-envelope" aria-hidden="true"></i> Email</label>
-                    <input autocomplete="off" type="text" class="form-control disabled-button" name="eEmail" required>
-                  </div>
-
-                  <div class="form-group">
-                    <label for="phoneUser"><i class="fa fa-phone" aria-hidden="true"></i> Phone</label>
-                    <input autocomplete="off" type="tel" class="form-control disabled-button" name="ePhoneNumber" required>
-                  </div>
-
-
-                  <div class="form-group">
-                    <label class="col-xs-3 control-label" style="padding-left: 0"><i class="fas fa-car" aria-hidden="true"></i>Cars</label>
-                    <div class="col-xs-5" id="myCars">
-                      <input type="text" class="form-control" name="cars[]" style="margin-left: -300px" />
-                    </div>
-                    <div class="col-xs-4">
-                      <button type="button" class="btn btn-default addButton" style="margin-left: -600px"><i class="fa fa-plus"></i></button>
-                    </div>
-                  </div>
-                  <div class="form-group hide" id="eCarsTemplate">
-                    <div class="col-xs-offset-3 col-xs-5">
-                      <input class="form-control" type="text" name="cars[]" style="margin-left: -300px" value="" />
-                    </div>
-                    <div class="col-xs-4">
-                      <button type="button" class="btn btn-default removeButton" style="margin-left: -600px"><i class="fa fa-minus"></i></button>
-                    </div>
-                  </div>
-
-                </form>
+            <form role="form" name="editProfileForm" method="POST" onsubmit="return false">
+              <div class="form-group">
                 <div class="form-group">
-                  <button type="submit" class="btn btn-success btn-block" name="editUser" disabled="disabled"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
+                  <label for="eFirstName"><span class="glyphicon glyphicon-user"></span> First Name</label>
+                  <input autocomplete="off" type="text" class="form-control" name="eFirstName" required>
                 </div>
-
-              </div>
-            </div>
-          </div>
-
-          <div class="overlay-id6 overlay-item">
-            <div class="modal-content">
-              <div class="modal-body" style="padding:40px 50px;">
-                <div class="alert alert-success" style="display: none">
-                  <strong>Success!</strong>
+                <div class="form-group">
+                  <label for="eLastName"><span class="glyphicon glyphicon-user"></span> Last Name</label>
+                  <input autocomplete="off" type="text" class="form-control" name="eLastName" required>
                 </div>
-                <form role="form" name="changePassForm" method="POST" onsubmit="return false">
-                  <div class="form-group">
-                    <label><i class="fa fa-unlock-alt" aria-hidden="true"></i>Current Password</label>
-                    <input type="password" class="form-control" name="cPasswordUser" autocomplete="off" required>
-                  </div>
-                  <div class="form-group">
-                    <label><i class="fa fa-unlock-alt" aria-hidden="true"></i>New Password</label>
-                    <input type="password" class="form-control" name="ePasswordUser" autocomplete="off" required>
-                  </div>
-
-                  <div class="form-group">
-                    <label><i class="fa fa-unlock-alt" aria-hidden="true"></i> Confirm Password</label>
-                    <input type="password" class="form-control" name="eConfirmPassword" autocomplete="off" required>
-                  </div>
-                  <div class="form-group">
-                    <button type="submit" class="btn btn-success btn-block" name="changePass" disabled="disabled"><span class="glyphicon glyphicon-pencil"></span>Apply changes</button>
-                  </div>
-                </form>
               </div>
+
+              <div class="form-group">
+                <label for="eEmail"><i class="fa fa-envelope" aria-hidden="true"></i> Email</label>
+                <input autocomplete="off" type="text" class="form-control disabled-button" name="eEmail" required>
+              </div>
+
+              <div class="form-group">
+                <label for="phoneUser"><i class="fa fa-phone" aria-hidden="true"></i> Phone</label>
+                <input autocomplete="off" type="tel" class="form-control disabled-button" name="ePhoneNumber" required>
+              </div>
+
+
+              <div class="form-group">
+                <label class="col-xs-3 control-label" style="padding-left: 0"><i class="fas fa-car" aria-hidden="true"></i>Cars</label>
+                <div class="col-xs-5" id="myCars">
+                  <input type="text" class="form-control" name="cars[]" style="margin-left: -300px" />
+                </div>
+                <div class="col-xs-4">
+                  <button type="button" class="btn btn-default addButton" style="margin-left: -600px"><i class="fa fa-plus"></i></button>
+                </div>
+              </div>
+              <div class="form-group hide" id="eCarsTemplate">
+                <div class="col-xs-offset-3 col-xs-5">
+                  <input class="form-control" type="text" name="cars[]" style="margin-left: -300px" value="" />
+                </div>
+                <div class="col-xs-4">
+                  <button type="button" class="btn btn-default removeButton" style="margin-left: -600px"><i class="fa fa-minus"></i></button>
+                </div>
+              </div>
+
+            </form>
+            <div class="form-group">
+              <button type="submit" class="btn btn-success btn-block" name="editUser" disabled="disabled"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
             </div>
 
           </div>
+        </div>
+      </div>
 
+      <div class="col-md-9 well admin-content" id="target6">
+        <div class="modal-content">
+          <div class="modal-body" style="padding:40px 50px;">
+            <div class="alert alert-success" style="display: none">
+              <strong>Success!</strong>
+            </div>
+            <form role="form" name="changePassForm" method="POST" onsubmit="return false">
+              <div class="form-group">
+                <label><i class="fa fa-unlock-alt" aria-hidden="true"></i>Current Password</label>
+                <input type="password" class="form-control" name="cPasswordUser" autocomplete="off" required>
+              </div>
+              <div class="form-group">
+                <label><i class="fa fa-unlock-alt" aria-hidden="true"></i>New Password</label>
+                <input type="password" class="form-control" name="ePasswordUser" autocomplete="off" required>
+              </div>
+
+              <div class="form-group">
+                <label><i class="fa fa-unlock-alt" aria-hidden="true"></i> Confirm Password</label>
+                <input type="password" class="form-control" name="eConfirmPassword" autocomplete="off" required>
+              </div>
+              <div class="form-group">
+                <button type="submit" class="btn btn-success btn-block" name="changePass" disabled="disabled"><span class="glyphicon glyphicon-pencil"></span>Apply changes</button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -228,20 +236,22 @@
                 </div>
                 <div class="form-group">
                   <label for="sDescription"><span class="glyphicon glyphicon-info-sign"></span> Description</label>
-                  <input autocomplete="off" type="text" class="form-control" name="sDescription" required>
+                  <textarea autocomplete="off" class="form-control" name="sDescription" rows="5" cols="15"required ></textarea>
+                  <!-- <input autocomplete="off" type="text" class="form-control" name="sDescription" required> -->
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="form-group col-xs-4">
                 <label for="sDuration"><i class="fa fa-clock" aria-hidden="true"></i> Duration</label>
-                <input autocomplete="off" type="text" class="form-control disabled-button" name="sDuration" required>
+                 <div class="col-10">
+                   <input autocomplete="off" type="number" class="form-control disabled-button"  min="0" max="100" value="30" name="sDuration" required>
+                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="form-group col-xs-4">
                 <label for="sPrice"><i class="fa fa-money-bill-alt" aria-hidden="true"></i> Price</label>
                 <input autocomplete="off" class="form-control disabled-button" name="sPrice" required>
               </div>
-
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

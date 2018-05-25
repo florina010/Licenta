@@ -73,6 +73,24 @@ io.on('connection', function(socket) {
       })
   });
 
+  socket.on('/addService', function(data) {
+    isValidToken(data.token).then(function(result) {
+      addService(data, function(res) {
+        io.emit('/resAddService', data);
+      });
+    }, function(error) {
+        res.json({
+            "code": 110,
+            "status": "Your session has expired and you are loged out. - redirect la index in FE"
+        })
+    });
+  }, function(error) {
+      res.json({
+          "code": 110,
+          "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
+  });
+
   socket.on('/addUser', function(data) {
     isValidToken(data.token).then(function(result) {
       register(data, function(res) {
@@ -110,6 +128,35 @@ io.on('connection', function(socket) {
   });
 });
 
+function addService (data, callback) {
+  var query;
+  pool.getConnection(function(err, connection) {
+      if (err) {
+          res.json({
+              "code": 100,
+              "status": "Error in connection database"
+          });
+          return;
+      }
+
+      query = "INSERT INTO services (title, description, duration, price) VALUES ('" + data.title + "', '" + data.description + "', '" + data.duration + "', '" + data.price + "')";
+
+      connection.query(query, function(err, rows) {
+        connection.release();
+          if (err) {
+              console.log(err);
+          }
+          callback(rows);
+      });
+      connection.on('error', function(err) {
+          var err = ({
+              "code": 100,
+              "status": "Error in connection database"
+          });
+          callback(err);
+      });
+  });
+}
 
 function register (data, callback) {
   var query;
@@ -273,7 +320,35 @@ function getAllEmployees(req, res) {
 
         connection.query(queryString, function(err, rows) {
             connection.release();
-            console.log(err);
+            if (!err) {
+                res.json(rows);
+            }
+        });
+        connection.on('error', function(err) {
+            res.json({
+                "code": 100,
+                "status": "Error in connection database"
+            });
+            return;
+        });
+    });
+}
+
+function getAllServices(req, res) {
+  var params = req.query;
+    pool.getConnection(function(err, connection) {
+        if (err) {
+            res.json({
+                "code": 100,
+                "status": "Error in connection database"
+            });
+            return;
+        }
+
+        var queryString = "SELECT * FROM services";
+
+        connection.query(queryString, function(err, rows) {
+            connection.release();
             if (!err) {
                 res.json(rows);
             }
@@ -382,8 +457,6 @@ app.use(function(req, res, next) {
 
 var router = express.Router();
 
-// Router middleware, mentioned it before defining routes.
-
 router.use(function(req, res, next) {
     console.log("/" + req.method);
     next();
@@ -409,6 +482,18 @@ router.get("/getAllEmployees", function(req, res) {
   var token = req.query.token;
     isValidToken(token).then(function(result) {
         getAllEmployees(req, res);
+    }, function(error) {
+        res.json({
+            "code": 110,
+            "status": "Your session has expired and you are loged out. - redirect la index in FE"
+        })
+    });
+});
+
+router.get("/getAllServices", function(req, res) {
+  var token = req.query.token;
+    isValidToken(token).then(function(result) {
+        getAllServices(req, res);
     }, function(error) {
         res.json({
             "code": 110,

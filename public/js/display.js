@@ -1,6 +1,22 @@
 "use strict";
 
 $(document).ready(function() {
+  var navItems = $('.admin-menu li > a');
+  var navListItems = $('.admin-menu li');
+  var allWells = $('.admin-content');
+  var allWellsExceptFirst = $('.admin-content:not(:first)');
+
+  allWellsExceptFirst.hide();
+  navListItems.click(function(e) {
+    e.preventDefault();
+    navListItems.removeClass('active');
+    $(this).closest('li').addClass('active');
+
+    allWells.hide();
+    var target = $(this).attr('data-target-id');
+    $('#' + target).show();
+  });
+
   var user = JSON.parse(sessionStorage.getItem('user')),
     token = sessionStorage.getItem('token'),
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
@@ -17,21 +33,27 @@ $(document).ready(function() {
   socket.on('/resEditUser', function(data) {
     var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
     populateTable(currentPage);
-     $('#editUser').modal('toggle');
+    $('#editUser').modal('toggle');
   });
 
   socket.on('/resAddUser', function(data) {
     var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
     populateTable(currentPage);
-     $('#newUser').modal('toggle');
+    $('#newUser').modal('toggle');
   });
 
+  socket.on('/resAddService', function(data) {
+    var currentPage = parseInt($("#servicesTable_paginate span .current").attr("data-dt-idx"));
+    getAllServices(currentPage);
+    $('#newService').modal('toggle');
+  });
+  getAllServices(currentPage);
   populateTable(currentPage);
 
   function populateTable(page) {
     $.get(appConfig.url + appConfig.api + 'getAllEmployees?token=' + token, function(employees) {
       $("#userTable").DataTable().clear();
-      // out(freeDays.code);
+
       var table = $('#userTable').DataTable({
         "aoColumnDefs": [{
           bSortable: false,
@@ -69,7 +91,45 @@ $(document).ready(function() {
       }
     }).done(function() {
       page--;
-      $("#userTble").DataTable().page(page).draw(false);
+      $("#user").DataTable().page(page).draw(false);
+    });
+  }
+
+  function getAllServices(page) {
+    $.get(appConfig.url + appConfig.api + 'getAllServices?token=' + token, function(services) {
+      $("#servicesTable").DataTable().clear();
+
+      var servicesTable = $('#servicesTable').DataTable({
+        "aoColumnDefs": [{
+          bSortable: false,
+          aTargets: [-1]
+        }, ],
+        "columnDefs": [{
+          orderable: false,
+          targets: -1
+        }],
+        "bDestroy": true
+      });
+
+      var j = 1,
+        active;
+      for (var i = 0; i < services.length; i++) {
+        servicesTable.row.add([
+            j,
+            services[i].title,
+            services[i].description,
+            services[i].duration,
+            services[i].price,
+            '<a class="btn btn-defaul glyphicon glyphicon-pencil" href="#" data-toggle="modal" data-target="#editUser" onclick="editUserA(this, ' + services[i].userId + ')"></a>'
+          ]).draw(false)
+          .nodes()
+          .to$()
+          .attr('role', 'button');
+        j++;
+      }
+    }).done(function() {
+      page--;
+      $("#services").DataTable().page(page).draw(false);
     });
   }
 
@@ -141,6 +201,73 @@ $(document).ready(function() {
       email: email,
       password: password,
       phone: phone
+    });
+  });
+
+  $("[name='addServiceForm']").formValidation({
+    framework: 'bootstrap',
+    excluded: ':disabled',
+    icon: {
+      valid: 'glyphicon glyphicon-ok',
+      invalid: 'glyphicon glyphicon-remove',
+      validating: 'glyphicon glyphicon-refresh'
+    },
+    fields: {
+      'sTitle': {
+        validators: {
+          regexp: {
+            regexp: '[a-zA-Z]+$',
+            message: "Title should not contain numbers or special characters."
+          }
+        }
+      },
+      'sDescription': {
+        validators: {
+          regexp: {
+            regexp: '[a-zA-Z]+$',
+            message: "Description should not contain numbers or special characters."
+          }
+        }
+      },
+      'sDuration': {
+        notEmpty: {
+          message: 'The duration is required'
+        },
+        numeric: {
+          message: 'The price must be a numeric number'
+        }
+      },
+      'sPrice': {
+        validators: {
+          notEmpty: {
+            message: 'The price is required'
+          },
+          numeric: {
+            message: 'The price must be a numeric number'
+          }
+        }
+      }
+    }
+  }).on('change', function(e, data) {
+    $("[name='addServiceForm']").formValidation('revalidateField', 'sTitle');
+    $("[name='addServiceForm']").formValidation('revalidateField', 'sDescription');
+    $("[name='addServiceForm']").formValidation('revalidateField', 'sDuration');
+    $("[name='addServiceForm']").formValidation('revalidateField', 'sPrice');
+    if ($("[name='addServiceForm']").data('formValidation').isValid()) {
+      $("[name='submitAdd']").attr('disabled', false);
+    }
+  }).on('submit', function(e, data) {
+
+    var title = $("[name='sTitle']").val(),
+      description = $("[name='sDescription']").val(),
+      duration = $("[name='sDuration']").val(),
+      price = $("[name='sPrice']").val();
+    socket.emit('/addService', {
+      token: token,
+      title: title,
+      description: description,
+      duration: duration,
+      price: price
     });
   });
 
@@ -458,20 +585,6 @@ $(document).ready(function() {
       $("[name='editProfileForm']").css('height', currentHeight);
     }
   }
-
-  (function($) {
-    $('.information_menu').find('li').hover(function(e) {
-      $('.information_menu').find('li').removeClass('active');
-      $(this).addClass('active');
-      $(".overlay-item").removeClass("active");
-      $(".overlay-item").removeClass("inactive");
-      $(".overlay-id" + $(this).data("id")).addClass("active").removeClass("inactive");
-
-      $(".overlay-id" + $(this).data("id")).prev().addClass("inactive")
-    });
-
-    $('.carousel').carousel();
-  })(jQuery);
 });
 
 function editUserA(elem, employee) {
@@ -552,7 +665,8 @@ function editUserA(elem, employee) {
       $("[name='submitEdit']").attr('disabled', false);
     }
   }).on('submit', function(e, data) {
-    var socket = io.connect('http://127.0.0.1:4000'), isActive;
+    var socket = io.connect('http://127.0.0.1:4000'),
+      isActive;
 
     if (($("#active").parent().hasClass('active'))) {
       isActive = 1;
