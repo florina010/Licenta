@@ -73,7 +73,34 @@
       </div>
 
       <div class="col-md-9 well admin-content" id="target4">
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#newService">New service</button>
+        <button class="btn btn-default" data-toggle="collapse" data-target="#newService" aria-expanded="false" aria-controls="newService">New Service</button>
+        <div class="row">
+          <div class="collapse" id="newService">
+            <form name='addServiceForm' method='POST' role="form">
+              <div class="form-group">
+                <div class="col-xs-6">
+                  <label for="sTitle"><span class="glyphicon glyphicon-pencil"></span> Title</label>
+                  <input autocomplete="off" type="text" class="form-control" name="sTitle" required/>
+                </div>
+                <div class="col-xs-3">
+                  <label for="sDuration"><i class="fa fa-clock" aria-hidden="true"></i> Duration</label>
+                    <input autocomplete="off" type="number" class="form-control disabled-button" min="0" max="100" value="30" name="sDuration" required/>
+                </div>
+
+                <div class="col-xs-3">
+                  <label for="sPrice"><i class="fa fa-money-bill-alt" aria-hidden="true"></i> Price</label>
+                  <input autocomplete="off" class="form-control disabled-button" name="sPrice" required/>
+                </div>
+                <div class="form-group">
+                  <label for="sDescription"><span class="glyphicon glyphicon-info-sign"></span> Description</label>
+                  <textarea autocomplete="off" class="form-control" name="sDescription" rows="4" cols="7" required></textarea>
+                  <button type="submit" class="btn btn-primary" name="submitAdd" disabled="disabled">Save</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
         <br><br>
         <table id="servicesTable" class="display stripe table" cellspacing="0" width="100%">
           <thead>
@@ -176,14 +203,14 @@
       </div>
     </div>
 
-    <div class="modal fade" id="newUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="newUser" tabindex="-1" role="dialog" aria-labelledby="newUserLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
-            <h3 class="modal-title" id="exampleModalLabel">Add new user</h3>
+            <h3 class="modal-title" id="newUserLabel">Add new user</h3>
           </div>
           <div class="modal-body">
             <form name='addUserForm' action="/addUser" method='POST' role="form">
@@ -218,59 +245,14 @@
       </div>
     </div>
 
-    <div class="modal fade" id="newService" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
-            <h3 class="modal-title" id="exampleModalLabel">Add new service</h3>
-          </div>
-          <div class="modal-body">
-            <form name='addServiceForm' method='POST' role="form">
-              <div class="form-group">
-                <div class="form-group">
-                  <label for="sTitle"><span class="glyphicon glyphicon-pencil"></span> Title</label>
-                  <input autocomplete="off" type="text" class="form-control" name="sTitle" required>
-                </div>
-                <div class="form-group">
-                  <label for="sDescription"><span class="glyphicon glyphicon-info-sign"></span> Description</label>
-                  <textarea autocomplete="off" class="form-control" name="sDescription" rows="5" cols="15"required ></textarea>
-                  <!-- <input autocomplete="off" type="text" class="form-control" name="sDescription" required> -->
-                </div>
-              </div>
-
-              <div class="form-group col-xs-4">
-                <label for="sDuration"><i class="fa fa-clock" aria-hidden="true"></i> Duration</label>
-                 <div class="col-10">
-                   <input autocomplete="off" type="number" class="form-control disabled-button"  min="0" max="100" value="30" name="sDuration" required>
-                 </div>
-              </div>
-
-              <div class="form-group col-xs-4">
-                <label for="sPrice"><i class="fa fa-money-bill-alt" aria-hidden="true"></i> Price</label>
-                <input autocomplete="off" class="form-control disabled-button" name="sPrice" required>
-              </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary" name="submitAdd" disabled="disabled">Save</button>
-          </div>
-          </form>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="modal fade" id="editUser" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            <h3 class="modal-title" >Edit user</h3>
+            <h3 class="modal-title">Edit user</h3>
           </div>
           <div class="modal-body">
             <form name='editUserForm' method='POST' role="form">

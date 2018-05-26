@@ -91,6 +91,23 @@ body {
   color: #000;
 }
 
+[name='addServiceForm'] div.form-group:first-child {
+  margin-left: 8px;
+  margin-top: 8px;
+}
+
+[name='addServiceForm'] div.form-group div.form-group:last-child {
+  margin-left: 16px;
+}
+
+[name='addServiceForm'] input {
+  font-size: 20px;
+}
+
+[name='addServiceForm'] textarea {
+  width: 30%;
+  font-size: 20px;
+}
 
 .container {
   width: 100%;
