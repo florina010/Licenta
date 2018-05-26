@@ -1,6 +1,11 @@
 "use strict";
 
 $(document).ready(function() {
+  $(document).on('click', '.list-group-item', function(e) {
+    e.preventDefault()
+    $(this).tab('show')
+  });
+
   var user = JSON.parse(sessionStorage.getItem('user')),
     token = sessionStorage.getItem('token'),
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
@@ -21,6 +26,9 @@ $(document).ready(function() {
       invalid: 'glyphicon glyphicon-remove',
       validating: 'glyphicon glyphicon-refresh'
     },
+    // err: {
+    //   container: 'tooltip'
+    // },
     fields: {
       'sTitle': {
         validators: {
@@ -81,40 +89,15 @@ $(document).ready(function() {
 
 });
 
-  function getAllServices(page) {
-    $.get(appConfig.url + appConfig.api + 'getAllServices?token=' + token, function(services) {
-      $("#servicesTable").DataTable().clear();
-
-      var servicesTable = $('#servicesTable').DataTable({
-        "aoColumnDefs": [{
-          bSortable: false,
-          aTargets: [-1]
-        }, ],
-        "columnDefs": [{
-          orderable: false,
-          targets: -1
-        }],
-        "bDestroy": true
-      });
-
-      var j = 1,
-        active;
-      for (var i = 0; i < services.length; i++) {
-        servicesTable.row.add([
-            j,
-            services[i].title,
-            services[i].description,
-            services[i].duration,
-            services[i].price,
-            '<a class="btn btn-defaul glyphicon glyphicon-pencil" href="#" data-toggle="modal" data-target="#editUser" onclick="editUserA(this, ' + services[i].userId + ')"></a>'
-          ]).draw(false)
-          .nodes()
-          .to$()
-          .attr('role', 'button');
-        j++;
-      }
-    }).done(function() {
-      page--;
-      $("#services").DataTable().page(page).draw(false);
-    });
-  }
+function getAllServices(page) {
+  $.get(appConfig.url + appConfig.api + 'getAllServices?token=' + token, function(services) {
+    for (var i = 0; i < services.length; i++) {
+      var a = "<a class='list-group-item list-group-item-action' id='list-" + services[i].serviceId + "-list' data-toggle='list' href='#list-" + services[i].serviceId + "' role='tab' aria-controls='" + services[i].serviceId + "'>" + services[i].title + "</a>";
+      var div = "<div class='tab-pane fade' id='list-" + services[i].serviceId + "' role='tabpanel' aria-labelledby='list-" + services[i].serviceId + "-list'>" + services[i].description + "</div>"
+      // <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">.fsd..</div>
+      $("#list-tab").append(a);
+      $("#nav-tabContent").append(div);
+      // <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Home</a>
+    }
+  })
+}

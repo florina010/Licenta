@@ -77,45 +77,41 @@
         <div class="row">
           <div class="collapse" id="newService">
             <form name='addServiceForm' method='POST' role="form">
-              <div class="form-group">
-                <div class="col-xs-6">
-                  <label for="sTitle"><span class="glyphicon glyphicon-pencil"></span> Title</label>
-                  <input autocomplete="off" type="text" class="form-control" name="sTitle" required/>
-                </div>
-                <div class="col-xs-3">
-                  <label for="sDuration"><i class="fa fa-clock" aria-hidden="true"></i> Duration</label>
-                    <input autocomplete="off" type="number" class="form-control disabled-button" min="0" max="100" value="30" name="sDuration" required/>
-                </div>
+              <div class="form-group input-group col-xs-6">
+                <label><span class="glyphicon glyphicon-pencil"></span> Title</label>
+                <input autocomplete="off" type="text" class="form-control" name="sTitle" required/>
+              </div>
+              <div class="form-group input-group col-xs-3">
+                <label><i class="fa fa-clock" aria-hidden="true"></i> Duration</label>
+                <input autocomplete="off" type="number" class="form-control disabled-button" min="0" max="100" value="30" name="sDuration" required/>
+              </div>
 
-                <div class="col-xs-3">
-                  <label for="sPrice"><i class="fa fa-money-bill-alt" aria-hidden="true"></i> Price</label>
-                  <input autocomplete="off" class="form-control disabled-button" name="sPrice" required/>
-                </div>
-                <div class="form-group">
-                  <label for="sDescription"><span class="glyphicon glyphicon-info-sign"></span> Description</label>
-                  <textarea autocomplete="off" class="form-control" name="sDescription" rows="4" cols="7" required></textarea>
-                  <button type="submit" class="btn btn-primary" name="submitAdd" disabled="disabled">Save</button>
-                </div>
+              <div class="form-group input-group col-xs-3">
+                <label><i class="fa fa-money-bill-alt" aria-hidden="true"></i> Price</label>
+                <input autocomplete="off" class="form-control disabled-button" name="sPrice" required/>
+              </div>
+              <div class="form-group col-xs-9">
+                <label><span class="glyphicon glyphicon-info-sign"></span> Description</label>
+                <textarea autocomplete="off" class="form-control" name="sDescription" rows="4" cols="7" required></textarea>
+              </div>
+              <div class="form-group col-xs-4">
+                <button type="submit" class="btn btn-primary" name="submitAdd" disabled="disabled">Save</button>
               </div>
             </form>
           </div>
         </div>
 
         <br><br>
-        <table id="servicesTable" class="display stripe table" cellspacing="0" width="100%">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Duration</th>
-              <th>Price</th>
-              <th>Edit</th>
-            </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
+        <div class="row">
+          <div class="col-4">
+            <div class="list-group" id="list-tab" role="tablist">
+            </div>
+          </div>
+          <div class="col-8">
+            <div class="tab-content" id="nav-tabContent">
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="col-md-9 well admin-content" id="target5">

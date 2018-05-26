@@ -96,12 +96,23 @@ body {
   margin-top: 8px;
 }
 
-[name='addServiceForm'] div.form-group div.form-group:last-child {
-  margin-left: 16px;
+#target4 div.row:last-child {
+   margin-left: 0px; 
 }
 
 [name='addServiceForm'] input {
   font-size: 20px;
+}
+
+[name='addServiceForm'] .input-group {
+  float: left !important;
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+}
+
+[name='addServiceForm'] .input-group .form-control-feedback {
+    position: static;
+    display: inline-block;
 }
 
 [name='addServiceForm'] textarea {
