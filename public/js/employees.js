@@ -6,18 +6,20 @@ $(document).ready(function() {
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
     MAX_OPTIONS = 5,
     socket = io.connect('http://127.0.0.1:4000');
+    if(user.admin == 2) {
+      socket.on('/resEditUser', function(data) {
+        var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
+        populateTable(currentPage);
+        $('#editUser').modal('toggle');
+        alert('user')
+      });
 
-  socket.on('/resEditUser', function(data) {
-    var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
-    populateTable(currentPage);
-    $('#editUser').modal('toggle');
-  });
-
-  socket.on('/resAddUser', function(data) {
-    var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
-    populateTable(currentPage);
-    $('#newUser').modal('toggle');
-  });
+      socket.on('/resAddUser', function(data) {
+        var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
+        populateTable(currentPage);
+        $('#newUser').modal('toggle');
+      });
+    }
 
   $("[name='addUserForm']").formValidation({
     framework: 'bootstrap',

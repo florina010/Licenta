@@ -129,9 +129,26 @@ io.on('connection', function(socket) {
 
   socket.on('/editUser', function(data) {
     isValidToken(data.token).then(function(result) {
-      console.log(data)
       editUser(data, function(res) {
         io.emit('/resEditUser', data);
+      });
+    }, function(error) {
+        res.json({
+            "code": 110,
+            "status": "Your session has expired and you are loged out. - redirect la index in FE"
+        })
+    });
+  }, function(error) {
+      res.json({
+          "code": 110,
+          "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
+  });
+
+  socket.on('/editProfile', function(data) {
+    isValidToken(data.token).then(function(result) {
+      editUser(data, function(res) {
+        io.emit('/resEditProfile', data);
       });
     }, function(error) {
         res.json({
@@ -158,7 +175,7 @@ function editService (data, callback) {
           return;
       }
       id = data.serviceId.substring(4);
-    
+
       query = "UPDATE services SET title='" + data.title + "', description='" + data.description +"', duration='" + data.duration + "', price='" + data.price +"' WHERE serviceId=" + id;
 
       connection.query(query, function(err, rows) {
@@ -289,7 +306,7 @@ function login(req, res) {
 }
 
 function editUser (data, callback) {
-  var query;
+  var query, response;
   pool.getConnection(function(err, connection) {
       if (err) {
           res.json({
@@ -299,11 +316,18 @@ function editUser (data, callback) {
           return;
       }
 
-      query = "UPDATE users SET firstName = '" + data.firstName + "', lastName = '" + data.lastName + "', email = '" + data.email  + "', phone = '" + data.phone + "', isActive = '" + data.isActive + "'  WHERE userId = '" + data.id + "'";
+      if (!data.isActive) {
+        response = 'profile';
+        query = "UPDATE users SET firstName = '" + data.firstName + "', lastName = '" + data.lastName + "', email = '" + data.email  + "', phone = '" + data.phone + "', cars = '" + data.cars + "'  WHERE userId = '" + data.id + "'";
+      } else {
+        response = 'user';
+        query = "UPDATE users SET firstName = '" + data.firstName + "', lastName = '" + data.lastName + "', email = '" + data.email  + "', phone = '" + data.phone + "', isActive = '" + data.isActive + "'  WHERE userId = '" + data.id + "'";
+      }
+
 
       connection.query(query, function(err, rows) {
         connection.release();
-          callback(rows);
+          callback(response);
       });
       connection.on('error', function(err) {
           var err = ({

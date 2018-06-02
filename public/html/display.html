@@ -144,20 +144,20 @@
             <div class="alert alert-success" style="display: none">
               <strong>Success!</strong>
             </div>
-            <form role="form" name="editProfileForm" method="POST" onsubmit="return false">
+            <form role="form" name="editProfileForm" method="POST">
               <div class="form-group">
                 <div class="form-group">
-                  <label for="eFirstName"><span class="glyphicon glyphicon-user"></span> First Name</label>
+                  <label><span class="glyphicon glyphicon-user"></span> First Name</label>
                   <input autocomplete="off" type="text" class="form-control" name="eFirstName" required>
                 </div>
                 <div class="form-group">
-                  <label for="eLastName"><span class="glyphicon glyphicon-user"></span> Last Name</label>
+                  <label><span class="glyphicon glyphicon-user"></span> Last Name</label>
                   <input autocomplete="off" type="text" class="form-control" name="eLastName" required>
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="eEmail"><i class="fa fa-envelope" aria-hidden="true"></i> Email</label>
+                <label><i class="fa fa-envelope" aria-hidden="true"></i> Email</label>
                 <input autocomplete="off" type="text" class="form-control disabled-button" name="eEmail" required>
               </div>
 
@@ -168,26 +168,25 @@
 
 
               <div class="form-group">
-                <label class="col-xs-3 control-label" for="myCars" style="padding-left: 0"><i class="fas fa-car" aria-hidden="true"></i>Cars</label>
+                <label class="col-xs-3 control-label" style="padding-left: 0"><i class="fas fa-car" aria-hidden="true"></i>Cars</label>
                 <div class="col-xs-5" id="myCars">
                   <input type="text" class="form-control" name="cars[]" style="margin-left: -300px" />
                 </div>
                 <div class="col-xs-4">
-                  <button type="button" class="btn btn-default addButton" style="margin-left: -600px"><i class="fa fa-plus"></i></button>
+                  <button type="button" class="btn btn-default addButton" style="margin-left: -580px; margin-top: 27px"><i class="fa fa-plus"></i></button>
                 </div>
               </div>
               <div class="form-group hide" id="eCarsTemplate">
                 <div class="col-xs-offset-3 col-xs-5">
-                  <input class="form-control" type="text" name="cars[]" style="margin-left: -300px" value="" />
+                  <input class="form-control" type="text" name="cars[]" style="margin-left: -300px" value="CJ-00-AAA" />
                 </div>
                 <div class="col-xs-4">
-                  <button type="button" class="btn btn-default removeButton" style="margin-left: -600px"><i class="fa fa-minus"></i></button>
+                  <button type="button" class="btn btn-default removeButton" style="margin-left: -580px"><i class="fa fa-minus"></i></button>
                 </div>
               </div>
 
-              <div class="form-group">
-                <button type="submit" class="btn btn-success btn-block" name="editUser" disabled="disabled"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
-              </div>
+                <button type="submit" class="btn btn-success btn-block" name="editProfile" disabled='disabled'><span class="glyphicon glyphicon-pencil"></span> Edit</button>
+
             </form>
 
           </div>

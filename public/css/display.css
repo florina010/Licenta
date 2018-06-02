@@ -11,6 +11,11 @@ body {
     height: 100%;
 }
 
+
+#myCars {
+  margin-top: 25px;
+}
+
 [name='registerForm'], [name='addUserForm'] {
   width: 100%;
   height: 350px;
@@ -42,7 +47,7 @@ body {
   height: 10%;
 }
 
-[name='editUser'], [name='changePassForm'] button {
+[name='editProfile'], [name='changePassForm'] button {
   width: 30%;
 }
 
@@ -97,7 +102,7 @@ body {
 }
 
 #target4 div.row:last-child {
-   margin-left: 0px; 
+   margin-left: 0px;
 }
 
 [name='addServiceForm'] input {

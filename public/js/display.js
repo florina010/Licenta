@@ -22,6 +22,22 @@ $(document).ready(function() {
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
     MAX_OPTIONS = 5,
     socket = io.connect('http://127.0.0.1:4000');
+    socket.on('/resEditProfile', function(data) {
+    if (data.id == user.userId) {
+      user.cars = data.cars;
+      user.email = data.email;
+      user.firstName = data.firstName;
+      user.lastName = data.lastName;
+      user.phone = data.phone;
+      sessionStorage.setItem('user', JSON.stringify(user));
+    }
+    });
+  if (user.admin == 2) {
+    $("[name='editProfileForm'] div:nth-child(4)").css('display', 'none');
+  } else if (user.admin == 0) {
+    $("[data-target-id='target3']").css('display', 'none');
+    $("[data-target-id='target4 ']").css('display', 'none');
+  }
 
   $("[name='eFirstName']").val(user.firstName);
   $("[name='eLastName']").val(user.lastName);
@@ -156,26 +172,21 @@ $(document).ready(function() {
     $("[name='editProfileForm']").formValidation('revalidateField', 'eEmail');
     $("[name='editProfileForm']").formValidation('revalidateField', 'ePhoneNumber');
     $("[name='editProfileForm']").formValidation('revalidateField', 'cars[]');
-    if ($("[name='editProfileForm']").data('formValidation').isValid()) {
-      $('[name="editUser"]').attr('disabled', false);
+   if ($("[name='editProfileForm']").data('formValidation').isValid()) {
+      $("[name='editProfile']").attr('disabled', false);
     }
-  }).on('submit', function(e, data) {
-
-    var socket = io.connect('http://127.0.0.1:4000');
-
-    var hashObj = new jsSHA("SHA-512", "TEXT", {
-      numRounds: 1
-    });
-    hashObj.update($("[name='ePasswordUser']").val());
-    var password = hashObj.getHash("HEX"),
-      firstName = $("[name='eFirstName']").val(),
+    $("[name='editProfile']").removeClass('disabled ')
+  }).off().on('submit', function(e, data) {
+    e.preventDefault();
+    var firstName = $("[name='eFirstName']").val(),
       lastName = $("[name='eLastName']").val(),
       email = $("[name='eEmail']").val(),
       phone = $("[name='ePhoneNumber']").val(),
       cars = $("[name='editProfileForm']").find('#myCars [name="cars[]"]'),
       i = 0,
       carsArr = [],
-      carsObj = {};
+      carsObj = {},
+      socket = io.connect('http://127.0.0.1:4000');
 
     $.map(cars, function(car) {
       if (car.value) {
@@ -186,10 +197,20 @@ $(document).ready(function() {
         i++;
       }
     });
+
     carsObj = {
       cars: carsArr
     };
-    alert(JSON.stringify(carsObj));
+
+    socket.emit('/editProfile', {
+      token: token,
+      id: user.userId,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phone,
+      cars: JSON.stringify(carsObj)
+    });
 
   });
 
