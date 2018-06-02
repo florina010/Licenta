@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+  <link rel="stylesheet" href="../js/vendor/node_modules/paginationjs/dist/pagination.css">
   <link rel="stylesheet" type="text/css" href="../js/fullcalendar/fullcalendar.css">
   <link rel="stylesheet" href="../css/display.css">
   <link rel="stylesheet" href="../css/calendar.css">
@@ -102,16 +103,39 @@
         </div>
 
         <br><br>
-        <div class="row">
+        <div class="row" id="servicesList">
           <div class="col-4">
             <div class="list-group" id="list-tab" role="tablist">
             </div>
           </div>
           <div class="col-8">
             <div class="tab-content" id="nav-tabContent">
+              <!-- <form name='editServiceForm' method='POST' role="form">
+                <div class="form-group input-group col-xs-6">
+                  <label><span class="glyphicon glyphicon-pencil"></span> Title</label>
+                  <input autocomplete="off" type="text" class="form-control" name="sTitle"/>
+                </div>
+                <div class="form-group input-group col-xs-3">
+                  <label><i class="fa fa-clock" aria-hidden="true"></i> Duration</label>
+                  <input autocomplete="off" type="number" class="form-control disabled-button" min="0" max="100" value="30" name="sDuration" required/>
+                </div>
+
+                <div class="form-group input-group col-xs-3">
+                  <label><i class="fa fa-money-bill-alt" aria-hidden="true"></i> Price</label>
+                  <input autocomplete="off" class="form-control disabled-button" name="sPrice" required/>
+                </div>
+                <div class="form-group col-xs-9">
+                  <label><span class="glyphicon glyphicon-info-sign"></span> Description</label>
+                  <textarea autocomplete="off" class="form-control" name="sDescription" rows="4" cols="7" required></textarea>
+                </div>
+                <div class="form-group col-xs-4">
+                  <button type="submit" class="btn btn-primary" name="submitAdd" disabled="disabled">Save</button>
+                </div>
+              </form> -->
             </div>
           </div>
         </div>
+        <div id="pagination"></div>
       </div>
 
       <div class="col-md-9 well admin-content" id="target5">
@@ -161,10 +185,10 @@
                 </div>
               </div>
 
+              <div class="form-group">
+                <button type="submit" class="btn btn-success btn-block" name="editUser" disabled="disabled"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
+              </div>
             </form>
-            <div class="form-group">
-              <button type="submit" class="btn btn-success btn-block" name="editUser" disabled="disabled"><span class="glyphicon glyphicon-pencil"></span> Edit</button>
-            </div>
 
           </div>
         </div>
@@ -320,6 +344,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
   <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
   <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+  <script src="../js/vendor/node_modules/paginationjs/dist/pagination.js"></script>
   <script type="text/javascript " src="../js/fullcalendar/fullCalendar.js "></script>
   <script type="text/javascript " src="../js/calendar.js "></script>
   <script type="text/javascript " src="../js/display.js "></script>

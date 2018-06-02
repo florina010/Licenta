@@ -91,6 +91,24 @@ io.on('connection', function(socket) {
       })
   });
 
+  socket.on('/editService', function(data) {
+    isValidToken(data.token).then(function(result) {
+      editService(data, function(res) {
+        io.emit('/resEditService', data);
+      });
+    }, function(error) {
+        res.json({
+            "code": 110,
+            "status": "Your session has expired and you are loged out. - redirect la index in FE"
+        })
+    });
+  }, function(error) {
+      res.json({
+          "code": 110,
+          "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
+  });
+
   socket.on('/addUser', function(data) {
     isValidToken(data.token).then(function(result) {
       register(data, function(res) {
@@ -111,6 +129,7 @@ io.on('connection', function(socket) {
 
   socket.on('/editUser', function(data) {
     isValidToken(data.token).then(function(result) {
+      console.log(data)
       editUser(data, function(res) {
         io.emit('/resEditUser', data);
       });
@@ -127,6 +146,37 @@ io.on('connection', function(socket) {
       })
   });
 });
+
+function editService (data, callback) {
+  var query, id;
+  pool.getConnection(function(err, connection) {
+      if (err) {
+          res.json({
+              "code": 100,
+              "status": "Error in connection database"
+          });
+          return;
+      }
+      id = data.serviceId.substring(4);
+    
+      query = "UPDATE services SET title='" + data.title + "', description='" + data.description +"', duration='" + data.duration + "', price='" + data.price +"' WHERE serviceId=" + id;
+
+      connection.query(query, function(err, rows) {
+        connection.release();
+          if (err) {
+              console.log(err);
+          }
+          callback(rows);
+      });
+      connection.on('error', function(err) {
+          var err = ({
+              "code": 100,
+              "status": "Error in connection database"
+          });
+          callback(err);
+      });
+  });
+}
 
 function addService (data, callback) {
   var query;
