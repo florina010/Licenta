@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
   <link rel="stylesheet" href="../js/vendor/node_modules/paginationjs/dist/pagination.css">
+  <link rel="stylesheet" href="../js/vendor/node-modules/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" type="text/html" />
   <link rel="stylesheet" type="text/css" href="../js/fullcalendar/fullcalendar.css">
   <link rel="stylesheet" href="../css/display.css">
   <link rel="stylesheet" href="../css/calendar.css">
@@ -36,6 +37,13 @@
         </div>
       </div>
       <div class="col-md-9 well admin-content" id="target2">
+        <button class="btn btn-default" data-toggle="collapse" data-target="#newReservation" aria-expanded="false" aria-controls="newReservation">New Reservation</button>
+        <div class="row">
+          <div class="collapse" id="newReservation">
+            <select id="selectList" style="display: none" multiple="multiple">
+            </select>
+          </div>
+        </div>
         <table id="resTable" class="display stripe table" cellspacing="0" width="100%">
           <thead>
             <tr>
@@ -82,11 +90,6 @@
                 <label><span class="glyphicon glyphicon-pencil"></span> Title</label>
                 <input autocomplete="off" type="text" class="form-control" name="sTitle" required/>
               </div>
-              <div class="form-group input-group col-xs-3">
-                <label><i class="fa fa-clock" aria-hidden="true"></i> Duration</label>
-                <input autocomplete="off" type="number" class="form-control disabled-button" min="0" max="100" value="30" name="sDuration" required/>
-              </div>
-
               <div class="form-group input-group col-xs-3">
                 <label><i class="fa fa-money-bill-alt" aria-hidden="true"></i> Price</label>
                 <input autocomplete="off" class="form-control disabled-button" name="sPrice" required/>
@@ -185,7 +188,7 @@
                 </div>
               </div>
 
-                <button type="submit" class="btn btn-success btn-block" name="editProfile" disabled='disabled'><span class="glyphicon glyphicon-pencil"></span> Edit</button>
+              <button type="submit" class="btn btn-success btn-block" name="editProfile" disabled='disabled'><span class="glyphicon glyphicon-pencil"></span> Edit</button>
 
             </form>
 
@@ -344,12 +347,13 @@
   <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
   <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
   <script src="../js/vendor/node_modules/paginationjs/dist/pagination.js"></script>
+  <script src="../js/vendor/node_modules/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
   <script type="text/javascript " src="../js/fullcalendar/fullCalendar.js "></script>
   <script type="text/javascript " src="../js/calendar.js "></script>
   <script type="text/javascript " src="../js/display.js "></script>
   <script type="text/javascript " src="../js/services.js"></script>
   <script type="text/javascript " src="../js/employees.js"></script>
-
+  <script type="text/javascript " src="../js/user.js"></script>
 </body>
 
 </html>

@@ -46,14 +46,6 @@ $(document).ready(function() {
           }
         }
       },
-      'sDuration': {
-        notEmpty: {
-          message: 'The duration is required'
-        },
-        numeric: {
-          message: 'The price must be a numeric number'
-        }
-      },
       'sPrice': {
         validators: {
           notEmpty: {
@@ -68,7 +60,6 @@ $(document).ready(function() {
   }).on('change', function(e, data) {
     $("[name='addServiceForm']").formValidation('revalidateField', 'sTitle');
     $("[name='addServiceForm']").formValidation('revalidateField', 'sDescription');
-    $("[name='addServiceForm']").formValidation('revalidateField', 'sDuration');
     $("[name='addServiceForm']").formValidation('revalidateField', 'sPrice');
     if ($("[name='addServiceForm']").data('formValidation').isValid()) {
       $("[name='submitAdd']").attr('disabled', false);
@@ -76,14 +67,12 @@ $(document).ready(function() {
   }).on('submit', function(e, data) {
     var title = $("[name='sTitle']").val(),
       description = $("[name='sDescription']").val(),
-      duration = $("[name='sDuration']").val(),
       price = $("[name='sPrice']").val(),
       socket = io.connect('http://127.0.0.1:4000');
     socket.emit('/addService', {
       token: token,
       title: title,
       description: description,
-      duration: duration,
       price: price
     });
   });
@@ -109,10 +98,6 @@ function getAllServices() {
                           `<div class='form-group input-group col-xs-6'>
                             <label><span class='glyphicon glyphicon-pencil'></span> Title</label>
                             <input autocomplete="off" type="text" class="form-control" name="eTitle" value="`+ data[i].title +`"/>
-                          </div>` +
-                          `<div class="form-group input-group col-xs-3">
-                            <label><i class="fa fa-clock" aria-hidden="true"></i> Duration</label>
-                            <input autocomplete="off" type="number" class="form-control disabled-button" min="0" max="100" value="30" name="eDuration" value="` + data[i].duration +`"/>
                           </div>` +
                           `<div class="form-group input-group col-xs-3">
                             <label><i class="fa fa-money-bill-alt" aria-hidden="true"></i> Price</label>
@@ -153,14 +138,6 @@ function getAllServices() {
                     }
                   }
                 },
-                'eDuration': {
-                  notEmpty: {
-                    message: 'The duration is required'
-                  },
-                  numeric: {
-                    message: 'The price must be a numeric number'
-                  }
-                },
                 'ePrice': {
                   validators: {
                     notEmpty: {
@@ -175,7 +152,6 @@ function getAllServices() {
             }).on('change', function(e, data) {
               $("[name='editServiceForm']").formValidation('revalidateField', 'eTitle');
               $("[name='editServiceForm']").formValidation('revalidateField', 'eDescription');
-              $("[name='editServiceForm']").formValidation('revalidateField', 'eDuration');
               $("[name='editServiceForm']").formValidation('revalidateField', 'ePrice');
               if ($("[name='editServiceForm']").data('formValidation').isValid()) {
                 $("[name='submitEdit']").attr('disabled', false);
@@ -184,7 +160,6 @@ function getAllServices() {
                e.preventDefault();
               var title = $("[name='eTitle']").val(),
                 description = $("[name='eDescription']").val(),
-                duration = $("[name='eDuration']").val(),
                 price = $("[name='ePrice']").val(),
                 serviceId = e.target.id,
                 socket = io.connect('http://127.0.0.1:4000');
@@ -193,7 +168,6 @@ function getAllServices() {
                 serviceId: serviceId,
                 title: title,
                 description: description,
-                duration: duration,
                 price: price
               });
             });

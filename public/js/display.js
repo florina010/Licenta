@@ -36,7 +36,7 @@ $(document).ready(function() {
     $("[name='editProfileForm'] div:nth-child(4)").css('display', 'none');
   } else if (user.admin == 0) {
     $("[data-target-id='target3']").css('display', 'none');
-    $("[data-target-id='target4 ']").css('display', 'none');
+    $("[data-target-id='target4']").css('display', 'none');
   }
 
   $("[name='eFirstName']").val(user.firstName);

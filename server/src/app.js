@@ -176,7 +176,7 @@ function editService (data, callback) {
       }
       id = data.serviceId.substring(4);
 
-      query = "UPDATE services SET title='" + data.title + "', description='" + data.description +"', duration='" + data.duration + "', price='" + data.price +"' WHERE serviceId=" + id;
+      query = "UPDATE services SET title='" + data.title + "', description='" + data.description +"', price='" + data.price +"' WHERE serviceId=" + id;
 
       connection.query(query, function(err, rows) {
         connection.release();
@@ -206,7 +206,7 @@ function addService (data, callback) {
           return;
       }
 
-      query = "INSERT INTO services (title, description, duration, price) VALUES ('" + data.title + "', '" + data.description + "', '" + data.duration + "', '" + data.price + "')";
+      query = "INSERT INTO services (title, description, price) VALUES ('" + data.title + "', '" + data.description + "', '" + data.price + "')";
 
       connection.query(query, function(err, rows) {
         connection.release();

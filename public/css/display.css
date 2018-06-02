@@ -11,9 +11,13 @@ body {
     height: 100%;
 }
 
-
 #myCars {
   margin-top: 25px;
+}
+
+#newReservation {
+  display: flex;
+  margin-left: 1%;
 }
 
 [name='registerForm'], [name='addUserForm'] {
