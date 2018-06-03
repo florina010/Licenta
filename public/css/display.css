@@ -16,8 +16,17 @@ body {
 }
 
 #newReservation {
-  display: flex;
+  margin-top: 2%;
   margin-left: 1%;
+}
+
+#newReservation div:first-child {
+  display: flex
+}
+
+#datetimepicker, span.multiselect-native-select:last-child {
+  width: 13%;
+  margin-left: 2%;
 }
 
 [name='registerForm'], [name='addUserForm'] {

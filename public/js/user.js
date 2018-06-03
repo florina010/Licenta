@@ -15,7 +15,26 @@ $(document).ready(function() {
   });
 
   getAllServices();
-  
+
+  $(function() {
+    $('#datetimepicker').datetimepicker({
+      format: 'MM/DD/YYYY HH:mm',
+      minDate: new Date(),
+      stepping: 20,
+      daysOfWeekDisabled: [0],
+      showTodayButton: true,
+      disabledHours: [0,1,2,3,4,5,6,7,20,21,22,23]
+    });
+  });
+
+  for (var i = 0; i < user.cars.length; i++) {
+    console.log(user.cars[i])
+    var option = '<option value="' + user.cars[i].id + '">' + user.cars[i].number + '</option>';
+    $("#selectCar").append(option)
+  }
+
+  $('#selectCar').multiselect();
+
   function getAllServices() {
     $.get(appConfig.url + appConfig.api + 'getAllServices?token=' + token, function(services) {
       for (var i = 0; i < services.length; i++) {
@@ -24,33 +43,32 @@ $(document).ready(function() {
       }
 
       $('#selectList').multiselect({
-         maxHeight: 350,
-         enableFiltering: true,
-         onChange: function(option, checked) {
-                // Get selected options.
-                var selectedOptions = $('#selectList option:selected');
+        maxHeight: 350,
+        enableFiltering: true,
+        onChange: function(option, checked) {
+          // Get selected options.
+          var selectedOptions = $('#selectList option:selected');
 
-                if (selectedOptions.length >= 3) {
-                    // Disable all other checkboxes.
-                    var nonSelectedOptions = $('#selectList option').filter(function() {
-                        return !$(this).is(':selected');
-                    });
+          if (selectedOptions.length >= 3) {
+            // Disable all other checkboxes.
+            var nonSelectedOptions = $('#selectList option').filter(function() {
+              return !$(this).is(':selected');
+            });
 
-                    nonSelectedOptions.each(function() {
-                        var input = $('input[value="' + $(this).val() + '"]');
-                        input.prop('disabled', true);
-                        input.parent('li').addClass('disabled');
-                    });
-                }
-                else {
-                    // Enable all checkboxes.
-                    $('#selectList option').each(function() {
-                        var input = $('input[value="' + $(this).val() + '"]');
-                        input.prop('disabled', false);
-                        input.parent('li').addClass('disabled');
-                    });
-                }
-            }
+            nonSelectedOptions.each(function() {
+              var input = $('input[value="' + $(this).val() + '"]');
+              input.prop('disabled', true);
+              input.parent('li').addClass('disabled');
+            });
+          } else {
+            // Enable all checkboxes.
+            $('#selectList option').each(function() {
+              var input = $('input[value="' + $(this).val() + '"]');
+              input.prop('disabled', false);
+              input.parent('li').addClass('disabled');
+            });
+          }
+        }
       });
     });
   }

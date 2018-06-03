@@ -5,7 +5,8 @@
   <meta charset="utf-8">
   <title>Admin page</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" />
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
@@ -40,8 +41,22 @@
         <button class="btn btn-default" data-toggle="collapse" data-target="#newReservation" aria-expanded="false" aria-controls="newReservation">New Reservation</button>
         <div class="row">
           <div class="collapse" id="newReservation">
-            <select id="selectList" style="display: none" multiple="multiple">
+            <div>
+              <select id="selectList" style="display: none">
             </select>
+
+              <div class='input-group date' id='datetimepicker'>
+                <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
+
+              <select id="selectCar" style="display: none">
+              </select>
+
+
+            </div>
           </div>
         </div>
         <table id="resTable" class="display stripe table" cellspacing="0" width="100%">
@@ -113,28 +128,6 @@
           </div>
           <div class="col-8">
             <div class="tab-content" id="nav-tabContent">
-              <!-- <form name='editServiceForm' method='POST' role="form">
-                <div class="form-group input-group col-xs-6">
-                  <label><span class="glyphicon glyphicon-pencil"></span> Title</label>
-                  <input autocomplete="off" type="text" class="form-control" name="sTitle"/>
-                </div>
-                <div class="form-group input-group col-xs-3">
-                  <label><i class="fa fa-clock" aria-hidden="true"></i> Duration</label>
-                  <input autocomplete="off" type="number" class="form-control disabled-button" min="0" max="100" value="30" name="sDuration" required/>
-                </div>
-
-                <div class="form-group input-group col-xs-3">
-                  <label><i class="fa fa-money-bill-alt" aria-hidden="true"></i> Price</label>
-                  <input autocomplete="off" class="form-control disabled-button" name="sPrice" required/>
-                </div>
-                <div class="form-group col-xs-9">
-                  <label><span class="glyphicon glyphicon-info-sign"></span> Description</label>
-                  <textarea autocomplete="off" class="form-control" name="sDescription" rows="4" cols="7" required></textarea>
-                </div>
-                <div class="form-group col-xs-4">
-                  <button type="submit" class="btn btn-primary" name="submitAdd" disabled="disabled">Save</button>
-                </div>
-              </form> -->
             </div>
           </div>
         </div>
@@ -338,13 +331,22 @@
   <script type="text/javascript" src="../js/config.js"></script>
   <script src="../../server/src/node_modules/socket.io-client/dist/socket.io.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js" charset="utf-8"></script>
-  <script src="https://momentjs.com/downloads/moment.min.js"></script>
+
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="http://formvalidation.io/vendor/formvalidation/js/formValidation.min.js"></script>
   <script src="http://formvalidation.io/vendor/formvalidation/js/framework/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
   <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+
+  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
+
+
   <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
   <script src="../js/vendor/node_modules/paginationjs/dist/pagination.js"></script>
   <script src="../js/vendor/node_modules/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
