@@ -4,7 +4,8 @@ $(document).ready(function() {
   var user = JSON.parse(sessionStorage.getItem('user')),
     token = sessionStorage.getItem('token'),
     MAX_OPTIONS = 5,
-    socket = io.connect('http://127.0.0.1:4000');
+    socket = io.connect('http://127.0.0.1:4000'),
+    currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
 
   socket.on('/resAddService', function(data) {
     getAllServices();
@@ -15,7 +16,7 @@ $(document).ready(function() {
   });
 
   getAllServices();
-  getMyReservations();
+  getMyReservations(currentPage);
 
   $("[name='rFirstName']").val(user.firstName);
   $("[name='rLastName']").val(user.lastName);
@@ -116,7 +117,8 @@ $(document).ready(function() {
       });
 
       socket.on('/resAddReservation', function(data) {
-        getMyReservations();
+        var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+        getMyReservations(currentPage);
     });
 });
 
@@ -136,10 +138,62 @@ $(document).ready(function() {
     });
   }
 
-  function getMyReservations() {
-    console.log(1);
+  function getMyReservations(page) {
     $.get(appConfig.url + appConfig.api + 'getMyReservations?token=' + token + '&userId=' + user.userId, function(reservations) {
-      console.log(reservations);
-  });
+      $("#resTable").DataTable().clear();
+
+      var table = $('#resTable').DataTable({
+        columnDefs: [
+            { width: '20%', targets: 0 }
+        ],
+        fixedColumns: true,
+        "aoColumnDefs": [{
+          bSortable: false,
+          aTargets: [-1]
+        }, ],
+        "columnDefs": [{
+          orderable: false,
+          targets: -1
+        }],
+        "bDestroy": true
+      });
+
+
+      var j = 1;
+      for (var i = 0; i < reservations.length; i++) {
+        var userDetails = `Name: ` + reservations[i].userFirstName + ` ` + reservations[i].userLastName +
+                          ` Email: ` + reservations[i].userEmail +
+                          `\n Phone: ` + reservations[i].userPhone,
+            serviceDetails = `Title: ` + reservations[i].title +
+                              `\n Description: ` + reservations[i].description +
+                              `\n Price: ` + reservations[i].price,
+            employeeDetails = reservations[i].employeeId,
+            date = reservations[i].date.split(' ')[0],
+            hour = reservations[i].date.split(' ')[1],
+            carNr = reservations[i].carNr,
+            mentions = reservations[i].mentions,
+            status = reservations[i].status;
+        table.row.add([
+            j,
+            userDetails,
+            serviceDetails,
+            employeeDetails,
+            carNr,
+            date,
+            hour,
+            status,
+            mentions,
+            0,
+            0
+          ]).draw(false)
+          .nodes()
+          .to$()
+          .attr('role', 'button');
+        j++;
+      }
+    }).done(function() {
+      page--;
+      $("#user").DataTable().page(page).draw(false);
+    });
   }
 });

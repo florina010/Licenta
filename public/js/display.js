@@ -32,11 +32,16 @@ $(document).ready(function() {
         sessionStorage.setItem('user', JSON.stringify(user));
       }
     });
+
   if (user.admin == 2) {
     $("[name='editProfileForm'] div:nth-child(4)").css('display', 'none');
   } else if (user.admin == 0) {
     $("[data-target-id='target3']").css('display', 'none');
     $("[data-target-id='target4']").css('display', 'none');
+    var script = document.createElement('script');
+    script.type='text/javascript';
+    script.src = "../js/user.js";
+    document.getElementsByTagName('body')[0].appendChild(script);
   }
 
   $("[name='eFirstName']").val(user.firstName);

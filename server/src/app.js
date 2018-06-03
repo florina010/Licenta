@@ -498,7 +498,7 @@ function getMyReservations(req, res) {
             return;
         }
 
-        var queryString = "SELECT * FROM reservations WHERE userId ='" + params.userId + "'";
+        var queryString = "SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId WHERE userId ='" + params.userId + "'";
 
         connection.query(queryString, function(err, rows) {
             connection.release();
