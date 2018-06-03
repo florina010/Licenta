@@ -15,6 +15,12 @@ $(document).ready(function() {
   });
 
   getAllServices();
+  getMyReservations();
+
+  $("[name='rFirstName']").val(user.firstName);
+  $("[name='rLastName']").val(user.lastName);
+  $("[name='rEmail']").val(user.email);
+  $("[name='rPhone']").val(user.phone);
 
   $(function() {
     $('#datetimepicker').datetimepicker({
@@ -28,48 +34,112 @@ $(document).ready(function() {
   });
 
   for (var i = 0; i < user.cars.length; i++) {
-    console.log(user.cars[i])
     var option = '<option value="' + user.cars[i].id + '">' + user.cars[i].number + '</option>';
     $("#selectCar").append(option)
   }
 
   $('#selectCar').multiselect();
 
+  $("[name='addResForm']").formValidation({
+    framework: 'bootstrap',
+    excluded: ':disabled',
+    icon: {
+      valid: 'glyphicon glyphicon-ok',
+      invalid: 'glyphicon glyphicon-remove',
+      validating: 'glyphicon glyphicon-refresh'
+    },
+    fields: {
+      'rFirstName': {
+        validators: {
+          regexp: {
+            regexp: '[a-zA-Z]+$',
+            message: "Firstname should not contain numbers or special characters."
+          }
+        }
+      },
+      'rLastName': {
+        validators: {
+          regexp: {
+            regexp: '[a-zA-Z]+$',
+            message: "Lastname should not contain numbers or special characters."
+          }
+        }
+      },
+      'rEmail': {
+        validators: {
+          regexp: {
+            regexp: '^[^@\\s]+@([^@\\s]+\\.)+[^@\\s]+$',
+            message: 'The value is not a valid email address'
+          }
+        }
+      },
+      'rPhone': {
+        validators: {
+          phone: {
+            country: 'Ro',
+            message: 'The value entered is an %s phone number'
+          }
+        }
+      }
+    }
+  }).on('change', function(e, data) {
+    $("[name='addResForm]").formValidation('revalidateField', 'rFirstName');
+    $("[name='addResForm']").formValidation('revalidateField', 'rLastName');
+    $("[name='addResForm']").formValidation('revalidateField', 'rEmail');
+    $("[name='addResForm']").formValidation('revalidateField', 'rPhone');
+    if ($("[name='addResForm']").data('formValidation').isValid()) {
+      $("[name='addReservation']").attr('disabled', false);
+    }
+  }).off().on('submit', function(e, data) {
+    e.preventDefault();
+    var socket = io.connect('http://127.0.0.1:4000'),
+      serviceId = $("ul.multiselect-container:first li.active a label input")[0].value,
+      date = $("#datetimepicker input").val(),
+      carNr = $("ul.multiselect-container:last li.active")[0].innerText,
+      firstName = $("[name='rFirstName']").val(),
+      lastName = $("[name='rLastName']").val(),
+      email = $("[name='rEmail']").val(),
+      phone = $("[name='rPhone']").val(),
+      mentions = $("[name='rMentions']").val();
+
+      socket.emit('/addReservation', {
+        token: token,
+        userId: user.userId,
+        serviceId: serviceId,
+        date: date,
+        carNr: carNr,
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        phone: phone,
+        mentions: mentions
+      });
+
+      socket.on('/resAddReservation', function(data) {
+        getMyReservations();
+    });
+});
+
   function getAllServices() {
     $.get(appConfig.url + appConfig.api + 'getAllServices?token=' + token, function(services) {
       for (var i = 0; i < services.length; i++) {
-        var option = '<option value="' + services[i].serviceId + '">' + services[i].title + '</option>';
+        var info = `Description: ` + services[i].description +
+                   `\n Price: ` + services[i].price,
+            option = '<option value="' + services[i].serviceId + '" title="' + info + '">' + services[i].title + '</option>';
         $("#selectList").append(option)
       }
 
       $('#selectList').multiselect({
         maxHeight: 350,
         enableFiltering: true,
-        onChange: function(option, checked) {
-          // Get selected options.
-          var selectedOptions = $('#selectList option:selected');
-
-          if (selectedOptions.length >= 3) {
-            // Disable all other checkboxes.
-            var nonSelectedOptions = $('#selectList option').filter(function() {
-              return !$(this).is(':selected');
-            });
-
-            nonSelectedOptions.each(function() {
-              var input = $('input[value="' + $(this).val() + '"]');
-              input.prop('disabled', true);
-              input.parent('li').addClass('disabled');
-            });
-          } else {
-            // Enable all checkboxes.
-            $('#selectList option').each(function() {
-              var input = $('input[value="' + $(this).val() + '"]');
-              input.prop('disabled', false);
-              input.parent('li').addClass('disabled');
-            });
-          }
-        }
       });
     });
+  }
+
+  function getMyReservations() {
+    console.log(1);
+    $.get(appConfig.url + appConfig.api + 'getMyReservations?token=' + token + '&userId=' + user.userId, function(reservations) {
+      console.log(reservations);
+  });
   }
 });

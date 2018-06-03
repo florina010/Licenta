@@ -20,13 +20,20 @@ body {
   margin-left: 1%;
 }
 
-#newReservation div:first-child {
-  display: flex
+ul.multiselect-container {
+  width: 200px;
 }
 
-#datetimepicker, span.multiselect-native-select:last-child {
-  width: 13%;
-  margin-left: 2%;
+#datetimepicker {
+  width: 85%;
+}
+
+#car button.multiselect {
+  width: 208%;
+}
+
+div.col-sm-4 div.input-group button.multiselect:first-of-type {
+  width: 240%;
 }
 
 [name='registerForm'], [name='addUserForm'] {
@@ -45,7 +52,20 @@ body {
   height: 400px;
 }
 
-[name='editProfileForm'] input, [name='changePassForm'] input, [name='addUserForm'] input, [name='editUserForm'] input, [name='addServiceForm'] input {
+
+[name='addResForm'] input {
+  padding: 3px 8px;
+  background: 0;
+  border: 0;
+  border-bottom: 2px solid #000;
+  font-size: 18px;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+  color: #000;
+  width: 120% !important;
+}
+
+[name='editProfileForm'] input, [name='changePassForm'] input, [name='addUserForm'] input, [name='editUserForm'] input, [name='addServiceForm'] input{
   padding: 5px 10px;
   background: 0;
   border: 0;

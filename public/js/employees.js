@@ -67,7 +67,7 @@ $(document).ready(function() {
     $("[name='addUserForm']").formValidation('revalidateField', 'uFirstName');
     $("[name='addUserForm']").formValidation('revalidateField', 'uLastName');
     $("[name='addUserForm']").formValidation('revalidateField', 'uEmail');
-    $("[name='registerForm']").formValidation('revalidateField', 'uPhoneNumber');
+    $("[name='addUserForm']").formValidation('revalidateField', 'uPhoneNumber');
     if ($("[name='addUserForm']").data('formValidation').isValid()) {
       $("[name='submitAdd']").attr('disabled', false);
     }

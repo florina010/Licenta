@@ -162,6 +162,24 @@ io.on('connection', function(socket) {
           "status": "Your session has expired and you are loged out. - redirect la index in FE"
       })
   });
+
+  socket.on('/addReservation', function(data) {
+    isValidToken(data.token).then(function(result) {
+      addReservation(data, function(res) {
+        io.emit('/resAddReservation', data);
+      });
+    }, function(error) {
+        res.json({
+            "code": 110,
+            "status": "Your session has expired and you are loged out. - redirect la index in FE"
+        })
+    });
+  }, function(error) {
+      res.json({
+          "code": 110,
+          "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
+  });
 });
 
 function editService (data, callback) {
@@ -379,6 +397,38 @@ function changePassword(req, res) {
     });
 }
 
+function addReservation (data, callback) {
+  var query;
+  pool.getConnection(function(err, connection) {
+      if (err) {
+          res.json({
+              "code": 100,
+              "status": "Error in connection database"
+          });
+          return;
+      }
+
+      query = `INSERT INTO reservations (userId, userFirstName, userLastName, userEmail, userPhone, serviceId, carNr, date, mentions, status) VALUES
+      ('` + data.userId + `', '` + data.firstName + `', '` + data.lastName + `', '` + data.email + `', '` + data.phone + `', '` + data.serviceId + `', '` + data.carNr + `', '` + data.date
+      + `', '` + data.mentions + `', 'Pending')`;
+
+      connection.query(query, function(err, rows) {
+        connection.release();
+          if (err) {
+              console.log(err);
+          }
+          callback(rows);
+      });
+      connection.on('error', function(err) {
+          var err = ({
+              "code": 100,
+              "status": "Error in connection database"
+          });
+          callback(err);
+      });
+  });
+}
+
 function getAllEmployees(req, res) {
   var params = req.query;
     pool.getConnection(function(err, connection) {
@@ -420,6 +470,35 @@ function getAllServices(req, res) {
         }
 
         var queryString = "SELECT * FROM services";
+
+        connection.query(queryString, function(err, rows) {
+            connection.release();
+            if (!err) {
+                res.json(rows);
+            }
+        });
+        connection.on('error', function(err) {
+            res.json({
+                "code": 100,
+                "status": "Error in connection database"
+            });
+            return;
+        });
+    });
+}
+
+function getMyReservations(req, res) {
+  var params = req.query;
+    pool.getConnection(function(err, connection) {
+        if (err) {
+            res.json({
+                "code": 100,
+                "status": "Error in connection database"
+            });
+            return;
+        }
+
+        var queryString = "SELECT * FROM reservations WHERE userId ='" + params.userId + "'";
 
         connection.query(queryString, function(err, rows) {
             connection.release();
@@ -568,6 +647,18 @@ router.get("/getAllServices", function(req, res) {
   var token = req.query.token;
     isValidToken(token).then(function(result) {
         getAllServices(req, res);
+    }, function(error) {
+        res.json({
+            "code": 110,
+            "status": "Your session has expired and you are loged out. - redirect la index in FE"
+        })
+    });
+});
+
+router.get("/getMyReservations", function(req, res) {
+  var token = req.query.token;
+    isValidToken(token).then(function(result) {
+        getMyReservations(req, res);
     }, function(error) {
         res.json({
             "code": 110,

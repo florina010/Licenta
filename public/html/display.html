@@ -41,22 +41,45 @@
         <button class="btn btn-default" data-toggle="collapse" data-target="#newReservation" aria-expanded="false" aria-controls="newReservation">New Reservation</button>
         <div class="row">
           <div class="collapse" id="newReservation">
-            <div>
-              <select id="selectList" style="display: none">
-            </select>
+            <form name='addResForm' method='POST' role="form">
+              <div class="col-sm-4">
+                <div class="form-group input-group">
+                  <select id="selectList" style="display: none"></select>
+                </div>
+                <div class="form-group input-group" id="car">
+                  <select id="selectCar" style="display: none"></select>
+                </div>
+                <div class="form-group input-group">
+                  <div class='input-group date' id='datetimepicker'>
+                    <input type='text' class="form-control" />
+                    <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                  </div>
+                </div>
+                  <div class="form-group">
+                    <textarea autocomplete="off" class="form-control" name="rMentions" rows="4" cols="6" placeholder="Mentions"></textarea>
+                  </div>
 
-              <div class='input-group date' id='datetimepicker'>
-                <input type='text' class="form-control" />
-                <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                </span>
               </div>
-
-              <select id="selectCar" style="display: none">
-              </select>
-
-
-            </div>
+              <div class="col-sm-8">
+                <div class="form-group input-group">
+                  <input autocomplete="off" type="text" class="form-control" name="rFirstName" required placeholder="First Name">
+                </div>
+                <div class="form-group input-group">
+                  <input autocomplete="off" type="text" class="form-control" name="rLastName" required placeholder="Last Name">
+                </div>
+                <div class="form-group input-group">
+                  <input autocomplete="off" type="text" class="form-control disabled-button" name="rEmail" required placeholder="Email">
+                </div>
+                <div class="form-group input-group">
+                  <input autocomplete="off" type="tel" class="form-control disabled-button" name="rPhone" required placeholder="Phone">
+                </div>
+                <div class="form-group col-xs-4">
+                  <button type="submit" class="btn btn-primary" name="addReservation">  Add Reservation</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
         <table id="resTable" class="display stripe table" cellspacing="0" width="100%">
@@ -65,8 +88,7 @@
               <th>#</th>
               <th>Client details</th>
               <th>Day</th>
-              <th>Start hour</th>
-              <th>End hour</th>
+              <th>Hour</th>
               <th>Employee details</th>
               <th>Status</th>
               <th>Rating</th>

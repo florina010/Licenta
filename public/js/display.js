@@ -23,14 +23,14 @@ $(document).ready(function() {
     MAX_OPTIONS = 5,
     socket = io.connect('http://127.0.0.1:4000');
     socket.on('/resEditProfile', function(data) {
-    if (data.id == user.userId) {
-      user.cars = data.cars;
-      user.email = data.email;
-      user.firstName = data.firstName;
-      user.lastName = data.lastName;
-      user.phone = data.phone;
-      sessionStorage.setItem('user', JSON.stringify(user));
-    }
+      if (data.id == user.userId) {
+        user.cars = data.cars;
+        user.email = data.email;
+        user.firstName = data.firstName;
+        user.lastName = data.lastName;
+        user.phone = data.phone;
+        sessionStorage.setItem('user', JSON.stringify(user));
+      }
     });
   if (user.admin == 2) {
     $("[name='editProfileForm'] div:nth-child(4)").css('display', 'none');
