@@ -35,10 +35,13 @@ $(document).ready(function() {
 
   if (user.admin == 2) {
     $("[name='editProfileForm'] div:nth-child(4)").css('display', 'none');
-    var script = document.createElement('script');
-    script.type='text/javascript';
-    script.src = "../js/employees.js";
-    document.getElementsByTagName('body')[0].appendChild(script);
+    var scriptEmp = document.createElement('script'), scriptRes = document.createElement('script');
+    scriptEmp.type='text/javascript';
+    scriptEmp.src = "../js/employees.js";
+    scriptRes.type='text/javascript';
+    scriptRes.src = "../js/reservations.js";
+    document.getElementsByTagName('body')[0].appendChild(scriptEmp);
+    document.getElementsByTagName('body')[0].appendChild(scriptRes);
   } else if (user.admin == 0) {
     $("[data-target-id='target3']").css('display', 'none');
     $("[data-target-id='target4']").css('display', 'none');

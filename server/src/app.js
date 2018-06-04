@@ -516,6 +516,67 @@ function getMyReservations(req, res) {
     });
 }
 
+function getAllReservations(req, res) {
+  var params = req.query;
+    pool.getConnection(function(err, connection) {
+        if (err) {
+            res.json({
+                "code": 100,
+                "status": "Error in connection database"
+            });
+            return;
+        }
+
+        var queryString = "SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId";
+
+        connection.query(queryString, function(err, rows) {
+            connection.release();
+            if (!err) {
+                res.json(rows);
+            }
+        });
+        connection.on('error', function(err) {
+            res.json({
+                "code": 100,
+                "status": "Error in connection database"
+            });
+            return;
+        });
+    });
+}
+
+function getAllFreeEmployees(req, res) {
+  var params = req.query;
+    pool.getConnection(function(err, connection) {
+        if (err) {
+            res.json({
+                "code": 100,
+                "status": "Error in connection database"
+            });
+            return;
+        }
+
+        var queryString = `SELECT  DISTINCT users.userId, users.firstName, users.lastName, users.email, users.phone FROM users WHERE users.userId NOT IN
+(SELECT reservations.employeeId FROM reservations WHERE reservations.date = '06/04/2018 08:00') AND users.isActive = 1 AND users.admin = 1`;
+
+        connection.query(queryString, function(err, rows) {
+            connection.release();
+            if (!err) {
+                res.json(rows);
+            }
+        });
+        connection.on('error', function(err) {
+            res.json({
+                "code": 100,
+                "status": "Error in connection database"
+            });
+            return;
+        });
+    });
+}
+
+
+
 function setToken(token, id) {
     pool.getConnection(function(err, connection) {
         if (err) {
@@ -666,6 +727,19 @@ router.get("/getMyReservations", function(req, res) {
         })
     });
 });
+
+router.get("/getAllReservations", function(req, res) {
+  var token = req.query.token;
+    isValidToken(token).then(function(result) {
+        getAllReservations(req, res);
+    }, function(error) {
+        res.json({
+            "code": 110,
+            "status": "Your session has expired and you are loged out. - redirect la index in FE"
+        })
+    });
+});
+
 
 app.use("/api", router);
 
