@@ -23,15 +23,14 @@ $(document).ready(function() {
   $("[name='rEmail']").val(user.email);
   $("[name='rPhone']").val(user.phone);
 
-  $(function() {
-    $('#datetimepicker').datetimepicker({
-      format: 'MM/DD/YYYY HH:mm',
-      minDate: new Date(),
-      stepping: 20,
-      daysOfWeekDisabled: [0],
-      showTodayButton: true,
-      disabledHours: [0,1,2,3,4,5,6,7,20,21,22,23]
-    });
+
+  $('#datetimepicker').datetimepicker({
+    format: 'MM/DD/YYYY HH:mm',
+    minDate: new Date(),
+    stepping: 20,
+    daysOfWeekDisabled: [0],
+    showTodayButton: true,
+    disabledHours: [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23]
   });
 
   for (var i = 0; i < user.cars.length; i++) {
@@ -95,39 +94,38 @@ $(document).ready(function() {
     e.preventDefault();
     var socket = io.connect('http://127.0.0.1:4000'),
       serviceId = $("ul.multiselect-container:first li.active a label input")[0].value,
-      date = $("#datetimepicker input").val(),
+      date = $("#datetimepicker").val(),
       carNr = $("ul.multiselect-container:last li.active")[0].innerText,
       firstName = $("[name='rFirstName']").val(),
       lastName = $("[name='rLastName']").val(),
       email = $("[name='rEmail']").val(),
       phone = $("[name='rPhone']").val(),
       mentions = $("[name='rMentions']").val();
-
-      socket.emit('/addReservation', {
-        token: token,
-        userId: user.userId,
-        serviceId: serviceId,
-        date: date,
-        carNr: carNr,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        phone: phone,
-        mentions: mentions
-      });
-
-      socket.on('/resAddReservation', function(data) {
-        var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
-        getMyReservations(currentPage);
+    socket.emit('/addReservation', {
+      token: token,
+      userId: user.userId,
+      serviceId: serviceId,
+      date: date,
+      carNr: carNr,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phone,
+      mentions: mentions
     });
-});
+
+    socket.on('/resAddReservation', function(data) {
+      var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+      getMyReservations(currentPage);
+    });
+  });
 
   function getAllServices() {
     $.get(appConfig.url + appConfig.api + 'getAllServices?token=' + token, function(services) {
       for (var i = 0; i < services.length; i++) {
         var info = `Description: ` + services[i].description +
-                   `\n Price: ` + services[i].price,
-            option = '<option value="' + services[i].serviceId + '" title="' + info + '">' + services[i].title + '</option>';
+          `\n Price: ` + services[i].price,
+          option = '<option value="' + services[i].serviceId + '" title="' + info + '">' + services[i].title + '</option>';
         $("#selectList").append(option)
       }
 
@@ -143,9 +141,10 @@ $(document).ready(function() {
       $("#resTable").DataTable().clear();
 
       var table = $('#resTable').DataTable({
-        columnDefs: [
-            { width: '20%', targets: 0 }
-        ],
+        columnDefs: [{
+          width: '20%',
+          targets: 0
+        }],
         fixedColumns: true,
         "aoColumnDefs": [{
           bSortable: false,
@@ -161,39 +160,48 @@ $(document).ready(function() {
 
       var j = 1;
       for (var i = 0; i < reservations.length; i++) {
+
+        var userName = reservations[i].userFirstName + ` ` + reservations[i].userLastName;
         var userDetails = `Name: ` + reservations[i].userFirstName + ` ` + reservations[i].userLastName +
-                          ` Email: ` + reservations[i].userEmail +
-                          `\n Phone: ` + reservations[i].userPhone,
-            serviceDetails = `Title: ` + reservations[i].title +
-                              `\n Description: ` + reservations[i].description +
-                              `\n Price: ` + reservations[i].price,
-            employeeDetails = reservations[i].employeeId,
-            date = reservations[i].date.split(' ')[0],
-            hour = reservations[i].date.split(' ')[1],
-            carNr = reservations[i].carNr,
-            mentions = reservations[i].mentions,
-            status = reservations[i].status;
+          ` Email: ` + reservations[i].userEmail +
+          `\n Phone: ` + reservations[i].userPhone,
+          serviceDetails = `Title: ` + reservations[i].title +
+          `\n Description: ` + reservations[i].description +
+          `\n Price: ` + reservations[i].price,
+          employeeDetails = reservations[i].employeeId,
+          date = reservations[i].date.split(' ')[0],
+          hour = reservations[i].date.split(' ')[1],
+          carNr = reservations[i].carNr,
+          mentions = reservations[i].mentions,
+          status = reservations[i].status;
+
         table.row.add([
             j,
-            userDetails,
-            serviceDetails,
-            employeeDetails,
-            carNr,
+            userName,
+            reservations[i].title,
             date,
             hour,
             status,
-            mentions,
-            0,
-            0
+            mentions
           ]).draw(false)
           .nodes()
           .to$()
-          .attr('role', 'button');
+          .attr('role', 'button')
+          .attr('data-toggle', 'collapse')
+          .attr('data-target', '#' + reservations[i].resId)
+
         j++;
       }
+      
+      for (var i = 0; i < reservations.length; i++) {
+        $("[data-target='#" + reservations[i].resId + "']").after('<tr id="' + reservations[i].resId + '" class="collapse" aria-expanded="false"><td colspan="8">fdsfds</td></tr>')
+      }
+
+
     }).done(function() {
       page--;
       $("#user").DataTable().page(page).draw(false);
     });
+
   }
 });
