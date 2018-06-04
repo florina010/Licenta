@@ -172,7 +172,6 @@ $(document).ready(function() {
           date = reservations[i].date.split(' ')[0],
           hour = reservations[i].date.split(' ')[1],
           carNr = reservations[i].carNr,
-          mentions = reservations[i].mentions,
           status = reservations[i].status;
 
         table.row.add([
@@ -182,7 +181,7 @@ $(document).ready(function() {
             date,
             hour,
             status,
-            mentions
+            'r'
           ]).draw(false)
           .nodes()
           .to$()
@@ -192,9 +191,18 @@ $(document).ready(function() {
 
         j++;
       }
-      
+
       for (var i = 0; i < reservations.length; i++) {
-        $("[data-target='#" + reservations[i].resId + "']").after('<tr id="' + reservations[i].resId + '" class="collapse" aria-expanded="false"><td colspan="8">fdsfds</td></tr>')
+        $("[data-target='#" + reservations[i].resId + "']").after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
+          <p><strong>Client's email</strong> ` + reservations[i].userEmail +`</p>
+          <p><strong>Client's phone</strong> ` + reservations[i].userPhone +`</p>
+          <br>
+          <p><strong>Service's description</strong> ` + reservations[i].description +`</p>
+          <p><strong>Service's price</strong> ` + reservations[i].price +`</p>
+          <br>
+          <p><strong>Car number<strong> ` + reservations[i].carNr +`</p>
+          <p><strong>Mentions</strong> ` + reservations[i].mentions +`</p>
+        </div></td></tr>`)
       }
 
 
