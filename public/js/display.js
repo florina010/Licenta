@@ -35,6 +35,10 @@ $(document).ready(function() {
 
   if (user.admin == 2) {
     $("[name='editProfileForm'] div:nth-child(4)").css('display', 'none');
+    var script = document.createElement('script');
+    script.type='text/javascript';
+    script.src = "../js/employees.js";
+    document.getElementsByTagName('body')[0].appendChild(script);
   } else if (user.admin == 0) {
     $("[data-target-id='target3']").css('display', 'none');
     $("[data-target-id='target4']").css('display', 'none');
