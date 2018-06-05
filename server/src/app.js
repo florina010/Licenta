@@ -7,7 +7,7 @@ var io = require('socket.io').listen(server);
 var port = process.env.PORT || 4000;
 
 server.listen(port, function() {
-    console.log('Server listening at port %d', port);
+  console.log('Server listening at port %d', port);
 });
 
 var router = express.Router();
@@ -29,27 +29,27 @@ hd.getHolidays(nextyear);
 var legalhol = hd.getHolidays(year).concat(hd.getHolidays(nextyear));
 
 var pool = mysql.createPool({
-    connectionLimit: 100, //important
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'licenta',
-    debug: false
+  connectionLimit: 100, //important
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'licenta',
+  debug: false
 });
 
 
 
 app.use(bodyParser.urlencoded({
-    extended: false
+  extended: false
 }));
 app.use(bodyParser.json());
 app.use(fileUpload());
 
 app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', "*");
-    res.header('Access-Control-Allow-Methods', "GET, PUT, POST, DELETE");
-    res.header('Access-Control-Allow-Headers', "'Origin', 'X-Requested-With', 'Content-Type', 'Accept'");
-    next();
+  res.header('Access-Control-Allow-Origin', "*");
+  res.header('Access-Control-Allow-Methods', "GET, PUT, POST, DELETE");
+  res.header('Access-Control-Allow-Headers', "'Origin', 'X-Requested-With', 'Content-Type', 'Accept'");
+  next();
 });
 
 var router = express.Router();
@@ -57,7 +57,7 @@ var router = express.Router();
 // Router middleware, mentioned it before defining routes.
 
 router.use(function(req, res, next) {
-    next();
+  next();
 });
 
 // Provide all routes here, this is for Home page.
@@ -67,10 +67,10 @@ io.on('connection', function(socket) {
       io.emit('/resRegister', data);
     });
   }, function(error) {
-      res.json({
-          "code": 110,
-          "status": "Your session has expired and you are loged out. - redirect la index in FE"
-      })
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
   });
 
   socket.on('/addService', function(data) {
@@ -79,16 +79,16 @@ io.on('connection', function(socket) {
         io.emit('/resAddService', data);
       });
     }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
+      res.json({
+        "code": 110,
+        "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
     });
   }, function(error) {
-      res.json({
-          "code": 110,
-          "status": "Your session has expired and you are loged out. - redirect la index in FE"
-      })
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
   });
 
   socket.on('/editService', function(data) {
@@ -97,16 +97,16 @@ io.on('connection', function(socket) {
         io.emit('/resEditService', data);
       });
     }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
+      res.json({
+        "code": 110,
+        "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
     });
   }, function(error) {
-      res.json({
-          "code": 110,
-          "status": "Your session has expired and you are loged out. - redirect la index in FE"
-      })
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
   });
 
   socket.on('/addUser', function(data) {
@@ -115,16 +115,16 @@ io.on('connection', function(socket) {
         io.emit('/resAddUser', data);
       });
     }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
+      res.json({
+        "code": 110,
+        "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
     });
   }, function(error) {
-      res.json({
-          "code": 110,
-          "status": "Your session has expired and you are loged out. - redirect la index in FE"
-      })
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
   });
 
   socket.on('/editUser', function(data) {
@@ -133,16 +133,16 @@ io.on('connection', function(socket) {
         io.emit('/resEditUser', data);
       });
     }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
+      res.json({
+        "code": 110,
+        "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
     });
   }, function(error) {
-      res.json({
-          "code": 110,
-          "status": "Your session has expired and you are loged out. - redirect la index in FE"
-      })
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
   });
 
   socket.on('/editProfile', function(data) {
@@ -151,16 +151,16 @@ io.on('connection', function(socket) {
         io.emit('/resEditProfile', data);
       });
     }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
+      res.json({
+        "code": 110,
+        "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
     });
   }, function(error) {
-      res.json({
-          "code": 110,
-          "status": "Your session has expired and you are loged out. - redirect la index in FE"
-      })
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
   });
 
   socket.on('/addReservation', function(data) {
@@ -169,16 +169,16 @@ io.on('connection', function(socket) {
         io.emit('/resAddReservation', data);
       });
     }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
+      res.json({
+        "code": 110,
+        "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
     });
   }, function(error) {
-      res.json({
-          "code": 110,
-          "status": "Your session has expired and you are loged out. - redirect la index in FE"
-      })
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
   });
 
   socket.on('/deleteReservation', function(data) {
@@ -187,16 +187,16 @@ io.on('connection', function(socket) {
         io.emit('/resDeleteReservation', data);
       });
     }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
+      res.json({
+        "code": 110,
+        "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
     });
   }, function(error) {
-      res.json({
-          "code": 110,
-          "status": "Your session has expired and you are loged out. - redirect la index in FE"
-      })
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
   });
 
   socket.on('/approveReservation', function(data) {
@@ -205,701 +205,737 @@ io.on('connection', function(socket) {
         io.emit('/resApproveReservation', data);
       });
     }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
+      res.json({
+        "code": 110,
+        "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
     });
   }, function(error) {
-      res.json({
-          "code": 110,
-          "status": "Your session has expired and you are loged out. - redirect la index in FE"
-      })
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
   });
 });
 
-function editService (data, callback) {
-  var query, id;
+function editService(data, callback) {
+
   pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+
+    let query, id = data.serviceId.substring(4),
+      table = 'services';
+
+    query = 'UPDATE ?? SET title = ? , description = ?, price = ? WHERE serviceId = ? ';
+
+    connection.query(query, [table, data.title, data.description, data.price, id], function(err, rows) {
+      connection.release();
       if (err) {
-          res.json({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          return;
+        console.log(err);
       }
-      id = data.serviceId.substring(4);
-
-      query = "UPDATE services SET title='" + data.title + "', description='" + data.description +"', price='" + data.price +"' WHERE serviceId=" + id;
-
-      connection.query(query, function(err, rows) {
-        connection.release();
-          if (err) {
-              console.log(err);
-          }
-          callback(rows);
+      callback(rows);
+    });
+    connection.on('error', function(err) {
+      var err = ({
+        "code": 100,
+        "status": "Error in connection database"
       });
-      connection.on('error', function(err) {
-          var err = ({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          callback(err);
-      });
+      callback(err);
+    });
   });
 }
 
-function addService (data, callback) {
-  var query;
+function addService(data, callback) {
+
   pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+    let query, columns = ['title', 'description', 'price'],
+      table = 'services';
+
+    query = 'INSERT INTO ?? (??) VALUES (?, ?, ?) ';
+
+    connection.query(query, [table, columns, data.title, data.description, data.price], function(err, rows) {
+      connection.release();
       if (err) {
-          res.json({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          return;
+        console.log(err);
       }
-
-      query = "INSERT INTO services (title, description, price) VALUES ('" + data.title + "', '" + data.description + "', '" + data.price + "')";
-
-      connection.query(query, function(err, rows) {
-        connection.release();
-          if (err) {
-              console.log(err);
-          }
-          callback(rows);
+      callback(rows);
+    });
+    connection.on('error', function(err) {
+      var err = ({
+        "code": 100,
+        "status": "Error in connection database"
       });
-      connection.on('error', function(err) {
-          var err = ({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          callback(err);
-      });
+      callback(err);
+    });
   });
 }
 
-function register (data, callback) {
-  var query;
+function register(data, callback) {
   pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+
+    let query, columns, datas, table = 'users';
+
+    if (data.token) {
+      query = 'INSERT INTO ?? (??) VALUES (??)';
+      datas = [data.firstName, data.lastName, '1', data.email, data.password, data.phone, '1'];
+      columns = ['firstName', 'lastName', 'isActive', 'email', 'password', 'phone', 'admin']
+    } else {
+      query = 'INSERT INTO ?? (??) VALUES (??)';
+      datas = [data.firstName, data.lastName, '1', data.email, data.password, data.phone, data.cars, '0'];
+      columns = ['firstName', 'lastName', 'isActive', 'email', 'password', 'phone', 'cars', 'admin'];
+    }
+    connection.query(query, [table, columns, datas], function(err, rows) {
+      connection.release();
       if (err) {
-          res.json({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          return;
+        console.log(err);
       }
-      if (data.token) {
-       query = "INSERT INTO users (firstName, lastName, isActive, email, password, phone, admin) VALUES ('" + data.firstName + "', '" + data.lastName + "', 1, '" + data.email + "', '" + data.password + "', '" + data.phone + "',   '" + 1 + "')";
-      } else {
-        query = "INSERT INTO users (firstName, lastName, isActive, email, password, phone, cars, admin) VALUES ('" + data.firstName + "', '" + data.lastName + "', 1, '" + data.email + "', '" + data.password + "', '" + data.phone + "', '" + data.cars + "',   '" + 0 + "')";
-      }
-      connection.query(query, function(err, rows) {
-        connection.release();
-          if (err) {
-              console.log(err);
-          }
-          callback(rows);
+      callback(rows);
+    });
+    connection.on('error', function(err) {
+      var err = ({
+        "code": 100,
+        "status": "Error in connection database"
       });
-      connection.on('error', function(err) {
-          var err = ({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          callback(err);
-      });
+      callback(err);
+    });
   });
 }
 
 function login(req, res) {
-    var params = req.body,
-        response,
-        result,
-        hash = sha256.create();
+
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+
+    let params = req.body,
+      response,
+      result,
+      token,
+      query,
+      table = 'users',
+      hash = sha256.create();
 
     hash.update(Math.random().toString(36).substr(2, 5));
-    var token = hash.hex();
+    token = hash.hex();
 
-    var email = params.email, password = params.password;
-    pool.getConnection(function(err, connection) {
-        if (err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        }
-        let query = "SELECT * FROM users WHERE email=" + connection.escape(email) + " AND password=" + connection.escape(password);
-        connection.query(query, function(err, rows) {
-            connection.release();
-            if (rows != "") {
-                if (!err) {
-                    var user = rows[0];
-                    if (!user.token) {
-                        setToken(token, user.userId);
-                        user.token = token
-                    }
-                    res.json(user);
-                } else {
-                    res.json({
-                        "code": 100,
-                        "status": "Error in connection database"
-                    });
-                    return;
-                }
-            } else {
-                res.json(rows);
-            }
-        });
-        connection.on('error', function(err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        });
-    });
-}
+    query = 'SELECT * FROM ?? WHERE email = ? AND password = ?';
 
-function editUser (data, callback) {
-  var query, response;
-  pool.getConnection(function(err, connection) {
-      if (err) {
+    connection.query(query, [table, params.email,params.password], function(err, rows) {
+      connection.release();
+      if (rows != "") {
+        if (!err) {
+          var user = rows[0];
+          if (!user.token) {
+            setToken(token, user.userId);
+            user.token = token
+          }
+          res.json(user);
+        } else {
           res.json({
-              "code": 100,
-              "status": "Error in connection database"
+            "code": 100,
+            "status": "Error in connection database"
           });
           return;
-      }
-
-      if (!data.isActive) {
-        response = 'profile';
-        query = "UPDATE users SET firstName = '" + data.firstName + "', lastName = '" + data.lastName + "', email = '" + data.email  + "', phone = '" + data.phone + "', cars = '" + data.cars + "'  WHERE userId = '" + data.id + "'";
+        }
       } else {
-        response = 'user';
-        query = "UPDATE users SET firstName = '" + data.firstName + "', lastName = '" + data.lastName + "', email = '" + data.email  + "', phone = '" + data.phone + "', isActive = '" + data.isActive + "'  WHERE userId = '" + data.id + "'";
+        res.json(rows);
       }
+    });
+    connection.on('error', function(err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    });
+  });
+}
 
+function editUser(data, callback) {
 
-      connection.query(query, function(err, rows) {
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+
+    let query, response, datas, table = 'users';
+
+    if (!data.isActive) {
+      response = 'profile';
+      query = 'UPDATE ?? SET firstName = ?, lastName = ?, email = ?, phone = ?, cars = ? WHERE userId = ?';
+
+      connection.query(query, [table, data.firstName, data.lastName, data.email, data.phone, data.cars, data.id], function(err, rows) {
         connection.release();
-          callback(response);
+        callback(response);
       });
-      connection.on('error', function(err) {
-          var err = ({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          callback(err);
+    } else {
+      response = 'user';
+      query = 'UPDATE ?? SET firstName = ?, lastName = ?, email = ?, phone = ?, isActive = ? WHERE userId = ?';
+      connection.query(query, [table, data.firstName, data.lastName, data.email, data.phone, data.isActive, data.id], function(err, rows) {
+        connection.release();
+        callback(response);
       });
+    }
+
+    connection.on('error', function(err) {
+      var err = ({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      callback(err);
+    });
   });
 }
 
 function changePassword(req, res) {
-    var params = req.body,
-        response,
-        result,
-        hash = sha256.create();
 
-    pool.getConnection(function(err, connection) {
-        if (err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+
+    let params = req.body,
+      response,
+      result,
+      query,
+      table ='users',
+      hash = sha256.create();
+
+      query = 'UPDATE ?? SET password = ? WHERE email = ?';
+
+    connection.query(query, [table, params.password, params.email], function(err, rows) {
+      connection.release();
+      if (rows != "") {
+        if (!err) {
+          res.json(rows);
+        } else {
+          res.json({
+            "code": 100,
+            "status": "Error in connection database"
+          });
+          return;
         }
-        connection.query("UPDATE users SET password = '" +  params.password + "' WHERE email = '" + params.email + "' ", function(err, rows) {
-            connection.release();
-            if (rows != "") {
-                if (!err) {
-                    res.json(rows);
-                } else {
-                    res.json({
-                        "code": 100,
-                        "status": "Error in connection database"
-                    });
-                    return;
-                }
-            } else {
-                res.json(rows);
-            }
-        });
-        connection.on('error', function(err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        });
-    });
-}
-
-function addReservation (data, callback) {
-  var query;
-  pool.getConnection(function(err, connection) {
-      if (err) {
-          res.json({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          return;
-      }
-
-      query = `INSERT INTO reservations (userId, userFirstName, userLastName, userEmail, userPhone, serviceId, carNr, date, mentions, status) VALUES
-      ('` + data.userId + `', '` + data.firstName + `', '` + data.lastName + `', '` + data.email + `', '` + data.phone + `', '` + data.serviceId + `', '` + data.carNr + `', '` + data.date
-      + `', '` + data.mentions + `', 'Pending')`;
-
-      connection.query(query, function(err, rows) {
-        connection.release();
-          if (err) {
-              console.log(err);
-          }
-          callback(rows);
-      });
-      connection.on('error', function(err) {
-          var err = ({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          callback(err);
-      });
-  });
-}
-
-function deleteReservation (data, callback) {
-  var query;
-  pool.getConnection(function(err, connection) {
-      if (err) {
-          res.json({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          return;
-      }
-
-      query = 'DELETE FROM reservations WHERE resId=' + data.resId;
-
-      connection.query(query, function(err, rows) {
-        connection.release();
-          if (err) {
-              console.log(err);
-          }
-          callback(rows);
-      });
-      connection.on('error', function(err) {
-          var err = ({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          callback(err);
-      });
-  });
-}
-
-function approveReservation (data, callback) {
-  var query;
-  pool.getConnection(function(err, connection) {
-      if (err) {
-          res.json({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          return;
-      }
-
-      if (data.employeeId) {
-        query = 'UPDATE reservations SET employeeId ="' + data.employeeId + '", status="' + data.status + '" WHERE resId=' + data.resId;
       } else {
-        query = 'UPDATE reservations SET status="' + data.status + '" WHERE resId=' + data.resId;
+        res.json(rows);
       }
+    });
+    connection.on('error', function(err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    });
+  });
+}
 
-      connection.query(query, function(err, rows) {
-        connection.release();
-          if (err) {
-              console.log(err);
-          }
-          callback(rows);
+function addReservation(data, callback) {
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
       });
-      connection.on('error', function(err) {
-          var err = ({
-              "code": 100,
-              "status": "Error in connection database"
-          });
-          callback(err);
+      return;
+    }
+
+    let query, datas, table = 'reservations', columns;
+
+    query = 'INSERT INTO ?? (??) VALUES (?)'
+    columns = ['userId', 'userFirstName', 'userLastName', 'userEmail', 'userPhone', 'serviceId', 'carNr', 'date', 'mentions', 'status'];
+    datas = [data.userId, data.firstName, data.lastName, data.email, data.phone, data.serviceId, data.carNr, data.date, data.mentions, 'Pending'];
+
+    connection.query(query, [table, columns, datas], function(err, rows) {
+      connection.release();
+      if (err) {
+        console.log(err);
+      }
+      callback(rows);
+    });
+    connection.on('error', function(err) {
+      var err = ({
+        "code": 100,
+        "status": "Error in connection database"
       });
+      callback(err);
+    });
+  });
+}
+
+function deleteReservation(data, callback) {
+  var query;
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+
+    query = 'DELETE FROM reservations WHERE resId=' + data.resId;
+
+    connection.query(query, function(err, rows) {
+      connection.release();
+      if (err) {
+        console.log(err);
+      }
+      callback(rows);
+    });
+    connection.on('error', function(err) {
+      var err = ({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      callback(err);
+    });
+  });
+}
+
+function approveReservation(data, callback) {
+  var query;
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+
+    if (data.employeeId) {
+      query = 'UPDATE reservations SET employeeId ="' + data.employeeId + '", status="' + data.status + '" WHERE resId=' + data.resId;
+    } else {
+      query = 'UPDATE reservations SET status="' + data.status + '" WHERE resId=' + data.resId;
+    }
+
+    connection.query(query, function(err, rows) {
+      connection.release();
+      if (err) {
+        console.log(err);
+      }
+      callback(rows);
+    });
+    connection.on('error', function(err) {
+      var err = ({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      callback(err);
+    });
   });
 }
 
 function getAllEmployees(req, res) {
   var params = req.query;
-    pool.getConnection(function(err, connection) {
-        if (err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        }
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
 
-        var queryString = "SELECT * FROM users WHERE token != '" + params.token + "' AND users.admin = 1  ORDER BY users.isActive DESC";
+    var queryString = "SELECT * FROM users WHERE token != '" + params.token + "' AND users.admin = 1  ORDER BY users.isActive DESC";
 
-        connection.query(queryString, function(err, rows) {
-            connection.release();
-            if (!err) {
-                res.json(rows);
-            }
-        });
-        connection.on('error', function(err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        });
+    connection.query(queryString, function(err, rows) {
+      connection.release();
+      if (!err) {
+        res.json(rows);
+      }
     });
+    connection.on('error', function(err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    });
+  });
 }
 
 function getAllServices(req, res) {
   var params = req.query;
-    pool.getConnection(function(err, connection) {
-        if (err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        }
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
 
-        var queryString = "SELECT * FROM services";
+    var queryString = "SELECT * FROM services";
 
-        connection.query(queryString, function(err, rows) {
-            connection.release();
-            if (!err) {
-                res.json(rows);
-            }
-        });
-        connection.on('error', function(err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        });
+    connection.query(queryString, function(err, rows) {
+      connection.release();
+      if (!err) {
+        res.json(rows);
+      }
     });
+    connection.on('error', function(err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    });
+  });
 }
 
 function getMyReservations(req, res) {
-  var params = req.query;
-    pool.getConnection(function(err, connection) {
-        if (err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        }
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
 
-        var queryString = `SELECT reservations.*, services.description, services.price, services.title, users.firstName as employeeFirstName, users.lastName as employeeLastName,
+    let params = req.query, query;
+
+    query = `SELECT reservations.*, services.description, services.price, services.title, users.firstName as employeeFirstName, users.lastName as employeeLastName,
         users.email as employeeEmail, users.phone as employeePhone FROM reservations  JOIN services ON reservations.serviceId = services.serviceId JOIN users ON
-        reservations.employeeId = users.userId WHERE reservations.userId ='` + params.userId + `'`;
+        reservations.employeeId = users.userId WHERE reservations.userId = ?`;
 
-        // var queryString = "SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId WHERE userId ='" + params.userId + "'";
-
-        connection.query(queryString, function(err, rows) {
-            connection.release();
-            if (!err) {
-                res.json(rows);
-            }
-        });
-        connection.on('error', function(err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        });
+    connection.query(query, [params.userId], function(err, rows) {
+      connection.release();
+      if (!err) {
+        res.json(rows);
+      }
     });
+    connection.on('error', function(err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    });
+  });
 }
 
 function getAllReservations(req, res) {
-  var params = req.query;
-    pool.getConnection(function(err, connection) {
-        if (err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        }
 
-        var queryString = `SELECT reservations.*, services.description, services.price, services.title, users.firstName as employeeFirstName, users.lastName as employeeLastName,
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+
+    let query = `SELECT reservations.*, services.description, services.price, services.title, users.firstName as employeeFirstName, users.lastName as employeeLastName,
        users.email as employeeEmail, users.phone as employeePhone FROM reservations  JOIN services ON reservations.serviceId = services.serviceId JOIN users ON
        reservations.employeeId = users.userId `
 
-        connection.query(queryString, function(err, rows) {
-            connection.release();
-            if (!err) {
-                res.json(rows);
-            }
-        });
-        connection.on('error', function(err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        });
+    connection.query(query, function(err, rows) {
+      connection.release();
+      if (!err) {
+        res.json(rows);
+      }
     });
+    connection.on('error', function(err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    });
+  });
 }
 
 function getAllFreeEmployees(req, res) {
-  var params = req.query;
-    pool.getConnection(function(err, connection) {
-        if (err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        }
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
 
-        var queryString = `SELECT  DISTINCT users.userId, users.firstName, users.lastName, users.email, users.phone FROM users WHERE users.userId NOT IN
-(SELECT reservations.employeeId FROM reservations WHERE reservations.date = '` + params.date + `') AND users.isActive = 1 AND users.admin = 1`;
+    let params = req.query, query;
 
-        connection.query(queryString, function(err, rows) {
-            connection.release();
-            if (!err) {
-                res.json(rows);
-            }
-        });
-        connection.on('error', function(err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        });
+    query = `SELECT  DISTINCT users.userId, users.firstName, users.lastName, users.email, users.phone FROM users WHERE users.userId NOT IN
+(SELECT reservations.employeeId FROM reservations WHERE reservations.date = ?) AND users.isActive = ? AND users.admin = ?`;
+
+    connection.query(query, [params.date, 1, 1], function(err, rows) {
+      connection.release();
+      if (!err) {
+        res.json(rows);
+      }
     });
+    connection.on('error', function(err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    });
+  });
 }
 
-function checkDate (req, res) {
-  var params = req.query;
-    pool.getConnection(function(err, connection) {
-        if (err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        }
-
-        var queryString = `SELECT  DISTINCT users.userId, users.firstName, users.lastName, users.email, users.phone FROM users WHERE users.userId NOT IN
-(SELECT reservations.employeeId FROM reservations WHERE reservations.date = '` + params.date + `') AND users.isActive = 1 AND users.admin = 1`;
-
-        connection.query(queryString, function(err, rows) {
-            connection.release();
-            if (!err) {
-                res.json(rows);
-            }
-        });
-        connection.on('error', function(err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        });
-    });
-}
+// function checkDate(req, res) {
+//   pool.getConnection(function(err, connection) {
+//     if (err) {
+//       res.json({
+//         "code": 100,
+//         "status": "Error in connection database"
+//       });
+//       return;
+//     }
+//
+//     let params = req.query, query;
+//
+//     query = `SELECT  DISTINCT users.userId, users.firstName, users.lastName, users.email, users.phone FROM users WHERE users.userId NOT IN
+// (SELECT reservations.employeeId FROM reservations WHERE reservations.date = '` + params.date + `') AND users.isActive = 1 AND users.admin = 1`;
+//
+//     connection.query(query, [] function(err, rows) {
+//       connection.release();
+//       if (!err) {
+//         res.json(rows);
+//       }
+//     });
+//     connection.on('error', function(err) {
+//       res.json({
+//         "code": 100,
+//         "status": "Error in connection database"
+//       });
+//       return;
+//     });
+//   });
+// }
 
 
 
 function setToken(token, id) {
-    pool.getConnection(function(err, connection) {
-        if (err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        }
-        connection.query("UPDATE users SET token = '" + token + "' WHERE userId = '" + id + "'", function(err, rows) {
-            connection.release();
-        });
-        connection.on('error', function(err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        });
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+
+    let table = 'users', query;
+
+    query = 'UPDATE ?? SET token = ? WHERE userId = ?';
+    connection.query(query, [table, token, id], function(err, rows) {
+      connection.release();
     });
+    connection.on('error', function(err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    });
+  });
 }
 
 function isValidToken(token) {
-    return new Promise((resolve, reject) => {
-        pool.getConnection(function(err, connection) {
-            if (err) {
-                return reject({
-                    msg: 'connection error'
-                });
-            }
-            connection.query("SELECT * FROM users WHERE token ='" + token + "'", function(err, rows) {
-                connection.release();
-                if (!err) {
-                    if (rows.length > 0) {
-                        return resolve(rows);
-                    } else {
-                        return reject({
-                            msg: 'nu exista token'
-                        });
-                    }
-                }
-            });
-            connection.on('error', function(err) {
-                return reject({
-                    msg: 'connection error'
-                });
-            });
+  return new Promise((resolve, reject) => {
+    pool.getConnection(function(err, connection) {
+      if (err) {
+        return reject({
+          msg: 'connection error'
         });
+      }
+      let query, table = 'users';
+
+      query = 'SELECT * FROM ?? WHERE token = ?';
+      connection.query(query, [table, token], function(err, rows) {
+        connection.release();
+        if (!err) {
+          if (rows.length > 0) {
+            return resolve(rows);
+          } else {
+            return reject({
+              msg: 'nu exista token'
+            });
+          }
+        }
+      });
+      connection.on('error', function(err) {
+        return reject({
+          msg: 'connection error'
+        });
+      });
     });
+  });
 }
 
 function logout(req, res) {
-    var params = req.body;
-    pool.getConnection(function(err, connection) {
-        if (err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        }
-        connection.query("UPDATE user SET token = '' WHERE email ='" + params.email + "'", function(err, rows) {
-            connection.release();
-            if (!err) {
+  var params = req.body;
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+    connection.query("UPDATE user SET token = '' WHERE email ='" + params.email + "'", function(err, rows) {
+      connection.release();
+      if (!err) {
 
-                res.json(rows);
-            }
-        });
-        connection.on('error', function(err) {
-            res.json({
-                "code": 100,
-                "status": "Error in connection database"
-            });
-            return;
-        });
+        res.json(rows);
+      }
     });
+    connection.on('error', function(err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    });
+  });
 }
 
 
 app.use(bodyParser.urlencoded({
-    extended: false
+  extended: false
 }));
 app.use(bodyParser.json());
 app.use(fileUpload());
 
 app.use(function(req, res, next) {
-    res.header('Access-Control-Allow-Origin', "*");
-    res.header('Access-Control-Allow-Methods', "GET, PUT, POST, DELETE");
-    res.header('Access-Control-Allow-Headers', "'Origin', 'X-Requested-With', 'Content-Type', 'Accept'");
-    next();
+  res.header('Access-Control-Allow-Origin', "*");
+  res.header('Access-Control-Allow-Methods', "GET, PUT, POST, DELETE");
+  res.header('Access-Control-Allow-Headers', "'Origin', 'X-Requested-With', 'Content-Type', 'Accept'");
+  next();
 });
 
 var router = express.Router();
 
 router.use(function(req, res, next) {
-    console.log("/" + req.method);
-    next();
+  console.log("/" + req.method);
+  next();
 });
 
 router.post("/login", function(req, res) {
-    login(req, res);
+  login(req, res);
 });
 
 router.post("/changePassword", function(req, res) {
   var token = req.body.token;
-    isValidToken(token).then(function(result) {
-        changePassword(req, res);
-    }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
-    });
+  isValidToken(token).then(function(result) {
+    changePassword(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
 });
 
 router.get("/getAllEmployees", function(req, res) {
   var token = req.query.token;
-    isValidToken(token).then(function(result) {
-        getAllEmployees(req, res);
-    }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
-    });
+  isValidToken(token).then(function(result) {
+    getAllEmployees(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
 });
 
 router.get("/getAllServices", function(req, res) {
   var token = req.query.token;
-    isValidToken(token).then(function(result) {
-        getAllServices(req, res);
-    }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
-    });
+  isValidToken(token).then(function(result) {
+    getAllServices(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
 });
 
 router.get("/getMyReservations", function(req, res) {
   var token = req.query.token;
-    isValidToken(token).then(function(result) {
-        getMyReservations(req, res);
-    }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
-    });
+  isValidToken(token).then(function(result) {
+    getMyReservations(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
 });
 
 router.get("/getAllReservations", function(req, res) {
   var token = req.query.token;
-    isValidToken(token).then(function(result) {
-        getAllReservations(req, res);
-    }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
-    });
+  isValidToken(token).then(function(result) {
+    getAllReservations(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
 });
 
 router.get("/getAllFreeEmployees", function(req, res) {
   var token = req.query.token;
-    isValidToken(token).then(function(result) {
-        getAllFreeEmployees(req, res);
-    }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
-    });
+  isValidToken(token).then(function(result) {
+    getAllFreeEmployees(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
 });
 
 router.get("/checkDate", function(req, res) {
   var token = req.query.token;
-    isValidToken(token).then(function(result) {
-        checkDate(req, res);
-    }, function(error) {
-        res.json({
-            "code": 110,
-            "status": "Your session has expired and you are loged out. - redirect la index in FE"
-        })
-    });
+  isValidToken(token).then(function(result) {
+    checkDate(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
 });
 
 app.use("/api", router);
@@ -907,5 +943,5 @@ app.use("/api", router);
 // Listen to this Port
 
 app.listen(3000, function() {
-    console.log("Live at Port 3000");
+  console.log("Live at Port 3000");
 });

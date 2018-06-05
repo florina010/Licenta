@@ -65,6 +65,7 @@ $(document).ready(function() {
       $("[name='submitAdd']").attr('disabled', false);
     }
   }).on('submit', function(e, data) {
+    e.preventDefault();
     var title = $("[name='sTitle']").val(),
       description = $("[name='sDescription']").val(),
       price = $("[name='sPrice']").val(),

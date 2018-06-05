@@ -33,7 +33,8 @@ $(document).ready(function() {
 
   $('#datetimepicker').datetimepicker({
     format: 'MM/DD/YYYY HH:mm',
-    minDate: new Date(),
+    // minDate: new Date(),
+    defaultDate: new Date(),
     stepping: 20,
     daysOfWeekDisabled: [0],
     showTodayButton: true,
@@ -146,6 +147,7 @@ $(document).ready(function() {
 
   function getMyReservations(page) {
     $.get(appConfig.url + appConfig.api + 'getMyReservations?token=' + token + '&userId=' + user.userId, function(reservations) {
+      console.log(reservations);
       $("#resTable").DataTable().clear();
       var table = $('#resTable').DataTable({
         columnDefs: [{
