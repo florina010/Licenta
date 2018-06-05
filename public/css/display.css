@@ -21,6 +21,12 @@ body
     margin-left: 5%;  cursor: pointer; color: red;
 }
 
+.fa-trash
+{
+    margin-left: 5%;  cursor: pointer; color: red;
+ color: red;
+}
+
 #myCars
 {
     margin-top: 25px;

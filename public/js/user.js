@@ -7,6 +7,8 @@ $(document).ready(function() {
     socket = io.connect('http://127.0.0.1:4000'),
     currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
 
+    $('#resTable thead tr').append('<th>Delete</th>')
+
   socket.on('/resAddService', function(data) {
     getAllServices();
   });
@@ -19,7 +21,6 @@ $(document).ready(function() {
     var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
     getMyReservations(currentPage);
   });
-
 
   getAllServices();
   getMyReservations(currentPage);
@@ -121,6 +122,7 @@ $(document).ready(function() {
     });
 
     socket.on('/resAddReservation', function(data) {
+      $("#newReservation").toggle();
       var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
       getMyReservations(currentPage);
     });
@@ -145,7 +147,6 @@ $(document).ready(function() {
   function getMyReservations(page) {
     $.get(appConfig.url + appConfig.api + 'getMyReservations?token=' + token + '&userId=' + user.userId, function(reservations) {
       $("#resTable").DataTable().clear();
-
       var table = $('#resTable').DataTable({
         columnDefs: [{
           width: '20%',
@@ -167,18 +168,19 @@ $(document).ready(function() {
       var j = 1;
       for (var i = 0; i < reservations.length; i++) {
 
-        var userName = reservations[i].userFirstName + ` ` + reservations[i].userLastName;
-        var userDetails = `Name: ` + reservations[i].userFirstName + ` ` + reservations[i].userLastName +
-          ` Email: ` + reservations[i].userEmail +
-          `\n Phone: ` + reservations[i].userPhone,
-          serviceDetails = `Title: ` + reservations[i].title +
-          `\n Description: ` + reservations[i].description +
-          `\n Price: ` + reservations[i].price,
-          employeeDetails = reservations[i].employeeId,
-          date = reservations[i].date.split(' ')[0],
-          hour = reservations[i].date.split(' ')[1],
-          carNr = reservations[i].carNr,
-          status = reservations[i].status;
+        var userName = reservations[i].userFirstName + ` ` + reservations[i].userLastName,
+            colorClass = colorTableRow (reservations[i].status),
+            date = reservations[i].date.split(' ')[0],
+            hour = reservations[i].date.split(' ')[1],
+            carNr = reservations[i].carNr,
+            status = reservations[i].status,
+            btn;
+
+        if (status == 'Pending') {
+          btn = "<span class='fa fa-trash' onclick='deleteReservation(" + reservations[i].resId + ")'></span>"
+        } else {
+          btn = "";
+        }
 
         table.row.add([
             j,
@@ -187,22 +189,26 @@ $(document).ready(function() {
             date,
             hour,
             status,
-            'r'
+            'r',
+            btn
           ]).draw(false)
           .nodes()
           .to$()
-          .attr('role', 'button')
-          .attr('data-toggle', 'collapse')
-          .attr('data-target', '#' + reservations[i].resId)
+          .addClass(colorClass)
+          .attr('id', 'td' + reservations[i].resId)
 
         j++;
       }
 
       for (var i = 0; i < reservations.length; i++) {
-        $("[data-target='#" + reservations[i].resId + "']").after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
+        $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
+          $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
           <p><strong>Client's email</strong> ` + reservations[i].userEmail +` <strong>Client's phone</strong> ` + reservations[i].userPhone +`</p>
           <br>
           <p><strong>Service's description</strong> ` + reservations[i].description +` <strong>Service's price</strong> ` + reservations[i].price +`</p>
+          <br>
+          <p><strong>Employee's name</strong> ` + reservations[i].employeeFirstName + ` ` + reservations[i].employeeLastName +`</p>
+          <p><strong>Employee's email</strong> ` + reservations[i].employeeEmail +` <strong>Employee's phone</strong> ` + reservations[i].employeePhone +`</p>
           <br>
           <p><strong>Car number<strong> ` + reservations[i].carNr +`</p>
           <p><strong>Mentions</strong> ` + reservations[i].mentions +`</p>
@@ -214,6 +220,29 @@ $(document).ready(function() {
       page--;
       $("#user").DataTable().page(page).draw(false);
     });
+  }
 
+  function colorTableRow (status) {
+    return (status == 'Approved') ? "info" : (status == "Rejected" ? "danger" : "white");
   }
 });
+
+function deleteReservation (resId) {
+    $("#confirmDeleteRes").modal('show');
+
+    $("#modal-btn-delete-answer").on('click', function() {
+
+      var socket = io.connect('http://127.0.0.1:4000');
+
+      socket.emit('/deleteReservation', {
+        token: token,
+        resId: resId
+      });
+
+      socket.on('/resDeleteReservation', function(data) {
+        $("#confirmDeleteRes").modal('hide');
+        var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+        getMyReservations(currentPage);
+      });
+  })
+}
