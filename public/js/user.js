@@ -22,6 +22,10 @@ $(document).ready(function() {
     getMyReservations(currentPage);
   });
 
+  socket.on('/resDeleteService', function(data) {
+    getAllServices();
+  });
+
   getAllServices();
   getMyReservations(currentPage);
 

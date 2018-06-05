@@ -91,6 +91,24 @@ io.on('connection', function(socket) {
     })
   });
 
+  socket.on('/deleteService', function(data) {
+    isValidToken(data.token).then(function(result) {
+      deleteService(data, function(res) {
+        io.emit('/resDeleteService', data);
+      });
+    }, function(error) {
+      res.json({
+        "code": 110,
+        "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
+    });
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
+
   socket.on('/editService', function(data) {
     isValidToken(data.token).then(function(result) {
       editService(data, function(res) {
@@ -267,6 +285,37 @@ function addService(data, callback) {
     query = 'INSERT INTO ?? (??) VALUES (?, ?, ?) ';
 
     connection.query(query, [table, columns, data.title, data.description, data.price], function(err, rows) {
+      connection.release();
+      if (err) {
+        console.log(err);
+      }
+      callback(rows);
+    });
+    connection.on('error', function(err) {
+      var err = ({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      callback(err);
+    });
+  });
+}
+
+function deleteService(data, callback) {
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+
+    let query, table = 'services';
+
+    query = 'DELETE FROM ?? WHERE serviceId= ?';
+
+    connection.query(query, [table, data.serviceId], function(err, rows) {
       connection.release();
       if (err) {
         console.log(err);
