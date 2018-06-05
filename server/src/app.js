@@ -180,6 +180,24 @@ io.on('connection', function(socket) {
           "status": "Your session has expired and you are loged out. - redirect la index in FE"
       })
   });
+
+  socket.on('/approveReservation', function(data) {
+    isValidToken(data.token).then(function(result) {
+      approveReservation(data, function(res) {
+        io.emit('/resApproveReservation', data);
+      });
+    }, function(error) {
+        res.json({
+            "code": 110,
+            "status": "Your session has expired and you are loged out. - redirect la index in FE"
+        })
+    });
+  }, function(error) {
+      res.json({
+          "code": 110,
+          "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
+  });
 });
 
 function editService (data, callback) {
@@ -284,6 +302,7 @@ function login(req, res) {
     hash.update(Math.random().toString(36).substr(2, 5));
     var token = hash.hex();
 
+    var email = params.email, password = params.password;
     pool.getConnection(function(err, connection) {
         if (err) {
             res.json({
@@ -292,7 +311,8 @@ function login(req, res) {
             });
             return;
         }
-        connection.query("SELECT * FROM users WHERE email='" + params.email + "' AND password='" + params.password + "'", function(err, rows) {
+        let query = "SELECT * FROM users WHERE email=" + connection.escape(email) + " AND password=" + connection.escape(password);
+        connection.query(query, function(err, rows) {
             connection.release();
             if (rows != "") {
                 if (!err) {
@@ -412,6 +432,36 @@ function addReservation (data, callback) {
       ('` + data.userId + `', '` + data.firstName + `', '` + data.lastName + `', '` + data.email + `', '` + data.phone + `', '` + data.serviceId + `', '` + data.carNr + `', '` + data.date
       + `', '` + data.mentions + `', 'Pending')`;
 
+      connection.query(query, function(err, rows) {
+        connection.release();
+          if (err) {
+              console.log(err);
+          }
+          callback(rows);
+      });
+      connection.on('error', function(err) {
+          var err = ({
+              "code": 100,
+              "status": "Error in connection database"
+          });
+          callback(err);
+      });
+  });
+}
+
+function approveReservation (data, callback) {
+  var query;
+  pool.getConnection(function(err, connection) {
+      if (err) {
+          res.json({
+              "code": 100,
+              "status": "Error in connection database"
+          });
+          return;
+      }
+
+      query = 'UPDATE reservations SET employeeId ="' + data.employeeId + '", status="' + data.status + '" WHERE resId=' + data.resId;
+      console.log(query);
       connection.query(query, function(err, rows) {
         connection.release();
           if (err) {
@@ -557,7 +607,7 @@ function getAllFreeEmployees(req, res) {
         }
 
         var queryString = `SELECT  DISTINCT users.userId, users.firstName, users.lastName, users.email, users.phone FROM users WHERE users.userId NOT IN
-(SELECT reservations.employeeId FROM reservations WHERE reservations.date = '06/04/2018 08:00') AND users.isActive = 1 AND users.admin = 1`;
+(SELECT reservations.employeeId FROM reservations WHERE reservations.date = '` + params.date + `') AND users.isActive = 1 AND users.admin = 1`;
 
         connection.query(queryString, function(err, rows) {
             connection.release();
@@ -732,6 +782,18 @@ router.get("/getAllReservations", function(req, res) {
   var token = req.query.token;
     isValidToken(token).then(function(result) {
         getAllReservations(req, res);
+    }, function(error) {
+        res.json({
+            "code": 110,
+            "status": "Your session has expired and you are loged out. - redirect la index in FE"
+        })
+    });
+});
+
+router.get("/getAllFreeEmployees", function(req, res) {
+  var token = req.query.token;
+    isValidToken(token).then(function(result) {
+        getAllFreeEmployees(req, res);
     }, function(error) {
         res.json({
             "code": 110,

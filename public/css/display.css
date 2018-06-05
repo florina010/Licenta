@@ -1,214 +1,219 @@
 @import url('http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css');
 
 @import url('//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-html {
+html
+{
     font-size: 62.5%;
 }
-body {
-    font-size: 14px;
-    background: #f5f5f5;
-    width: 100%;
-    height: 100%;
+body
+{
+    font-size: 14px;  width: 100%;  height: 100%; background: #f5f5f5;
 }
 
-#myCars {
-  margin-top: 25px;
+.fa-check
+{ cursor: pointer;
+
+    color: green;
 }
 
-#newReservation {
-  margin-top: 2%;
-  margin-left: 1%;
+.fa-times
+{
+    margin-left: 5%;  cursor: pointer; color: red;
 }
 
-ul.multiselect-container {
-  width: 200px;
+#myCars
+{
+    margin-top: 25px;
 }
 
-#datetimepicker {
-  width: 114% !important;
+#newReservation
+{
+    margin-top: 2%;  margin-left: 1%;
 }
 
-#car button.multiselect {
-  width: 208%;
+ul.multiselect-container
+{
+    width: 200px;
 }
 
-div.col-sm-4 div.input-group button.multiselect:first-of-type {
-  width: 240%;
+#datetimepicker
+{
+    width: 114% !important;
 }
 
-[name='registerForm'], [name='addUserForm'] {
-  width: 100%;
-  height: 350px;
-  margin: 0 auto;
+#car button.multiselect
+{
+    width: 208%;
 }
 
-[name='editProfileForm']{
-  width: 100%;
-  height: 500px;
+div.col-sm-4 div.input-group button.multiselect:first-of-type
+{
+    width: 240%;
 }
 
-[name='changePassForm'] {
-  width: 100%;
-  height: 400px;
+[name='registerForm'],
+[name='addUserForm']
+{
+    width: 100%;  height: 350px;  margin: 0 auto;
+}
+
+[name='editProfileForm']
+{
+    width: 100%;  height: 500px;
+}
+
+[name='changePassForm']
+{
+    width: 100%;  height: 400px;
 }
 
 
-[name='addResForm'] input {
-  padding: 3px 8px;
-  background: 0;
-  border: 0;
-  border-bottom: 2px solid #000;
-  font-size: 18px;
-  letter-spacing: 1px;
-  margin-bottom: 5px;
-  color: #000;
-  width: 120% !important;
+[name='addResForm'] input
+{ font-size: 18px;  width: 120% !important; margin-bottom: 5px;
+    padding: 3px 8px;  letter-spacing: 1px;  color: #000;  border: 0;  border-bottom: 2px solid #000;  background: 0;
 }
 
-[name='editProfileForm'] input, [name='changePassForm'] input, [name='addUserForm'] input, [name='editUserForm'] input, [name='addServiceForm'] input{
-  padding: 5px 10px;
-  background: 0;
-  border: 0;
-  border-bottom: 2px solid #000;
-  font-size: 22px;
-  letter-spacing: 1px;
-  margin-bottom: 5px;
-  color: #000;
+[name='editProfileForm'] input,
+[name='changePassForm'] input,
+[name='addUserForm'] input,
+[name='editUserForm'] input,
+[name='addServiceForm'] input
+{ font-size: 22px;  margin-bottom: 5px;
+    padding: 5px 10px;  letter-spacing: 1px;  color: #000; border: 0;  border-bottom: 2px solid #000;  background: 0;
 }
 
-[name='changePassForm'] input {
-  height: 10%;
+[name='changePassForm'] input
+{
+    height: 10%;
 }
 
-[name='editProfile'], [name='changePassForm'] button {
-  width: 30%;
+[name='editProfile'],
+[name='changePassForm'] button
+{
+    width: 30%;
 }
 
-[name='editProfileForm'] input, [name='changePassForm'] input {
-  width: 45%;
-  height: 8%;
+[name='editProfileForm'] input,
+[name='changePassForm'] input
+{
+    width: 45%;  height: 8%;
 }
 
-[name='addUserForm'] input {
-  width: 98%;
-  height: 10%;
+[name='addUserForm'] input
+{
+    width: 98%;  height: 10%;
 }
 
-[name='editProfileForm'] label, [name='changePassForm'] label, [name='addUserForm'] label, [name='editUserForm'] label:not(.btn), [name='addServiceForm'] label {
-  background: 0;
-  border: 0;
-  font-size: 17px;
-  letter-spacing: 1px;
-  margin-bottom: 5px;
-  color: #000;
-}
-
-[name='editProfileForm'] i, [name='changePassForm'] i {
-  right: 52%;
-}
-
-[name='registerForm']  input {
-    width: 100%;
-    height: 15%;
-    padding: 5px 10px;
+[name='editProfileForm'] label,
+[name='changePassForm'] label,
+[name='addUserForm'] label,
+[name='editUserForm'] label:not(.btn),
+[name='addServiceForm'] label
+{ font-size: 17px;  margin-bottom: 5px;  letter-spacing: 1px;  color: #000; border: 0;
     background: 0;
-    border: 0;
-    border-bottom: 2px solid #000;
-    font-size: 22px;
-    letter-spacing: 1px;
-    margin-bottom: 5px;
-    color: #000;
 }
 
-[name='registerForm'] label {
-  background: 0;
-  border: 0;
-  font-size: 22px;
-  letter-spacing: 1px;
-  margin-bottom: 5px;
-  color: #000;
+[name='editProfileForm'] i,
+[name='changePassForm'] i
+{
+    right: 52%;
 }
 
-[name='addServiceForm'] div.form-group:first-child {
-  margin-left: 8px;
-  margin-top: 8px;
+[name='registerForm']  input
+{ font-size: 22px;
+
+    width: 100%;  height: 15%;  margin-bottom: 5px;  padding: 5px 10px;  letter-spacing: 1px;  color: #000; border: 0;  border-bottom: 2px solid #000;  background: 0;
 }
 
-#target4 div.row:last-child {
-   margin-left: 0px;
+[name='registerForm'] label
+{ font-size: 22px;  margin-bottom: 5px;  letter-spacing: 1px;  color: #000; border: 0;
+    background: 0;
 }
 
-[name='addServiceForm'] input {
-  font-size: 20px;
+[name='addServiceForm'] div.form-group:first-child
+{ margin-top: 8px;
+    margin-left: 8px;
 }
 
-[name='addServiceForm'] .input-group {
-  float: left !important;
-  padding-left: 15px !important;
-  padding-right: 15px !important;
+#target4 div.row:last-child
+{
+    margin-left: 0;
 }
 
-[name='addServiceForm'] .input-group .form-control-feedback {
-    position: static;
-    display: inline-block;
+[name='addServiceForm'] input
+{
+    font-size: 20px;
 }
 
-[name='addServiceForm'] textarea {
-  width: 30%;
-  font-size: 20px;
+[name='addServiceForm'] .input-group
+{
+    float: left !important;  padding-right: 15px !important; padding-left: 15px !important;
 }
 
-.container {
-  width: 100%;
-  height: 100%;
-  background-color: #51505a;
+[name='addServiceForm'] .input-group .form-control-feedback
+{
+    position: static;  display: inline-block;
 }
-.nopaddingleft {
+
+[name='addServiceForm'] textarea
+{ font-size: 20px;
+
+    width: 30%;
+}
+
+.container
+{
+    width: 100%;  height: 100%;  background-color: #51505a;
+}
+.nopaddingleft
+{
     padding-left: 0;
 }
-.nopaddingright {
+.nopaddingright
+{
     padding-right: 0;
 }
-.overflownone {
+.overflownone
+{
     overflow: hidden!important;
 }
 
-.admin-menu li {
-  height: 50px;
-  font-size: 18px;
+.admin-menu li
+{ font-size: 18px;
+
+    height: 50px;
 }
 
-.row .col-md-9 {
-  font-size: 16px;
+.row .col-md-9
+{
+    font-size: 16px;
 }
 
-#target5, #target6 {
-  background-color: #51505a !important;
-  border: none !important;
+#target5,
+#target6
+{ border: none !important;
+    background-color: #51505a !important;
 }
 
-.modal-body .col-xs-4 {
-  float: none;
+.modal-body .col-xs-4
+{
+    float: none;
 }
 
-.information {
+.information
+{ position: relative;  width: 15%; height: 949px;
+
     background: #192a31;
-    position: relative;
-    height: 949px;
-    width: 15%;
 }
 
-.information h3 {
-    font-size: 34px;
-    font-size: 3.4rem;
-    font-family: "roboto", sans-serif;
-    font-weight: 500;
-    color: #FFF;
-    padding: 0 15px;
+.information h3
+{ font-family: 'roboto', sans-serif;
+    font-size: 34px;      font-size: 3.4rem;  font-weight: 500;  padding: 0 15px; color: #fff;
 }
 
 input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+input[type=number]::-webkit-outer-spin-button
+{ margin: 0;
+
+    -webkit-appearance: none;
 }

@@ -15,6 +15,12 @@ $(document).ready(function() {
     getAllServices();
   });
 
+  socket.on('/resApproveReservation', function(data) {
+    var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+    getMyReservations(currentPage);
+  });
+
+
   getAllServices();
   getMyReservations(currentPage);
 
