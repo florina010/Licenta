@@ -12,14 +12,16 @@ $(document).ready(function() {
     socket = io.connect('http://127.0.0.1:4000');
 
   socket.on('/resAddService', function(data) {
-    getAllServices();
+    var page = $("#pagination li.active a")[0].innerHTML;
+    getAllServices(page);
   });
 
   socket.on('/resEditService', function(data) {
-    getAllServices();
+    var page = $("#pagination li.active a")[0].innerHTML;
+    getAllServices(page);
   });
 
-  getAllServices();
+  getAllServices(1);
 
   $("[name='addServiceForm']").formValidation({
     framework: 'bootstrap',
@@ -64,12 +66,12 @@ $(document).ready(function() {
     if ($("[name='addServiceForm']").data('formValidation').isValid()) {
       $("[name='submitAdd']").attr('disabled', false);
     }
-  }).on('submit', function(e, data) {
+  }).off().on('submit', function(e, data) {
     e.preventDefault();
     var title = $("[name='sTitle']").val(),
-      description = $("[name='sDescription']").val(),
-      price = $("[name='sPrice']").val(),
-      socket = io.connect('http://127.0.0.1:4000');
+        description = $("[name='sDescription']").val(),
+        price = $("[name='sPrice']").val(),
+        socket = io.connect('http://127.0.0.1:4000');
     socket.emit('/addService', {
       token: token,
       title: title,
@@ -81,12 +83,13 @@ $(document).ready(function() {
 
 
 
-function getAllServices() {
+function getAllServices(page) {
   $.get(appConfig.url + appConfig.api + 'getAllServices?token=' + token, function(services) {
     $('#pagination').pagination({
       dataSource: services,
       totalNumber: services.length,
       pageSize: 10,
+      pageNumber: page,
       autoHidePrevious: true,
       autoHideNext: true,
       callback: function(data, pagination) {
@@ -158,11 +161,11 @@ function getAllServices() {
             if ($("[name='editServiceForm']").data('formValidation').isValid()) {
               $("[name='submitEdit']").attr('disabled', false);
             }
-          }).on('submit', function(e, data) {
+          }).off().on('submit', function(e, data) {
             e.preventDefault();
-            var title = $("[name='eTitle']").val(),
-              description = $("[name='eDescription']").val(),
-              price = $("[name='ePrice']").val(),
+            var title = $("#" + e.target.id + " [name='eTitle']").val(),
+              description = $("#" + e.target.id + " [name='eDescription']").val(),
+              price = $("#" + e.target.id + " [name='ePrice']").val(),
               serviceId = e.target.id,
               socket = io.connect('http://127.0.0.1:4000');
             socket.emit('/editService', {
@@ -192,7 +195,8 @@ function deleteService (serviceId) {
 
       socket.on('/resDeleteService', function(data) {
         $("#confirmDeleteRes").modal('hide');
-        getAllServices();
+        var page = $("#pagination li.active a")[0].innerHTML;
+        getAllServices(page);
       });
   })
 }

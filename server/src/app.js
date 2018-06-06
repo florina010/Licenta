@@ -678,9 +678,7 @@ function getMyReservations(req, res) {
 
     let params = req.query, query;
 
-    query = `SELECT reservations.*, services.description, services.price, services.title, users.firstName as employeeFirstName, users.lastName as employeeLastName,
-        users.email as employeeEmail, users.phone as employeePhone FROM reservations  JOIN services ON reservations.serviceId = services.serviceId JOIN users ON
-        reservations.employeeId = users.userId WHERE reservations.userId = ?`;
+    query = `SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId WHERE reservations.userId = ?`;
 
     connection.query(query, [params.userId], function(err, rows) {
       connection.release();
@@ -709,9 +707,7 @@ function getAllReservations(req, res) {
       return;
     }
 
-    let query = `SELECT reservations.*, services.description, services.price, services.title, users.firstName as employeeFirstName, users.lastName as employeeLastName,
-       users.email as employeeEmail, users.phone as employeePhone FROM reservations  JOIN services ON reservations.serviceId = services.serviceId JOIN users ON
-       reservations.employeeId = users.userId `
+    let query = `SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId`
 
     connection.query(query, function(err, rows) {
       connection.release();
@@ -861,10 +857,9 @@ function logout(req, res) {
       });
       return;
     }
-    connection.query("UPDATE user SET token = '' WHERE email ='" + params.email + "'", function(err, rows) {
+    connection.query("UPDATE users SET token = '' WHERE email ='" + params.email + "'", function(err, rows) {
       connection.release();
       if (!err) {
-
         res.json(rows);
       }
     });
@@ -907,6 +902,18 @@ router.post("/changePassword", function(req, res) {
   var token = req.body.token;
   isValidToken(token).then(function(result) {
     changePassword(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
+});
+
+router.post("/logout", function(req, res) {
+  var token = req.body.token;
+  isValidToken(token).then(function(result) {
+    logout(req, res);
   }, function(error) {
     res.json({
       "code": 110,

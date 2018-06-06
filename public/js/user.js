@@ -4,10 +4,11 @@ $(document).ready(function() {
   var user = JSON.parse(sessionStorage.getItem('user')),
     token = sessionStorage.getItem('token'),
     MAX_OPTIONS = 5,
+    employees = [],
     socket = io.connect('http://127.0.0.1:4000'),
     currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
 
-    $('#resTable thead tr').append('<th>Delete</th>')
+    $('#resTable thead tr').append('<th>Delete</th>');
 
   socket.on('/resAddService', function(data) {
     getAllServices();
@@ -26,6 +27,24 @@ $(document).ready(function() {
     getAllServices();
   });
 
+  socket.on('/resDeleteReservation', function(data) {
+    if (data.token == token) {
+      $("#confirmDeleteRes").modal('hide');
+      var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+      getMyReservations(currentPage);
+    }
+  });
+
+  $("#selectList").on('change', function () {
+    var selectedOption = $("#selectList option:selected"),
+        description = selectedOption[0].getAttribute('data-description'),
+        price = selectedOption[0].getAttribute('data-price');
+
+      $("[name='rDescription']").val(description);
+      $("[name='rPrice']").val(price);
+  });
+
+  getAllEmployees(employees);
   getAllServices();
   getMyReservations(currentPage);
 
@@ -135,23 +154,17 @@ $(document).ready(function() {
 
   function getAllServices() {
     $.get(appConfig.url + appConfig.api + 'getAllServices?token=' + token, function(services) {
+      $("[name='rDescription']").val(services[0].description);
+      $("[name='rPrice']").val(services[0].price);
       for (var i = 0; i < services.length; i++) {
-        var info = `Description: ` + services[i].description +
-          `\n Price: ` + services[i].price,
-          option = '<option value="' + services[i].serviceId + '" title="' + info + '">' + services[i].title + '</option>';
+        var option = '<option value="' + services[i].serviceId + '" data-description="' + services[i].description +'" data-price="' + services[i].price + '">' + services[i].title + '</option>';
         $("#selectList").append(option)
       }
-
-      $('#selectList').multiselect({
-        maxHeight: 350,
-        enableFiltering: true,
-      });
     });
   }
 
   function getMyReservations(page) {
     $.get(appConfig.url + appConfig.api + 'getMyReservations?token=' + token + '&userId=' + user.userId, function(reservations) {
-      console.log(reservations);
       $("#resTable").DataTable().clear();
       var table = $('#resTable').DataTable({
         columnDefs: [{
@@ -173,7 +186,6 @@ $(document).ready(function() {
 
       var j = 1;
       for (var i = 0; i < reservations.length; i++) {
-
         var userName = reservations[i].userFirstName + ` ` + reservations[i].userLastName,
             colorClass = colorTableRow (reservations[i].status),
             date = reservations[i].date.split(' ')[0],
@@ -206,22 +218,37 @@ $(document).ready(function() {
         j++;
       }
 
-      for (var i = 0; i < reservations.length; i++) {
-        $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
+      for (let i = 0; i < reservations.length; i++) {
+        if (reservations[i].employeeId) {
+          for (let j = 0; j < employees.length; j++) {
+            if (employees[j].userId == reservations[i].employeeId) {
+              $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
+              $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
+              <p><strong>Client's email</strong> ` + reservations[i].userEmail +` <strong>Client's phone</strong> ` + reservations[i].userPhone +`</p>
+              <br>
+              <p><strong>Service's description</strong> ` + reservations[i].description +` <strong>Service's price</strong> ` + reservations[i].price +`</p>
+              <br>
+              <p><strong>Employee's name</strong> ` + employees[j].firstName + ` ` + employees[j].lastName +`</p>
+              <p><strong>Employee's email</strong> ` + employees[j].email +` <strong>Employee's phone</strong> ` + employees[j].phone +`</p>
+              <br>
+              <p><strong>Car number<strong> ` + reservations[i].carNr +`</p>
+              <p><strong>Mentions</strong> ` + reservations[i].mentions +`</p>
+              </div></td></tr>`)
+              j = employees.length;
+            }
+          }
+        } else {
+          $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
           $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
           <p><strong>Client's email</strong> ` + reservations[i].userEmail +` <strong>Client's phone</strong> ` + reservations[i].userPhone +`</p>
           <br>
           <p><strong>Service's description</strong> ` + reservations[i].description +` <strong>Service's price</strong> ` + reservations[i].price +`</p>
           <br>
-          <p><strong>Employee's name</strong> ` + reservations[i].employeeFirstName + ` ` + reservations[i].employeeLastName +`</p>
-          <p><strong>Employee's email</strong> ` + reservations[i].employeeEmail +` <strong>Employee's phone</strong> ` + reservations[i].employeePhone +`</p>
-          <br>
           <p><strong>Car number<strong> ` + reservations[i].carNr +`</p>
           <p><strong>Mentions</strong> ` + reservations[i].mentions +`</p>
-        </div></td></tr>`)
+          </div></td></tr>`)
+        }
       }
-
-
     }).done(function() {
       page--;
       $("#user").DataTable().page(page).draw(false);
@@ -244,11 +271,13 @@ function deleteReservation (resId) {
         token: token,
         resId: resId
       });
-
-      socket.on('/resDeleteReservation', function(data) {
-        $("#confirmDeleteRes").modal('hide');
-        var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
-        getMyReservations(currentPage);
-      });
   })
+}
+
+function getAllEmployees(employees) {
+  $.get(appConfig.url + appConfig.api + 'getAllEmployees?token=' + token, function(employeess) {
+      for (let i = 0; i < employeess.length; i++) {
+        employees.push(employeess[i]);
+      }
+  });
 }

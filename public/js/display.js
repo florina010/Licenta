@@ -33,6 +33,18 @@ $(document).ready(function() {
       }
     });
 
+    $("[data-target-id='target7']").on('click', function() {
+      $.post(appConfig.url + appConfig.api + 'logout', {
+        token: token,
+        email: user.email
+      }).done(function(data) {
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('user');
+        window.location.href = "index.html";
+      });
+  });
+
+
   if (user.admin == 2) {
     $("[name='editProfileForm'] div:nth-child(4)").css('display', 'none');
     var scriptEmp = document.createElement('script'), scriptRes = document.createElement('script');
@@ -151,7 +163,7 @@ $(document).ready(function() {
       .removeAttr('id')
       .insertBefore($template),
       $option = $clone.find('[name="editProfileForm"] [name="cars[]"]');
-    $option.val('');
+    $option.attr('value', '');
 
     $("[name='editProfileForm']").formValidation('addField', $option);
     var currentHeight = $("[name='editProfileForm']").height();
@@ -194,12 +206,12 @@ $(document).ready(function() {
       lastName = $("[name='eLastName']").val(),
       email = $("[name='eEmail']").val(),
       phone = $("[name='ePhoneNumber']").val(),
-      cars = $("[name='editProfileForm']").find('#myCars [name="cars[]"]'),
+      cars = $("[name='editProfileForm']").find(' [name="cars[]"]'),
       i = 0,
       carsArr = [],
       carsObj = {},
       socket = io.connect('http://127.0.0.1:4000');
-
+      console.log(cars);
     $.map(cars, function(car) {
       if (car.value) {
         carsArr.push({
@@ -214,15 +226,15 @@ $(document).ready(function() {
       cars: carsArr
     };
 
-    socket.emit('/editProfile', {
-      token: token,
-      id: user.userId,
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      phone: phone,
-      cars: JSON.stringify(carsObj)
-    });
+    // socket.emit('/editProfile', {
+    //   token: token,
+    //   id: user.userId,
+    //   firstName: firstName,
+    //   lastName: lastName,
+    //   email: email,
+    //   phone: phone,
+    //   cars: JSON.stringify(carsObj)
+    // });
 
   });
 
@@ -333,8 +345,7 @@ $(document).ready(function() {
           .removeAttr('id')
           .insertBefore($template),
           $option = $clone.find('[name="editProfileForm"] [name="cars[]"]');
-        $option.val(user.cars[i].number);
-
+       $option.val(user.cars[i].number);
         $("[name='editProfileForm']").formValidation('addField', $option);
         $("[name='editProfileForm']").css('height', currentHeight + 40);
       }
@@ -345,4 +356,63 @@ $(document).ready(function() {
       $("[name='editProfileForm']").css('height', currentHeight);
     }
   }
+
+  $(".addButton").on('click', function () {
+    var currentHeight = $("[name='editProfileForm']").height();
+    var $template = $('[name="editProfileForm"] #eCarsTemplate'),
+      $clone = $template
+      .clone()
+      .removeClass('hide')
+      .removeAttr('id')
+      .insertBefore($template),
+      $option = $clone.find('[name="editProfileForm"] [name="cars[]"]');
+    $("[name='editProfileForm']").formValidation('addField', $option);
+    $("[name='editProfileForm']").css('height', currentHeight + 40);
+
+
+      if ($("[name='editProfileForm']").find(':visible[name="cars[]"]').length >= MAX_OPTIONS) {
+        $("[name='editProfileForm']").find('.addButton').attr('disabled', 'disabled');
+      }
+      $("[name='editProfileForm']").formValidation('revalidateField', 'cars[]');
+
+  });
+
+  $(".removeButton").on('click', function () {
+    console.log(8);
+    var $row = $(this).parents('.form-group'),
+      $option = $row.find('[name="cars[]"]');
+    $row.remove();
+
+    var currentHeight = $("[name='editProfileForm']").height();
+    $("[name='editProfileForm']").css('height', currentHeight - 40);
+
+  });
+
+
+  // function addCars(carsNr) {
+  //   var currentHeight = $("[name='editProfileForm']").height();
+  //   if (carsNr > 1) {
+  //     for (var i = 0; i < carsNr; i++) {
+  //       console.log(user.cars[i]);
+  //       var $template = $('[name="editProfileForm"] #eCarsTemplate'),
+  //         $clone = $template
+  //         .clone()
+  //         .removeClass('hide')
+  //         .removeAttr('id')
+  //         .insertBefore($template),
+  //         $option = $clone.find('[name="editProfileForm"] [name="cars[]"]');
+  //       $option.val('alb');
+  //
+  //       $("[name='editProfileForm']").formValidation('addField', $option);
+  //       var currentHeight = $("[name='editProfileForm']").height();
+  //       $("[name='editProfileForm']").css('height', currentHeight + 40);
+  //     }
+  //   } else if (carsNr == 1) {
+  //     $("[name='editProfileForm'] [name='cars[]']:first").val(user.cars[0].number);
+  //     // $("[name='editProfileForm'] [name='cars[]']:first").val(user.cars[0].number);
+  //   } else {
+  //     $("[name='editProfileForm'] .form-group:nth-child(4)").css('display', 'none');
+  //     $("[name='editProfileForm']").css('height', currentHeight);
+  //   }
+  // }
 });
