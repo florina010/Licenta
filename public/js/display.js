@@ -1,52 +1,5 @@
 "use strict";
 
-// 
-// if ('serviceWorker' in navigator) {
-//   var lastStatus = true;
-//   onlineCheck();
-//
-//   function onlineCheck() {
-//     if ((navigator.onLine === true) && (lastStatus === false)) {
-//       var socket = io.connect('http://127.0.0.1:4000');
-//       console.log('online')
-//     } else if ((navigator.onLine === false) && (lastStatus === true)) {
-//       var socket = io.connect('http://127.0.0.1:4000');
-//       socket.close();
-//       console.log('offline')
-//       lastStatus = false;
-//     }
-//     setTimeout(function() {
-//       onlineCheck()
-//     }, 5000);
-//   }
-// }
-//
-//
-//
-// // Function to perform HTTP request
-// var get = function(url) {
-//   return new Promise(function(resolve, reject) {
-//
-//     var xhr = new XMLHttpRequest();
-//     xhr.onreadystatechange = function() {
-//       if (xhr.readyState === XMLHttpRequest.DONE) {
-//         if (xhr.status === 200) {
-//           var result = xhr.responseText
-//           result = JSON.parse(result);
-//           resolve(result);
-//         } else {
-//           reject(xhr);
-//         }
-//       }
-//     };
-//
-//     xhr.open("GET", url, true);
-//     xhr.send();
-//
-//   });
-// };
-
-
 $(document).ready(function() {
   var navItems = $('.admin-menu li > a');
   var navListItems = $('.admin-menu li');
