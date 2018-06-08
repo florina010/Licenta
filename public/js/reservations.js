@@ -234,7 +234,8 @@ function displayApproveModal(resId, date, action) {
     $.ajax({
         url: appConfig.url + appConfig.api + 'getAllEmployees?token=' + token,
         type: 'GET',
-        //  cache: true,
+         cache: true,
+         contentType: "application/json; charset=utf-8",
         dataType: 'json',
         success: function(employeess) {
           for (let i = 0; i < employeess.length; i++) {

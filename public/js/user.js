@@ -342,10 +342,22 @@ function rate(resId) {
 }
 
 function getAllEmployees(employees) {
-  var token = sessionStorage.getItem('token');
-  $.get(appConfig.url + appConfig.api + 'getAllEmployees?token=' + token, function(employeess) {
-    for (let i = 0; i < employeess.length; i++) {
-      employees.push(employeess[i]);
-    }
-  });
+  $.ajax({
+      url: appConfig.url + appConfig.api + 'getAllEmployees',
+      type: 'GET',
+      cache: true,
+      dataType: 'json',
+      data: { token: token},
+      beforeSend: function(xhr){
+         xhr.withCredentials = true;
+      },
+      success: function(employeess) {
+        for (let i = 0; i < employeess.length; i++) {
+          employees.push(employeess[i]);
+        }
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    })
 }

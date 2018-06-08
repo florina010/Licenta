@@ -1,33 +1,13 @@
-var express = require('express'),
-  http = require('http');
+
+var express = require('express');
+var cors = require('cors');
 var app = express();
+app.use(cors());
 
-var server = require('http').createServer(app);
-var io = require('socket.io').listen(server);
-var port = process.env.PORT || 4000;
-
-server.listen(port, function() {
-  console.log('Server listening at port %d', port);
-});
-
-var router = express.Router();
 var mysql = require('mysql');
 var bodyParser = require("body-parser");
 var bcrypt = require('bcryptjs');
 var sha256 = require('js-sha256');
-var Holidays = require('date-holidays');
-
-var year = new Date().getFullYear();
-var nextyear = year + 1;
-var fileUpload = require('express-fileupload');
-var moment = require('moment');
-hd = new Holidays('RO');
-
-hd.getHolidays(year);
-hd.getHolidays(nextyear);
-
-var legalhol = hd.getHolidays(year).concat(hd.getHolidays(nextyear));
-
 var pool = mysql.createPool({
   connectionLimit: 100, //important
   host: 'localhost',
@@ -37,30 +17,125 @@ var pool = mysql.createPool({
   debug: false
 });
 
-
-
 app.use(bodyParser.urlencoded({
   extended: false
 }));
 app.use(bodyParser.json());
-app.use(fileUpload());
 
-app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', "*");
-  res.header('Access-Control-Allow-Methods', "GET, PUT, POST, DELETE");
-  res.header('Access-Control-Allow-Headers', "'Origin', 'X-Requested-With', 'Content-Type', 'Accept'");
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Headers', "*");
+  if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+    return res.status(200).json({});
+  }
   next();
 });
 
-var router = express.Router();
-
-// Router middleware, mentioned it before defining routes.
-
-router.use(function(req, res, next) {
-  next();
+app.post("/api/login", function(req, res) {
+  login(req, res);
 });
 
-// Provide all routes here, this is for Home page.
+app.post("/api/changePassword", function(req, res) {
+  var token = req.body.token;
+  isValidToken(token).then(function(result) {
+    changePassword(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
+});
+
+app.post("/api/logout", function(req, res) {
+  var token = req.body.token;
+  isValidToken(token).then(function(result) {
+    logout(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
+});
+
+app.get("/api/getAllEmployees", function(req, res) {
+  var token = req.query.token;
+  isValidToken(token).then(function(result) {
+    getAllEmployees(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
+});
+
+app.get("/api/getAllServices", function(req, res) {
+  var token = req.query.token;
+  isValidToken(token).then(function(result) {
+    getAllServices(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
+});
+
+app.get("/api/getMyReservations", function(req, res) {
+  var token = req.query.token;
+  isValidToken(token).then(function(result) {
+    getMyReservations(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
+});
+
+app.get("/api/getAllReservations", function(req, res) {
+  var token = req.query.token;
+  isValidToken(token).then(function(result) {
+    getAllReservations(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
+});
+
+app.get("/api/getAllFreeEmployees", function(req, res) {
+  var token = req.query.token;
+  isValidToken(token).then(function(result) {
+    getAllFreeEmployees(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
+});
+
+// app.use(function(req, res, next) {
+//   res.header('Access-Control-Allow-Origin', "*");
+//   res.header('Access-Control-Allow-Methods', "GET, PUT, POST, DELETE");
+//   res.header('Access-Control-Allow-Headers', "'Origin', 'X-Requested-With', 'Content-Type', 'Accept'");
+//   next();
+// });
+
+var server = require('http').createServer(app);
+var io = require('socket.io').listen(server);
+var port = process.env.PORT || 4000;
+
+server.listen(port, function() {
+  console.log('Server listening at port %d', port);
+});
+
 io.on('connection', function(socket) {
   socket.on('/register', function(data) {
     register(data, function(res) {
@@ -254,8 +329,9 @@ io.on('connection', function(socket) {
   });
 });
 
-function editService(data, callback) {
 
+
+function editService(data, callback) {
   pool.getConnection(function(err, connection) {
     if (err) {
       res.json({
@@ -923,130 +999,4 @@ function logout(req, res) {
 }
 
 
-app.use(bodyParser.urlencoded({
-  extended: false
-}));
-app.use(bodyParser.json());
-app.use(fileUpload());
-
-app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', "*");
-  res.header('Access-Control-Allow-Methods', "GET, PUT, POST, DELETE");
-  res.header('Access-Control-Allow-Headers', "'Origin', 'X-Requested-With', 'Content-Type', 'Accept'");
-  next();
-});
-
-var router = express.Router();
-
-router.use(function(req, res, next) {
-  console.log("/" + req.method);
-  next();
-});
-
-router.post("/login", function(req, res) {
-  login(req, res);
-});
-
-router.post("/changePassword", function(req, res) {
-  var token = req.body.token;
-  isValidToken(token).then(function(result) {
-    changePassword(req, res);
-  }, function(error) {
-    res.json({
-      "code": 110,
-      "status": "Your session has expired and you are loged out. - redirect la index in FE"
-    })
-  });
-});
-
-router.post("/logout", function(req, res) {
-  var token = req.body.token;
-  isValidToken(token).then(function(result) {
-    logout(req, res);
-  }, function(error) {
-    res.json({
-      "code": 110,
-      "status": "Your session has expired and you are loged out. - redirect la index in FE"
-    })
-  });
-});
-
-router.get("/getAllEmployees", function(req, res) {
-  var token = req.query.token;
-  isValidToken(token).then(function(result) {
-    getAllEmployees(req, res);
-  }, function(error) {
-    res.json({
-      "code": 110,
-      "status": "Your session has expired and you are loged out. - redirect la index in FE"
-    })
-  });
-});
-
-router.get("/getAllServices", function(req, res) {
-  var token = req.query.token;
-  isValidToken(token).then(function(result) {
-    getAllServices(req, res);
-  }, function(error) {
-    res.json({
-      "code": 110,
-      "status": "Your session has expired and you are loged out. - redirect la index in FE"
-    })
-  });
-});
-
-router.get("/getMyReservations", function(req, res) {
-  var token = req.query.token;
-  isValidToken(token).then(function(result) {
-    getMyReservations(req, res);
-  }, function(error) {
-    res.json({
-      "code": 110,
-      "status": "Your session has expired and you are loged out. - redirect la index in FE"
-    })
-  });
-});
-
-router.get("/getAllReservations", function(req, res) {
-  var token = req.query.token;
-  isValidToken(token).then(function(result) {
-    getAllReservations(req, res);
-  }, function(error) {
-    res.json({
-      "code": 110,
-      "status": "Your session has expired and you are loged out. - redirect la index in FE"
-    })
-  });
-});
-
-router.get("/getAllFreeEmployees", function(req, res) {
-  var token = req.query.token;
-  isValidToken(token).then(function(result) {
-    getAllFreeEmployees(req, res);
-  }, function(error) {
-    res.json({
-      "code": 110,
-      "status": "Your session has expired and you are loged out. - redirect la index in FE"
-    })
-  });
-});
-
-router.get("/checkDate", function(req, res) {
-  var token = req.query.token;
-  isValidToken(token).then(function(result) {
-    checkDate(req, res);
-  }, function(error) {
-    res.json({
-      "code": 110,
-      "status": "Your session has expired and you are loged out. - redirect la index in FE"
-    })
-  });
-});
-
-app.use("/api", router);
-
-// Listen to this Port
-
-app.listen(3000, function() {
-  console.log("Live at Port 3000");
-});
+app.listen(3000, () => console.log('Example app listening on port 3000!'))

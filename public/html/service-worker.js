@@ -4,8 +4,9 @@ var cacheName = 'vv';
 var cacheFiles = [
 	'../js/display.js',
 	'../css/display.css',
+	'./display.html'
 ]
-
+const RUNTIME = 'runtime';
 self.addEventListener('install', function (e) {
     console.log('[ServiceWorker] Installed');
     // e.waitUntil Delays the event until the Promise is resolved
@@ -53,3 +54,12 @@ self.addEventListener('fetch', function(event) {
             })
     );
 });
+
+
+// self.addEventListener('fetch', function(event) {
+//   event.respondWith(
+//     fetch(event.request).catch(function() {
+//       return caches.match(event.request);
+//     })
+//   );
+// });
