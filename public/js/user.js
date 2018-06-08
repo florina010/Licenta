@@ -160,6 +160,9 @@ $(document).ready(function() {
       url: appConfig.url + appConfig.api + 'getAllServices?token=' + token,
       type: 'GET',
       dataType: 'json',
+      beforeSend: function(xhr){
+         xhr.withCredentials = true;
+      },
       success: function(services) {
         $("[name='rDescription']").val(services[0].description);
         $("[name='rPrice']").val(services[0].price);
@@ -174,7 +177,16 @@ $(document).ready(function() {
   }
 
   function getMyReservations(page) {
-    $.get(appConfig.url + appConfig.api + 'getMyReservations?token=' + token + '&userId=' + user.userId, function(reservations) {
+    $.ajax({
+      url: appConfig.url + appConfig.api + 'getMyReservations',
+      data: { token: token,
+              userId: user.userId},
+      type: 'get',
+      beforeSend: function(xhr){
+         xhr.withCredentials = true;
+      },
+      success: function(reservations) {
+  //  $.get(appConfig.url + appConfig.api + 'getMyReservations?token=' + token + '&userId=' + user.userId, function(reservations) {
       $("#resTable").DataTable().clear();
       var table = $('#resTable').DataTable({
         columnDefs: [{
@@ -288,7 +300,11 @@ $(document).ready(function() {
           </div></td></tr>`)
         }
       }
-    }).done(function() {
+    },error: function(xhr, ajaxOptions, thrownError){
+      console.log(xhr);
+      console.log(thrownError);
+          },
+  }).done(function() {
       page--;
       $("#user").DataTable().page(page).draw(false);
     });

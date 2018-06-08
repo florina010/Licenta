@@ -1,14 +1,5 @@
 "use strict";
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('../html/service-worker.js', {scope: 'display.js'})
-  .then(function(reg) {
-    // registration worked
-    console.log('Registration succeeded. Scope is ' + reg.scope);
-  }).catch(function(error) {
-    // registration failed
-    console.log('Registration failed with ' + error);
-  });
-}
+
 $(document).ready(function() {
   var navItems = $('.admin-menu li > a');
   var navListItems = $('.admin-menu li');
@@ -41,6 +32,29 @@ $(document).ready(function() {
       sessionStorage.setItem('user', JSON.stringify(user));
     }
   });
+
+
+  if ('serviceWorker' in navigator) {
+    var lastStatus = true;
+    onlineCheck();
+
+    function onlineCheck() {
+      if ((navigator.onLine === true) && (lastStatus === false)) {
+        location.reload();
+        console.log('on');
+      } else if ((navigator.onLine === false) && (lastStatus === true)) {
+
+        console.log('off');
+        lastStatus = false;
+      }
+      setTimeout(function() {
+        onlineCheck()
+      }, 5000);
+    }
+  }
+
+
+
 
   $("[data-target-id='target7']").on('click', function() {
     $.post(appConfig.url + appConfig.api + 'logout', {

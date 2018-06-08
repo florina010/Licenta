@@ -91,6 +91,9 @@ function getAllServices(page) {
     type: 'GET',
   //  cache: true,
     dataType: 'json',
+    beforeSend: function(xhr){
+       xhr.withCredentials = true;
+    },
     success: function(services) {
       $('#pagination').pagination({
         dataSource: services,
