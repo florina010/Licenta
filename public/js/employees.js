@@ -95,43 +95,51 @@ $(document).ready(function() {
 });
 
   function populateTable(page) {
-    $.get(appConfig.url + appConfig.api + 'getAllEmployees?token=' + token, function(employees) {
-      $("#userTable").DataTable().clear();
+    $.ajax({
+      url: appConfig.url + appConfig.api + 'getAllEmployees?token=' + token,
+      type: 'GET',
+    //  cache: true,
+      dataType: 'json',
+      success: function(employees) {
+        $("#userTable").DataTable().clear();
+          var table = $('#userTable').DataTable({
+            "aoColumnDefs": [{
+              bSortable: false,
+              aTargets: [-1]
+            }, ],
+            "columnDefs": [{
+              orderable: false,
+              targets: -1
+            }],
+            "bDestroy": true
+          });
 
-      var table = $('#userTable').DataTable({
-        "aoColumnDefs": [{
-          bSortable: false,
-          aTargets: [-1]
-        }, ],
-        "columnDefs": [{
-          orderable: false,
-          targets: -1
-        }],
-        "bDestroy": true
-      });
+          var j = 1,
+            active;
+          for (var i = 0; i < employees.length; i++) {
+            if (employees[i].isActive) {
+              active = 'Yes';
+            } else {
+              active = 'No';
+            }
 
-      var j = 1,
-        active;
-      for (var i = 0; i < employees.length; i++) {
-        if (employees[i].isActive) {
-          active = 'Yes';
-        } else {
-          active = 'No';
-        }
-
-        table.row.add([
-            j,
-            employees[i].firstName,
-            employees[i].lastName,
-            employees[i].email,
-            employees[i].phone,
-            active,
-            '<a class="btn btn-defaul glyphicon glyphicon-pencil" href="#" data-toggle="modal" data-target="#editUser" onclick="editUserA(this, ' + employees[i].userId + ')"></a>'
-          ]).draw(false)
-          .nodes()
-          .to$()
-          .attr('role', 'button');
-        j++;
+            table.row.add([
+                j,
+                employees[i].firstName,
+                employees[i].lastName,
+                employees[i].email,
+                employees[i].phone,
+                active,
+                '<a class="btn btn-defaul glyphicon glyphicon-pencil" href="#" data-toggle="modal" data-target="#editUser" onclick="editUserA(this, ' + employees[i].userId + ')"></a>'
+              ]).draw(false)
+              .nodes()
+              .to$()
+              .attr('role', 'button');
+            j++;
+          }
+        },
+      error: function(error) {
+        console.log(error);
       }
     }).done(function() {
       page--;

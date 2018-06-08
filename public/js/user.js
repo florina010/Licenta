@@ -8,7 +8,7 @@ $(document).ready(function() {
     socket = io.connect('http://127.0.0.1:4000'),
     currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
 
-    $('#resTable thead tr').append('<th>Delete</th>');
+  $('#resTable thead tr').append('<th>Delete</th>');
 
   socket.on('/resAddService', function(data) {
     getAllServices();
@@ -19,6 +19,11 @@ $(document).ready(function() {
   });
 
   socket.on('/resApproveReservation', function(data) {
+    var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+    getMyReservations(currentPage);
+  });
+
+  socket.on('/resRate', function(data) {
     var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
     getMyReservations(currentPage);
   });
@@ -35,13 +40,13 @@ $(document).ready(function() {
     }
   });
 
-  $("#selectList").on('change', function () {
+  $("#selectList").on('change', function() {
     var selectedOption = $("#selectList option:selected"),
-        description = selectedOption[0].getAttribute('data-description'),
-        price = selectedOption[0].getAttribute('data-price');
+      description = selectedOption[0].getAttribute('data-description'),
+      price = selectedOption[0].getAttribute('data-price');
 
-      $("[name='rDescription']").val(description);
-      $("[name='rPrice']").val(price);
+    $("[name='rDescription']").val(description);
+    $("[name='rPrice']").val(price);
   });
 
   getAllEmployees(employees);
@@ -56,7 +61,6 @@ $(document).ready(function() {
 
   $('#datetimepicker').datetimepicker({
     format: 'MM/DD/YYYY HH:mm',
-    // minDate: new Date(),
     defaultDate: new Date(),
     stepping: 20,
     daysOfWeekDisabled: [0],
@@ -68,8 +72,6 @@ $(document).ready(function() {
     var option = '<option value="' + user.cars[i].id + '">' + user.cars[i].number + '</option>';
     $("#selectCar").append(option)
   }
-
-  $('#selectCar').multiselect();
 
   $("[name='addResForm']").formValidation({
     framework: 'bootstrap',
@@ -124,9 +126,9 @@ $(document).ready(function() {
   }).off().on('submit', function(e, data) {
     e.preventDefault();
     var socket = io.connect('http://127.0.0.1:4000'),
-      serviceId = $("ul.multiselect-container:first li.active a label input")[0].value,
+      serviceId = $("#selectList option:selected")[0].value,
       date = $("#datetimepicker").val(),
-      carNr = $("ul.multiselect-container:last li.active")[0].innerText,
+      carNr = $("#selectCar option:selected")[0].innerText,
       firstName = $("[name='rFirstName']").val(),
       lastName = $("[name='rLastName']").val(),
       email = $("[name='rEmail']").val(),
@@ -146,19 +148,27 @@ $(document).ready(function() {
     });
 
     socket.on('/resAddReservation', function(data) {
-      $("#newReservation").toggle();
+      $("#newReservation").removeClass("in");
       var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
       getMyReservations(currentPage);
     });
   });
 
   function getAllServices() {
-    $.get(appConfig.url + appConfig.api + 'getAllServices?token=' + token, function(services) {
-      $("[name='rDescription']").val(services[0].description);
-      $("[name='rPrice']").val(services[0].price);
-      for (var i = 0; i < services.length; i++) {
-        var option = '<option value="' + services[i].serviceId + '" data-description="' + services[i].description +'" data-price="' + services[i].price + '">' + services[i].title + '</option>';
-        $("#selectList").append(option)
+    $.ajax({
+      url: appConfig.url + appConfig.api + 'getAllServices?token=' + token,
+      type: 'GET',
+    //  cache: true,
+      dataType: 'json',
+      success: function(services) {
+        $("[name='rDescription']").val(services[0].description);
+        $("[name='rPrice']").val(services[0].price);
+        for (var i = 0; i < services.length; i++) {
+          var option = '<option value="' + services[i].serviceId + '" data-description="' + services[i].description + '" data-price="' + services[i].price + '">' + services[i].title + '</option>';
+          $("#selectList").append(option)
+        }
+      }, error: function(error) {
+        console.log(error);
       }
     });
   }
@@ -187,17 +197,39 @@ $(document).ready(function() {
       var j = 1;
       for (var i = 0; i < reservations.length; i++) {
         var userName = reservations[i].userFirstName + ` ` + reservations[i].userLastName,
-            colorClass = colorTableRow (reservations[i].status),
-            date = reservations[i].date.split(' ')[0],
-            hour = reservations[i].date.split(' ')[1],
-            carNr = reservations[i].carNr,
-            status = reservations[i].status,
-            btn;
+          colorClass = colorTableRow(reservations[i].status),
+          date = reservations[i].date.split(' ')[0],
+          hour = reservations[i].date.split(' ')[1],
+          carNr = reservations[i].carNr,
+          status = reservations[i].status,
+          btn, rateBtn,
+          currentDay = moment(new Date(), "MM/DD/YYYY"),
+          currentTime = moment(new Date(), "HH:mm"),
+          rating = reservations[i].rating;
 
         if (status == 'Pending') {
-          btn = "<span class='fa fa-trash' onclick='deleteReservation(" + reservations[i].resId + ")'></span>"
+          btn = "<span class='fa fa-trash' onclick='deleteReservation(" + reservations[i].resId + ")'></span>";
         } else {
           btn = "";
+        }
+
+        if (rating > 0) {
+          rateBtn = "<div class='rate_row'></div>";
+        } else {
+          if (status == 'Approved' && (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date()))).asDays() < 0)) {
+            if (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date())))._data.days == 0 ) {
+              if (moment().format('HH:mm') > hour) {
+                rateBtn = "<span class='fa fa-star' onclick='rate(" + reservations[i].resId + ")'></span>";
+              } else {
+                rateBtn = "";
+              }
+            } else {
+              rateBtn = "<span class='fa fa-star' onclick='rate(" + reservations[i].resId + ")'></span>";
+            }
+
+          } else {
+            rateBtn = "";
+          }
         }
 
         table.row.add([
@@ -207,7 +239,7 @@ $(document).ready(function() {
             date,
             hour,
             status,
-            'r',
+            rateBtn,
             btn
           ]).draw(false)
           .nodes()
@@ -215,24 +247,33 @@ $(document).ready(function() {
           .addClass(colorClass)
           .attr('id', 'td' + reservations[i].resId)
 
+          if (rating > 0) {
+            $("#td" + reservations[i].resId + " .rate_row").starwarsjs({
+              stars: 5,
+              default_stars: reservations[i].rating,
+              disable: 0
+            });
+          }
         j++;
+
       }
 
       for (let i = 0; i < reservations.length; i++) {
+
         if (reservations[i].employeeId) {
           for (let j = 0; j < employees.length; j++) {
             if (employees[j].userId == reservations[i].employeeId) {
               $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
               $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
-              <p><strong>Client's email</strong> ` + reservations[i].userEmail +` <strong>Client's phone</strong> ` + reservations[i].userPhone +`</p>
+              <p><strong>Client's email</strong> ` + reservations[i].userEmail + ` <strong>Client's phone</strong> ` + reservations[i].userPhone + `</p>
               <br>
-              <p><strong>Service's description</strong> ` + reservations[i].description +` <strong>Service's price</strong> ` + reservations[i].price +`</p>
+              <p><strong>Service's description</strong> ` + reservations[i].description + ` <strong>Service's price</strong> ` + reservations[i].price + `</p>
               <br>
-              <p><strong>Employee's name</strong> ` + employees[j].firstName + ` ` + employees[j].lastName +`</p>
-              <p><strong>Employee's email</strong> ` + employees[j].email +` <strong>Employee's phone</strong> ` + employees[j].phone +`</p>
+              <p><strong>Employee's name</strong> ` + employees[j].firstName + ` ` + employees[j].lastName + `</p>
+              <p><strong>Employee's email</strong> ` + employees[j].email + ` <strong>Employee's phone</strong> ` + employees[j].phone + `</p>
               <br>
-              <p><strong>Car number<strong> ` + reservations[i].carNr +`</p>
-              <p><strong>Mentions</strong> ` + reservations[i].mentions +`</p>
+              <p><strong>Car number<strong> ` + reservations[i].carNr + `</p>
+              <p><strong>Mentions</strong> ` + reservations[i].mentions + `</p>
               </div></td></tr>`)
               j = employees.length;
             }
@@ -240,12 +281,12 @@ $(document).ready(function() {
         } else {
           $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
           $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
-          <p><strong>Client's email</strong> ` + reservations[i].userEmail +` <strong>Client's phone</strong> ` + reservations[i].userPhone +`</p>
+          <p><strong>Client's email</strong> ` + reservations[i].userEmail + ` <strong>Client's phone</strong> ` + reservations[i].userPhone + `</p>
           <br>
-          <p><strong>Service's description</strong> ` + reservations[i].description +` <strong>Service's price</strong> ` + reservations[i].price +`</p>
+          <p><strong>Service's description</strong> ` + reservations[i].description + ` <strong>Service's price</strong> ` + reservations[i].price + `</p>
           <br>
-          <p><strong>Car number<strong> ` + reservations[i].carNr +`</p>
-          <p><strong>Mentions</strong> ` + reservations[i].mentions +`</p>
+          <p><strong>Car number<strong> ` + reservations[i].carNr + `</p>
+          <p><strong>Mentions</strong> ` + reservations[i].mentions + `</p>
           </div></td></tr>`)
         }
       }
@@ -255,29 +296,54 @@ $(document).ready(function() {
     });
   }
 
-  function colorTableRow (status) {
+  function colorTableRow(status) {
     return (status == 'Approved') ? "info" : (status == "Rejected" ? "danger" : "white");
   }
 });
 
-function deleteReservation (resId) {
-    $("#confirmDeleteRes").modal('show');
+function deleteReservation(resId) {
+  $("#confirmDeleteRes").modal('show');
 
-    $("#modal-btn-delete-answer").on('click', function() {
+  $("#modal-btn-delete-answer").on('click', function() {
 
-      var socket = io.connect('http://127.0.0.1:4000');
+    var socket = io.connect('http://127.0.0.1:4000');
 
-      socket.emit('/deleteReservation', {
-        token: token,
-        resId: resId
-      });
+    socket.emit('/deleteReservation', {
+      token: token,
+      resId: resId
+    });
+  })
+}
+
+function rate(resId) {
+  let nrOfStars = 0, comment;
+  $(".rate_row").starwarsjs({
+    stars: 5,
+    count: 1,
+    on_select: function(data) {
+      nrOfStars = data;
+    }
+  });
+  $("#confirmRate").modal('show');
+  $("#confirmRate button.btn-primary").on('click', function() {
+
+  comment = $("[name='rComment']")[0].value;
+
+    var socket = io.connect('http://127.0.0.1:4000');
+
+    socket.emit('/rate', {
+      token: token,
+      resId: resId,
+      nrOfStars: nrOfStars,
+      comment: comment
+    });
   })
 }
 
 function getAllEmployees(employees) {
   $.get(appConfig.url + appConfig.api + 'getAllEmployees?token=' + token, function(employeess) {
-      for (let i = 0; i < employeess.length; i++) {
-        employees.push(employeess[i]);
-      }
+    for (let i = 0; i < employeess.length; i++) {
+      employees.push(employeess[i]);
+    }
   });
 }

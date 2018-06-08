@@ -234,6 +234,24 @@ io.on('connection', function(socket) {
       "status": "Your session has expired and you are loged out. - redirect la index in FE"
     })
   });
+
+  socket.on('/rate', function(data) {
+    isValidToken(data.token).then(function(result) {
+      rate(data, function(res) {
+        io.emit('/resRate', data);
+      });
+    }, function(error) {
+      res.json({
+        "code": 110,
+        "status": "Your session has expired and you are loged out. - redirect la index in FE"
+      })
+    });
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
 });
 
 function editService(data, callback) {
@@ -404,12 +422,6 @@ function login(req, res) {
             user.token = token
           }
           res.json(user);
-        } else {
-          res.json({
-            "code": 100,
-            "status": "Error in connection database"
-          });
-          return;
         }
       } else {
         res.json(rows);
@@ -608,6 +620,38 @@ function approveReservation(data, callback) {
   });
 }
 
+function rate(data, callback) {
+
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+
+    let query, table = 'reservations';
+
+    query = 'UPDATE ?? SET comment = ? , rating = ? WHERE resId = ? ';
+
+    connection.query(query, [table, data.comment, data.nrOfStars, data.resId], function(err, rows) {
+      connection.release();
+      if (err) {
+        console.log(err);
+      }
+      callback(rows);
+    });
+    connection.on('error', function(err) {
+      var err = ({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      callback(err);
+    });
+  });
+}
+
 function getAllEmployees(req, res) {
   var params = req.query;
   pool.getConnection(function(err, connection) {
@@ -632,7 +676,6 @@ function getAllEmployees(req, res) {
         "code": 100,
         "status": "Error in connection database"
       });
-      return;
     });
   });
 }
@@ -645,7 +688,6 @@ function getAllServices(req, res) {
         "code": 100,
         "status": "Error in connection database"
       });
-      return;
     }
 
     var queryString = "SELECT * FROM services";
@@ -653,7 +695,7 @@ function getAllServices(req, res) {
     connection.query(queryString, function(err, rows) {
       connection.release();
       if (!err) {
-        res.json(rows);
+        res.jsonp(rows);
       }
     });
     connection.on('error', function(err) {
@@ -661,7 +703,6 @@ function getAllServices(req, res) {
         "code": 100,
         "status": "Error in connection database"
       });
-      return;
     });
   });
 }
@@ -673,7 +714,6 @@ function getMyReservations(req, res) {
         "code": 100,
         "status": "Error in connection database"
       });
-      return;
     }
 
     let params = req.query, query;
@@ -691,7 +731,6 @@ function getMyReservations(req, res) {
         "code": 100,
         "status": "Error in connection database"
       });
-      return;
     });
   });
 }
@@ -704,7 +743,6 @@ function getAllReservations(req, res) {
         "code": 100,
         "status": "Error in connection database"
       });
-      return;
     }
 
     let query = `SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId`
@@ -720,7 +758,6 @@ function getAllReservations(req, res) {
         "code": 100,
         "status": "Error in connection database"
       });
-      return;
     });
   });
 }
@@ -732,7 +769,6 @@ function getAllFreeEmployees(req, res) {
         "code": 100,
         "status": "Error in connection database"
       });
-      return;
     }
 
     let params = req.query, query;
@@ -751,45 +787,12 @@ function getAllFreeEmployees(req, res) {
         "code": 100,
         "status": "Error in connection database"
       });
-      return;
     });
   });
 }
 
-// function checkDate(req, res) {
-//   pool.getConnection(function(err, connection) {
-//     if (err) {
-//       res.json({
-//         "code": 100,
-//         "status": "Error in connection database"
-//       });
-//       return;
-//     }
-//
-//     let params = req.query, query;
-//
-//     query = `SELECT  DISTINCT users.userId, users.firstName, users.lastName, users.email, users.phone FROM users WHERE users.userId NOT IN
-// (SELECT reservations.employeeId FROM reservations WHERE reservations.date = '` + params.date + `') AND users.isActive = 1 AND users.admin = 1`;
-//
-//     connection.query(query, [] function(err, rows) {
-//       connection.release();
-//       if (!err) {
-//         res.json(rows);
-//       }
-//     });
-//     connection.on('error', function(err) {
-//       res.json({
-//         "code": 100,
-//         "status": "Error in connection database"
-//       });
-//       return;
-//     });
-//   });
-// }
+function changePassword(req, res) {
 
-
-
-function setToken(token, id) {
   pool.getConnection(function(err, connection) {
     if (err) {
       res.json({
@@ -799,11 +802,30 @@ function setToken(token, id) {
       return;
     }
 
-    let table = 'users', query;
+    let params = req.body,
+      response,
+      result,
+      query,
+      table ='users',
+      hash = sha256.create();
 
-    query = 'UPDATE ?? SET token = ? WHERE userId = ?';
-    connection.query(query, [table, token, id], function(err, rows) {
+      query = 'UPDATE ?? SET password = ? WHERE email = ?';
+
+    connection.query(query, [table, params.password, params.email], function(err, rows) {
       connection.release();
+      if (rows != "") {
+        if (!err) {
+          res.json(rows);
+        } else {
+          res.json({
+            "code": 100,
+            "status": "Error in connection database"
+          });
+          return;
+        }
+      } else {
+        res.json(rows);
+      }
     });
     connection.on('error', function(err) {
       res.json({

@@ -1,0 +1,21 @@
+@font-face
+{
+    font-family: starwarsjs;font-weight: 400;font-style: normal;;src: url(fonts/starwarsjs.eot?szdw01);src: url(fonts/starwarsjs.eot?szdw01#iefix) format('embedded-opentype'),url(fonts/starwarsjs.ttf?szdw01) format('truetype'),url(fonts/starwarsjs.woff?szdw01) format('woff'),url(fonts/starwarsjs.svg?szdw01#starwarsjs) format('svg');
+}.rate_star:before
+{font-family: starwarsjs!important;font-weight: 400;font-style: normal;font-variant: normal;line-height: 1;
+
+    content: '\e902';text-transform: none;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;
+}.rate_star
+{font-size: 20px;;cursor: pointer;
+
+    color: #ccc;
+}.rate_star.over
+{
+    color: #f9e431;
+}.rate_star.checked
+{
+    color: #f9d932;
+}.rate_star.disable
+{
+    cursor: not-allowed;pointer-events: none;color: #9c9b9b;
+}

@@ -12,6 +12,7 @@
   <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
   <link rel="stylesheet" href="../js/vendor/node_modules/paginationjs/dist/pagination.css">
   <link rel="stylesheet" href="../js/vendor/node-modules/bootstrap-multiselect/dist/css/bootstrap-multiselect.css" type="text/html" />
+  <link rel="stylesheet" href="../js/starwars/starwars.css" />
   <link rel="stylesheet" type="text/css" href="../js/fullcalendar/fullcalendar.css">
   <link rel="stylesheet" href="../css/display.css">
   <link rel="stylesheet" href="../css/calendar.css">
@@ -29,7 +30,7 @@
           <li data-target-id="target4"><a href="#"><i class="fa fa-align-center"></i> Services </a></li>
           <li data-target-id="target5"><a href="#"><i class="fa fa-edit"></i> Edit profile </a></li>
           <li data-target-id="target6"><a href="#"><i class="fa fa-edit"></i> Change password </a></li>
-          <li data-target-id="target7"><a href="index.html"><i class="fas fa-sign-out-alt"></i> Logout </a></li>
+          <li data-target-id="target7"><a href="#"><i class="fas fa-sign-out-alt"></i> Logout </a></li>
         </ul>
       </div>
       <div class="col-md-9 well admin-content" id="target1">
@@ -47,11 +48,13 @@
                   <select id="selectList" class="form-control"></select>
                 </div>
                 <div class="form-group">
-                  Description:<textarea autocomplete="off" class="form-control" name="rDescription" rows="3" cols="5" placeholder="Description" readonly></textarea>
-                  Price:<input type="text" name="rPrice" readonly/>
+                  Description:<textarea autocomplete="off" class="form-control" name="rDescription" rows="3" cols="5" placeholder="Description" readonly></textarea> Price:
+                  <input type="text" name="rPrice" readonly/>
                 </div>
+              </div>
+              <div class="col-sm-4">
                 <div class="form-group input-group" id="car">
-                  <select id="selectCar" style="display: none"></select>
+                  <select id="selectCar" class="form-control"></select>
                 </div>
                 <div class="row">
                   <div class='col-sm-6'>
@@ -62,9 +65,8 @@
                 <div class="form-group">
                   <textarea autocomplete="off" class="form-control" name="rMentions" rows="4" cols="6" placeholder="Mentions"></textarea>
                 </div>
-
               </div>
-              <div class="col-sm-8">
+              <div class="col-sm-4">
                 <div class="form-group input-group">
                   <input autocomplete="off" type="text" class="form-control" name="rFirstName" required placeholder="First Name">
                 </div>
@@ -312,7 +314,7 @@
               </div>
 
               <div class="form-group">
-                <label><i class="fa fa-phone" aria-hidden="true"></i> Phone</label>
+                <label><i class="fa fa-phone" aria-hidden="true"></i> Phone</label>``
                 <input autocomplete="off" type="tel" class="form-control disabled-button" name="euPhoneNumber" required>
               </div>
 
@@ -334,21 +336,7 @@
         </div>
       </div>
     </div>
-
-
   </div>
-
-  <!-- <div class="row visible-xs visible-sm ">
-      <div class="col-md-12 mobile-menu-bg">
-        <ul class="information_menu_mobile">
-          <li class="active"><a href="#"><i class="fa fa-calendar-plus-o"></i> <span class="hidden-xs">Lorem ipsum</span></a></li>
-          <li><a href="#"><i class="fa fa-commenting-o"></i> <span class="hidden-xs">Praesent posuere</span></a></li>
-          <li><a href="#"><i class="fa fa-medkit"></i> <span class="hidden-xs">Phasellus imperdiet</span></a></li>
-          <li><a href="#"><i class="fa fa-heartbeat"></i> <span class="hidden-xs">In accumsan</span></a></li>
-        </ul>
-        <div class="clearfix"></div>
-      </div>
-    </div> -->
   </div>
 
   <div class="modal fade" id="approveRes" tabindex="-1" role="dialog" aria-hidden="true">
@@ -398,36 +386,57 @@
     </div>
   </div>
 
-  <script type="text/javascript" src="../js/config.js"></script>
-  <script src="../../server/src/node_modules/socket.io-client/dist/socket.io.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js" charset="utf-8"></script>
+  <div class="modal fade" id="confirmRate" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+          <strong>Star number:</strong>
+          <div class="rate_row"></div>
+          <strong>Comment:</strong> <textarea autocomplete="off" class="form-control" name="rComment" rows="3" cols="5"></textarea>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" name="submitApprove">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="http://formvalidation.io/vendor/formvalidation/js/formValidation.min.js"></script>
-  <script src="http://formvalidation.io/vendor/formvalidation/js/framework/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
-  <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="../js/config.js"></script>
+    <script src="../../server/src/node_modules/socket.io-client/dist/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js" charset="utf-8"></script>
 
-  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/js/bootstrap-select.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="http://formvalidation.io/vendor/formvalidation/js/formValidation.min.js"></script>
+    <script src="http://formvalidation.io/vendor/formvalidation/js/framework/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/js/bootstrap-select.min.js"></script>
 
 
-  <script src="../js/vendor/node_modules/bootstrap-datetimepicker.min.js"></script>
+    <script src="../js/vendor/node_modules/bootstrap-datetimepicker.min.js"></script>
 
-  <script src="https://cdn.datatables.net/fixedcolumns/3.2.4/js/dataTables.fixedColumns.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedcolumns/3.2.4/js/dataTables.fixedColumns.min.js"></script>
 
 
-  <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
-  <script src="../js/vendor/node_modules/paginationjs/dist/pagination.js"></script>
-  <script src="../js/vendor/node_modules/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
-  <script type="text/javascript " src="../js/fullcalendar/fullCalendar.js "></script>
-  <script type="text/javascript " src="../js/calendar.js "></script>
-  <script type="text/javascript " src="../js/display.js "></script>
-  <script type="text/javascript " src="../js/services.js"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <script src="../js/vendor/node_modules/paginationjs/dist/pagination.js"></script>
+    <script src="../js/vendor/node_modules/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
+    <script src="../js/starwars/starwars.js"></script>
+    <script type="text/javascript " src="../js/fullcalendar/fullCalendar.js "></script>
+    <script type="text/javascript " src="../js/calendar.js "></script>
+    <script type="text/javascript " src="../js/display.js "></script>
+    <script type="text/javascript " src="../js/services.js"></script>
 </body>
 
 </html>
