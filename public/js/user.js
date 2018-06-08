@@ -68,11 +68,6 @@ $(document).ready(function() {
     disabledHours: [0, 1, 2, 3, 4, 5, 6, 7, 20, 21, 22, 23]
   });
 
-  for (var i = 0; i < user.cars.length; i++) {
-    var option = '<option value="' + user.cars[i].id + '">' + user.cars[i].number + '</option>';
-    $("#selectCar").append(option)
-  }
-
   $("[name='addResForm']").formValidation({
     framework: 'bootstrap',
     excluded: ':disabled',
@@ -166,6 +161,7 @@ $(document).ready(function() {
       success: function(services) {
         $("[name='rDescription']").val(services[0].description);
         $("[name='rPrice']").val(services[0].price);
+        $("#selectList").empty();
         for (var i = 0; i < services.length; i++) {
           var option = '<option value="' + services[i].serviceId + '" data-description="' + services[i].description + '" data-price="' + services[i].price + '">' + services[i].title + '</option>';
           $("#selectList").append(option)
@@ -186,7 +182,6 @@ $(document).ready(function() {
          xhr.withCredentials = true;
       },
       success: function(reservations) {
-  //  $.get(appConfig.url + appConfig.api + 'getMyReservations?token=' + token + '&userId=' + user.userId, function(reservations) {
       $("#resTable").DataTable().clear();
       var table = $('#resTable').DataTable({
         columnDefs: [{
@@ -202,7 +197,13 @@ $(document).ready(function() {
           orderable: false,
           targets: -1
         }],
-        "bDestroy": true
+        "bDestroy": true,
+        // "fnDrawCallback": function() {
+        //     $('td').on('click', function () {
+        //         r orderNum = $(this).text();
+        //         console.log(orderNum);
+        //     });
+        // }
       });
 
 
@@ -269,11 +270,11 @@ $(document).ready(function() {
       }
 
       for (let i = 0; i < reservations.length; i++) {
-
         if (reservations[i].employeeId) {
           for (let j = 0; j < employees.length; j++) {
             if (employees[j].userId == reservations[i].employeeId) {
               $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
+                $("#td" + reservations[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
               $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
               <p><strong>Client's email</strong> ` + reservations[i].userEmail + ` <strong>Client's phone</strong> ` + reservations[i].userPhone + `</p>
               <br>
@@ -290,6 +291,7 @@ $(document).ready(function() {
           }
         } else {
           $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
+          $("#td" + reservations[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
           $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
           <p><strong>Client's email</strong> ` + reservations[i].userEmail + ` <strong>Client's phone</strong> ` + reservations[i].userPhone + `</p>
           <br>
@@ -330,9 +332,7 @@ function deleteReservation(resId) {
 }
 
 function rate(resId) {
-  $("#confirmRate .rate_row").starwarsjs({
-    stars: 0
-  });
+  $("#confirmRate .rate_row").empty();
   let nrOfStars = 0, comment;
 
   $("#confirmRate").modal('show');
