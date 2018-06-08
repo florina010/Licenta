@@ -869,6 +869,33 @@ function isValidToken(token) {
   });
 }
 
+function setToken(token, id) {
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    }
+
+    let table = 'users', query;
+
+    query = 'UPDATE ?? SET token = ? WHERE userId = ?';
+    connection.query(query, [table, token, id], function(err, rows) {
+      connection.release();
+    });
+    connection.on('error', function(err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+      return;
+    });
+  });
+}
+
+
 function logout(req, res) {
   var params = req.body;
   pool.getConnection(function(err, connection) {
