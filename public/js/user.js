@@ -248,7 +248,7 @@ $(document).ready(function() {
 
           if (rating > 0 && status == 'Approved') {
             $("#td" + reservations[i].resId + " .rate_row").starwarsjs({
-              stars: 5,
+              stars: rating,
               disable: 0
             });
           }
@@ -314,15 +314,18 @@ function deleteReservation(resId) {
 }
 
 function rate(resId) {
+  $("#confirmRate .rate_row").starwarsjs({
+    stars: 0
+  });
   let nrOfStars = 0, comment;
-  $(".rate_row").starwarsjs({
+
+  $("#confirmRate").modal('show');
+  $("#confirmRate .rate_row").starwarsjs({
     stars: 5,
-    count: 1,
     on_select: function(data) {
       nrOfStars = data;
     }
   });
-  $("#confirmRate").modal('show');
   $("#confirmRate button.btn-primary").on('click', function() {
 
   comment = $("[name='rComment']")[0].value;
