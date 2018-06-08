@@ -1,43 +1,50 @@
 "use strict";
 
-
-if ('serviceWorker' in navigator) {
-
-  navigator.serviceWorker
-    .register('./service-worker.js', { scope: '/public/html/display.html' })
-    .then(function(registration) {
-      console.log("Service Worker Registered");
-    })
-    .catch(function(err) {
-      console.log("Service Worker Failed to Register", err);
-    })
-
-}
-
-
-
-// Function to perform HTTP request
-var get = function(url) {
-  return new Promise(function(resolve, reject) {
-
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 200) {
-                var result = xhr.responseText
-                result = JSON.parse(result);
-                resolve(result);
-            } else {
-                reject(xhr);
-            }
-        }
-    };
-
-    xhr.open("GET", url, true);
-    xhr.send();
-
-  });
-};
+// 
+// if ('serviceWorker' in navigator) {
+//   var lastStatus = true;
+//   onlineCheck();
+//
+//   function onlineCheck() {
+//     if ((navigator.onLine === true) && (lastStatus === false)) {
+//       var socket = io.connect('http://127.0.0.1:4000');
+//       console.log('online')
+//     } else if ((navigator.onLine === false) && (lastStatus === true)) {
+//       var socket = io.connect('http://127.0.0.1:4000');
+//       socket.close();
+//       console.log('offline')
+//       lastStatus = false;
+//     }
+//     setTimeout(function() {
+//       onlineCheck()
+//     }, 5000);
+//   }
+// }
+//
+//
+//
+// // Function to perform HTTP request
+// var get = function(url) {
+//   return new Promise(function(resolve, reject) {
+//
+//     var xhr = new XMLHttpRequest();
+//     xhr.onreadystatechange = function() {
+//       if (xhr.readyState === XMLHttpRequest.DONE) {
+//         if (xhr.status === 200) {
+//           var result = xhr.responseText
+//           result = JSON.parse(result);
+//           resolve(result);
+//         } else {
+//           reject(xhr);
+//         }
+//       }
+//     };
+//
+//     xhr.open("GET", url, true);
+//     xhr.send();
+//
+//   });
+// };
 
 
 $(document).ready(function() {
@@ -62,35 +69,36 @@ $(document).ready(function() {
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
     MAX_OPTIONS = 5,
     socket = io.connect('http://127.0.0.1:4000');
-    socket.on('/resEditProfile', function(data) {
-      if (data.id == user.userId) {
-        user.cars = data.cars;
-        user.email = data.email;
-        user.firstName = data.firstName;
-        user.lastName = data.lastName;
-        user.phone = data.phone;
-        sessionStorage.setItem('user', JSON.stringify(user));
-      }
-    });
+  socket.on('/resEditProfile', function(data) {
+    if (data.id == user.userId) {
+      user.cars = data.cars;
+      user.email = data.email;
+      user.firstName = data.firstName;
+      user.lastName = data.lastName;
+      user.phone = data.phone;
+      sessionStorage.setItem('user', JSON.stringify(user));
+    }
+  });
 
-    $("[data-target-id='target7']").on('click', function() {
-      $.post(appConfig.url + appConfig.api + 'logout', {
-        token: token,
-        email: user.email
-      }).done(function(data) {
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('user');
-        window.location.href = "index.html";
-      });
+  $("[data-target-id='target7']").on('click', function() {
+    $.post(appConfig.url + appConfig.api + 'logout', {
+      token: token,
+      email: user.email
+    }).done(function(data) {
+      sessionStorage.removeItem('token');
+      sessionStorage.removeItem('user');
+      window.location.href = "index.html";
+    });
   });
 
 
   if (user.admin == 2) {
     $("[name='editProfileForm'] div:nth-child(4)").css('display', 'none');
-    var scriptEmp = document.createElement('script'), scriptRes = document.createElement('script');
-    scriptEmp.type='text/javascript';
+    var scriptEmp = document.createElement('script'),
+      scriptRes = document.createElement('script');
+    scriptEmp.type = 'text/javascript';
     scriptEmp.src = "../js/employees.js";
-    scriptRes.type='text/javascript';
+    scriptRes.type = 'text/javascript';
     scriptRes.src = "../js/reservations.js";
     document.getElementsByTagName('body')[0].appendChild(scriptEmp);
     document.getElementsByTagName('body')[0].appendChild(scriptRes);
@@ -98,7 +106,7 @@ $(document).ready(function() {
     $("[data-target-id='target3']").css('display', 'none');
     $("[data-target-id='target4']").css('display', 'none');
     var script = document.createElement('script');
-    script.type='text/javascript';
+    script.type = 'text/javascript';
     script.src = "../js/user.js";
     document.getElementsByTagName('body')[0].appendChild(script);
   }
@@ -236,7 +244,7 @@ $(document).ready(function() {
     $("[name='editProfileForm']").formValidation('revalidateField', 'eEmail');
     $("[name='editProfileForm']").formValidation('revalidateField', 'ePhoneNumber');
     $("[name='editProfileForm']").formValidation('revalidateField', 'cars[]');
-   if ($("[name='editProfileForm']").data('formValidation').isValid()) {
+    if ($("[name='editProfileForm']").data('formValidation').isValid()) {
       $("[name='editProfile']").attr('disabled', false);
     }
     $("[name='editProfile']").removeClass('disabled ')
@@ -251,7 +259,7 @@ $(document).ready(function() {
       carsArr = [],
       carsObj = {},
       socket = io.connect('http://127.0.0.1:4000');
-      console.log(cars);
+    console.log(cars);
     $.map(cars, function(car) {
       if (car.value) {
         carsArr.push({
@@ -385,7 +393,7 @@ $(document).ready(function() {
           .removeAttr('id')
           .insertBefore($template),
           $option = $clone.find('[name="editProfileForm"] [name="cars[]"]');
-       $option.val(user.cars[i].number);
+        $option.val(user.cars[i].number);
         $("[name='editProfileForm']").formValidation('addField', $option);
         $("[name='editProfileForm']").css('height', currentHeight + 40);
       }
@@ -397,7 +405,7 @@ $(document).ready(function() {
     }
   }
 
-  $(".addButton").on('click', function () {
+  $(".addButton").on('click', function() {
     var currentHeight = $("[name='editProfileForm']").height();
     var $template = $('[name="editProfileForm"] #eCarsTemplate'),
       $clone = $template
@@ -410,14 +418,14 @@ $(document).ready(function() {
     $("[name='editProfileForm']").css('height', currentHeight + 40);
 
 
-      if ($("[name='editProfileForm']").find(':visible[name="cars[]"]').length >= MAX_OPTIONS) {
-        $("[name='editProfileForm']").find('.addButton').attr('disabled', 'disabled');
-      }
-      $("[name='editProfileForm']").formValidation('revalidateField', 'cars[]');
+    if ($("[name='editProfileForm']").find(':visible[name="cars[]"]').length >= MAX_OPTIONS) {
+      $("[name='editProfileForm']").find('.addButton').attr('disabled', 'disabled');
+    }
+    $("[name='editProfileForm']").formValidation('revalidateField', 'cars[]');
 
   });
 
-  $(".removeButton").on('click', function () {
+  $(".removeButton").on('click', function() {
     console.log(8);
     var $row = $(this).parents('.form-group'),
       $option = $row.find('[name="cars[]"]');

@@ -8,7 +8,7 @@ $(document).ready(function() {
     socket = io.connect('http://127.0.0.1:4000'),
     currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
 
-
+$("[data-target='#newReservation']").css('display', 'none');
   socket.on('/resAddReservation', function(data) {
     var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
     getAllReservations(currentPage);
@@ -40,7 +40,8 @@ $(document).ready(function() {
       dataType: 'json',
       success: function(reservations) {
         $("#resTable").DataTable().clear();
-        $('#resTable').find('th').eq(6).text('Change status');
+        $('#resTable thead tr').append('<th>Change Status</th>');
+    //    $('#resTable').find('th').eq(6).text('Change status');
         var table = $('#resTable').DataTable({
           columnDefs: [{
             width: '20%',
@@ -67,15 +68,38 @@ $(document).ready(function() {
             date = reservations[i].date.split(' ')[0],
             hour = reservations[i].date.split(' ')[1],
             status = reservations[i].status,
-            approveButtons;
+            approveButtons,
+            rateBtn,
+            currentDay = moment(new Date(), "MM/DD/YYYY"),
+            currentTime = moment(new Date(), "HH:mm"),
+            rating = reservations[i].rating;
 
-          if (status == 'Approved') {
-            approveButtons = "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
-          } else if (status == "Rejected") {
-            approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
+            if (status == 'Approved') {
+              approveButtons = "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
+            } else if (status == "Rejected") {
+              approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
+            } else {
+              approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
+              approveButtons += "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
+            }
+
+          if (rating > 0) {
+            rateBtn = "<div class='rate_row'></div>";
           } else {
-            approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
-            approveButtons += "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
+            if (status == 'Approved' && (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date()))).asDays() < 0)) {
+              if (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date())))._data.days == 0 ) {
+                if (moment().format('HH:mm') > hour) {
+                  rateBtn = "<span class='fa fa-star'></span>";
+                } else {
+                  rateBtn = "";
+                }
+              } else {
+                rateBtn = "<span class='fa fa-star'></span>";
+              }
+
+            } else {
+              rateBtn = "";
+            }
           }
 
 
@@ -86,12 +110,20 @@ $(document).ready(function() {
               date,
               hour,
               status,
+              rateBtn,
               approveButtons
             ]).draw(false)
             .nodes()
             .to$()
             .addClass(colorClass)
             .attr('id', 'td' + reservations[i].resId)
+
+            if (rating > 0) {
+              $("#td" + reservations[i].resId + " .rate_row").starwarsjs({
+                stars: 5,
+                disable: 0
+              });
+            }
           j++;
 
         }

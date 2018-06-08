@@ -155,10 +155,10 @@ $(document).ready(function() {
   });
 
   function getAllServices() {
+
     $.ajax({
       url: appConfig.url + appConfig.api + 'getAllServices?token=' + token,
       type: 'GET',
-    //  cache: true,
       dataType: 'json',
       success: function(services) {
         $("[name='rDescription']").val(services[0].description);
@@ -226,7 +226,6 @@ $(document).ready(function() {
             } else {
               rateBtn = "<span class='fa fa-star' onclick='rate(" + reservations[i].resId + ")'></span>";
             }
-
           } else {
             rateBtn = "";
           }
@@ -247,10 +246,9 @@ $(document).ready(function() {
           .addClass(colorClass)
           .attr('id', 'td' + reservations[i].resId)
 
-          if (rating > 0) {
+          if (rating > 0 && status == 'Approved') {
             $("#td" + reservations[i].resId + " .rate_row").starwarsjs({
               stars: 5,
-              default_stars: reservations[i].rating,
               disable: 0
             });
           }
@@ -341,6 +339,7 @@ function rate(resId) {
 }
 
 function getAllEmployees(employees) {
+  var token = sessionStorage.getItem('token');
   $.get(appConfig.url + appConfig.api + 'getAllEmployees?token=' + token, function(employeess) {
     for (let i = 0; i < employeess.length; i++) {
       employees.push(employeess[i]);
