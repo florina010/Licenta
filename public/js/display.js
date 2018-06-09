@@ -2,12 +2,18 @@
 
 if ('serviceWorker' in navigator) {
   var lastStatus = true;
+  setTimeout(function() {
+  }, 5000);
   onlineCheck();
 
   function onlineCheck() {
     if ((navigator.onLine === true) && (lastStatus === false)) {
+
+      lastStatus = true;
       $("#alertOnline").toggleClass("hidden");
-      // location.reload();
+      setTimeout(function() {
+        window.location.reload(true)
+      }, 3000);
       console.log('on');
     } else if ((navigator.onLine === false) && (lastStatus === true)) {
       var socket = io.connect('http://127.0.0.1:4000');
@@ -23,6 +29,28 @@ if ('serviceWorker' in navigator) {
 }
 
 $(document).ready(function() {
+  navigator.serviceWorker.register('service-worker.js').then(reg => {
+  reg.installing; // the installing worker, or undefined
+  reg.waiting; // the waiting worker, or undefined
+  reg.active; // the active worker, or undefined
+
+  reg.addEventListener('updatefound', () => {
+    // A wild service worker has appeared in reg.installing!
+    const newWorker = reg.installing;
+
+    newWorker.state;
+    // "installing" - the install event has fired, but not yet complete
+    // "installed"  - install complete
+    // "activating" - the activate event has fired, but not yet complete
+    // "activated"  - fully active
+    // "redundant"  - discarded. Either failed install, or it's been
+    //                replaced by a newer version
+
+    newWorker.addEventListener('statechange', () => {
+      // newWorker.state has changed
+    });
+  });
+});
   var navItems = $('.admin-menu li > a');
   var navListItems = $('.admin-menu li');
   var allWells = $('.admin-content');
@@ -45,6 +73,7 @@ $(document).ready(function() {
     socket = io.connect('http://127.0.0.1:4000');
   socket.on('/resEditProfile', function(data) {
     if (data.id == user.userId) {
+      $("#alertEdit").toggleClass('hidden');
       if (data.cars) {
         user['cars'] = JSON.parse(data.cars).cars;
       }
@@ -356,6 +385,7 @@ $(document).ready(function() {
         email: email,
         password: password
       }).done(function(data) {
+        $("#alertEdit").toggleClass('hidden');
         user.password = password;
         sessionStorage.setItem('user', JSON.stringify(user));
         $(".overlay-id6 .alert-success").css('display', 'block');

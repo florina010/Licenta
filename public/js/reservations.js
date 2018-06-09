@@ -206,6 +206,7 @@ function displayApproveModal(resId, date, action) {
 
           employeeId = $("ul.multiselect-container:first li.active a label input")[0].value;
           status = 'Approved';
+          $("#approveRes").modal('hide');
 
           socket.emit('/approveReservation', {
             token: token,

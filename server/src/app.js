@@ -444,11 +444,11 @@ function register(data, callback) {
     let query, columns, datas, table = 'users';
 
     if (data.token) {
-      query = 'INSERT INTO ?? (??) VALUES (??)';
+      query = 'INSERT INTO ?? (??) VALUES (?)';
       datas = [data.firstName, data.lastName, '1', data.email, data.password, data.phone, '1'];
       columns = ['firstName', 'lastName', 'isActive', 'email', 'password', 'phone', 'admin']
     } else {
-      query = 'INSERT INTO ?? (??) VALUES (??)';
+      query = 'INSERT INTO ?? (??) VALUES (?)';
       datas = [data.firstName, data.lastName, '1', data.email, data.password, data.phone, data.cars, '0'];
       columns = ['firstName', 'lastName', 'isActive', 'email', 'password', 'phone', 'cars', 'admin'];
     }

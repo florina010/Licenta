@@ -56,15 +56,21 @@ self.addEventListener('activate', function (e) {
 // });
 
 
+
+
 self.addEventListener('fetch', function(event) {
 
   event.respondWith(
     // Opens Cache objects that start with 'font'.
     caches.open('vv').then(function(cache) {
       return cache.match(event.request).then(function(response) {
-        if (response) {
-          return response;
-        }
+				if (navigator.onLine === false) {
+              // We are offline so return the cached version immediately, null or not.
+
+							if (response) {
+								return response;
+							}
+            }
 
         return fetch(event.request).then(function(networkResponse) {
 					if (event.request.method === 'GET') {

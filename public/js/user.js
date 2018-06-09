@@ -33,6 +33,7 @@ $(document).ready(function() {
   socket.on('/resDeleteReservation', function(data) {
     if (data.token == token) {
       $("#confirmDeleteRes").modal('hide');
+      $("#alertDelete").toggleClass('hidden');  
       var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
       getMyReservations(currentPage);
     }
@@ -142,6 +143,7 @@ $(document).ready(function() {
 
     socket.on('/resAddReservation', function(data) {
       $("#newReservation").removeClass("in");
+      $("#alertAdd").toggleClass('hidden');
       var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
       getMyReservations(currentPage);
     });
