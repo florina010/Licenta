@@ -1,11 +1,32 @@
 "use strict";
 
+if ('serviceWorker' in navigator) {
+  var lastStatus = true;
+  onlineCheck();
+
+  function onlineCheck() {
+    if ((navigator.onLine === true) && (lastStatus === false)) {
+      $("#alertOnline").toggleClass("hidden");
+      // location.reload();
+      console.log('on');
+    } else if ((navigator.onLine === false) && (lastStatus === true)) {
+      var socket = io.connect('http://127.0.0.1:4000');
+      socket.onclose();
+      $("#alertOffline").toggleClass("hidden");
+      console.log('off');
+      lastStatus = false;
+    }
+    setTimeout(function() {
+      onlineCheck()
+    }, 5000);
+  }
+}
+
 $(document).ready(function() {
   var navItems = $('.admin-menu li > a');
   var navListItems = $('.admin-menu li');
   var allWells = $('.admin-content');
   var allWellsExceptFirst = $('.admin-content:not(:first)');
-
   allWellsExceptFirst.hide();
   navListItems.click(function(e) {
     e.preventDefault();
@@ -22,7 +43,6 @@ $(document).ready(function() {
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
     MAX_OPTIONS = 5,
     socket = io.connect('http://127.0.0.1:4000');
-
   socket.on('/resEditProfile', function(data) {
     if (data.id == user.userId) {
       if (data.cars) {
@@ -45,29 +65,6 @@ $(document).ready(function() {
     var option = '<option value="' + user.cars[i].id + '">' + user.cars[i].number + '</option>';
     $("#selectCar").append(option)
   }
-
-
-  if ('serviceWorker' in navigator) {
-    var lastStatus = true;
-    onlineCheck();
-
-    function onlineCheck() {
-      if ((navigator.onLine === true) && (lastStatus === false)) {
-        location.reload();
-        console.log('on');
-      } else if ((navigator.onLine === false) && (lastStatus === true)) {
-
-        console.log('off');
-        lastStatus = false;
-      }
-      setTimeout(function() {
-        onlineCheck()
-      }, 5000);
-    }
-  }
-
-
-
 
   $("[data-target-id='target7']").on('click', function() {
     $.post(appConfig.url + appConfig.api + 'logout', {

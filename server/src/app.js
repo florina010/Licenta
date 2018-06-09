@@ -131,6 +131,7 @@ app.get("/api/getAllFreeEmployees", function(req, res) {
 //   next();
 // });
 
+
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var port = process.env.PORT || 4000;
@@ -138,7 +139,8 @@ var port = process.env.PORT || 4000;
 server.listen(port, function() {
   console.log('Server listening at port %d', port);
 });
-
+// io.set('heartbeat timeout', 10)
+// io.set('heartbeat interval', 4)
 io.on('connection', function(socket) {
   socket.on('/register', function(data) {
     register(data, function(res) {

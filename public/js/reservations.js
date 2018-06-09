@@ -34,14 +34,18 @@ $("[data-target='#newReservation']").css('display', 'none');
 
   function getAllReservations(page) {
     $.ajax({
-      url: appConfig.url + appConfig.api + 'getAllReservations?token=' + token + '&userId=' + user.userId,
+      url: appConfig.url + appConfig.api + 'getAllReservations',
+      data: {
+        token: token,
+        userId: user.userId
+      },
       type: 'GET',
       //  cache: true,
       dataType: 'json',
       success: function(reservations) {
         $("#resTable").DataTable().clear();
-        $('#resTable thead tr').append('<th>Change Status</th>');
-    //    $('#resTable').find('th').eq(6).text('Change status');
+        // $('#resTable thead tr th:last').text('Change Status');
+       $('#resTable').find('th').eq(7).text('Change status');
         var table = $('#resTable').DataTable({
           columnDefs: [{
             width: '20%',
@@ -82,25 +86,23 @@ $("[data-target='#newReservation']").css('display', 'none');
               approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
               approveButtons += "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
             }
-
-          if (rating > 0) {
-            rateBtn = "<div class='rate_row'></div>";
-          } else {
-            if (status == 'Approved' && (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date()))).asDays() < 0)) {
-              if (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date())))._data.days == 0 ) {
-                if (moment().format('HH:mm') > hour) {
-                  rateBtn = "<span class='fa fa-star'></span>";
+            if (rating > 0) {
+              rateBtn = "<div class='rate_row'></div>";
+            } else {
+              if (status == 'Approved' && (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date()))).asDays() < 0)) {
+                if (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date())))._data.days == 0) {
+                  if (moment().format('HH:mm') > hour) {
+                    rateBtn = "<span class='fa fa-star' onclick='rate(" + reservations[i].resId + ")'></span>";
+                  } else {
+                    rateBtn = "";
+                  }
                 } else {
-                  rateBtn = "";
+                  rateBtn = "<span class='fa fa-star' onclick='rate(" + reservations[i].resId + ")'></span>";
                 }
               } else {
-                rateBtn = "<span class='fa fa-star'></span>";
+                rateBtn = "";
               }
-
-            } else {
-              rateBtn = "";
             }
-          }
 
 
           table.row.add([
@@ -118,9 +120,9 @@ $("[data-target='#newReservation']").css('display', 'none');
             .addClass(colorClass)
             .attr('id', 'td' + reservations[i].resId)
 
-            if (rating > 0) {
+            if (rating > 0 && status == 'Approved') {
               $("#td" + reservations[i].resId + " .rate_row").starwarsjs({
-                stars: 5,
+                stars: rating,
                 disable: 0
               });
             }
@@ -133,6 +135,7 @@ $("[data-target='#newReservation']").css('display', 'none');
             for (let j = 0; j < employees.length; j++) {
               if (employees[j].userId == reservations[i].employeeId) {
                 $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
+                $("#td" + reservations[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
                 $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
                   <p><strong>Client's email</strong> ` + reservations[i].userEmail + ` <strong>Client's phone</strong> ` + reservations[i].userPhone + `</p>
                   <br>
@@ -149,6 +152,7 @@ $("[data-target='#newReservation']").css('display', 'none');
             }
           } else {
             $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
+            $("#td" + reservations[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
             $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
               <p><strong>Client's email</strong> ` + reservations[i].userEmail + ` <strong>Client's phone</strong> ` + reservations[i].userPhone + `</p>
               <br>

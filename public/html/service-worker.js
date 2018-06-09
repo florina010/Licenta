@@ -38,28 +38,48 @@ self.addEventListener('activate', function (e) {
     ); // end e.waitUntil
 });
 
-self.addEventListener('fetch', function(event) {
-    event.respondWith(
-        // Try the network
-        fetch(event.request).then(function(res) {
-                return caches.open(cacheName).then(function(cache) {
-                        // Put in cache if succeeds
-                        cache.put(event.request.url, res.clone());
-                        return res;
-                    })
-            })
-            .catch(function(err) {
-                // Fallback to cache
-                return caches.match(event.request);
-            })
-    );
-});
-
-
 // self.addEventListener('fetch', function(event) {
-//   event.respondWith(
-//     fetch(event.request).catch(function() {
-//       return caches.match(event.request);
-//     })
-//   );
+//     event.respondWith(
+//         // Try the network
+//         fetch(event.request).then(function(res) {
+//                 return caches.open(cacheName).then(function(cache) {
+//                         // Put in cache if succeeds
+//                         cache.put(event.request.url, res.clone());
+//                         return res;
+//                     })
+//             })
+//             .catch(function(err) {
+//                 // Fallback to cache
+//                 return caches.match(event.request);
+//             })
+//     );
 // });
+
+
+self.addEventListener('fetch', function(event) {
+
+  event.respondWith(
+    // Opens Cache objects that start with 'font'.
+    caches.open('vv').then(function(cache) {
+      return cache.match(event.request).then(function(response) {
+        if (response) {
+          return response;
+        }
+
+        return fetch(event.request).then(function(networkResponse) {
+					if (event.request.method === 'GET') {
+						cache.put(event.request, networkResponse.clone());
+					}
+
+          return networkResponse;
+        });
+      }).catch(function(error) {
+
+        // Handles exceptions that arise from match() or fetch().
+         return caches.match(event.request);
+
+        throw error;
+      });
+    })
+  );
+});

@@ -8,8 +8,6 @@ $(document).ready(function() {
     socket = io.connect('http://127.0.0.1:4000'),
     currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
 
-  $('#resTable thead tr').append('<th>Delete</th>');
-
   socket.on('/resAddService', function(data) {
     getAllServices();
   });
@@ -155,8 +153,8 @@ $(document).ready(function() {
       url: appConfig.url + appConfig.api + 'getAllServices?token=' + token,
       type: 'GET',
       dataType: 'json',
-      beforeSend: function(xhr){
-         xhr.withCredentials = true;
+      beforeSend: function(xhr) {
+        xhr.withCredentials = true;
       },
       success: function(services) {
         $("[name='rDescription']").val(services[0].description);
@@ -166,7 +164,8 @@ $(document).ready(function() {
           var option = '<option value="' + services[i].serviceId + '" data-description="' + services[i].description + '" data-price="' + services[i].price + '">' + services[i].title + '</option>';
           $("#selectList").append(option)
         }
-      }, error: function(error) {
+      },
+      error: function(error) {
         console.log(error);
       }
     });
@@ -175,89 +174,91 @@ $(document).ready(function() {
   function getMyReservations(page) {
     $.ajax({
       url: appConfig.url + appConfig.api + 'getMyReservations',
-      data: { token: token,
-              userId: user.userId},
+      data: {
+        token: token,
+        userId: user.userId
+      },
       type: 'get',
-      beforeSend: function(xhr){
-         xhr.withCredentials = true;
+      beforeSend: function(xhr) {
+        xhr.withCredentials = true;
       },
       success: function(reservations) {
-      $("#resTable").DataTable().clear();
-      var table = $('#resTable').DataTable({
-        columnDefs: [{
-          width: '20%',
-          targets: 0
-        }],
-        fixedColumns: true,
-        "aoColumnDefs": [{
-          bSortable: false,
-          aTargets: [-1]
-        }, ],
-        "columnDefs": [{
-          orderable: false,
-          targets: -1
-        }],
-        "bDestroy": true,
-        // "fnDrawCallback": function() {
-        //     $('td').on('click', function () {
-        //         r orderNum = $(this).text();
-        //         console.log(orderNum);
-        //     });
-        // }
-      });
+        $("#resTable").DataTable().clear();
+        var table = $('#resTable').DataTable({
+          columnDefs: [{
+            width: '20%',
+            targets: 0
+          }],
+          fixedColumns: true,
+          "aoColumnDefs": [{
+            bSortable: false,
+            aTargets: [-1]
+          }, ],
+          "columnDefs": [{
+            orderable: false,
+            targets: -1
+          }],
+          "bDestroy": true,
+          // "fnDrawCallback": function() {
+          //     $('td').on('click', function () {
+          //         r orderNum = $(this).text();
+          //         console.log(orderNum);
+          //     });
+          // }
+        });
 
 
-      var j = 1;
-      for (var i = 0; i < reservations.length; i++) {
-        var userName = reservations[i].userFirstName + ` ` + reservations[i].userLastName,
-          colorClass = colorTableRow(reservations[i].status),
-          date = reservations[i].date.split(' ')[0],
-          hour = reservations[i].date.split(' ')[1],
-          carNr = reservations[i].carNr,
-          status = reservations[i].status,
-          btn, rateBtn,
-          currentDay = moment(new Date(), "MM/DD/YYYY"),
-          currentTime = moment(new Date(), "HH:mm"),
-          rating = reservations[i].rating;
+        var j = 1;
+        for (var i = 0; i < reservations.length; i++) {
+          var userName = reservations[i].userFirstName + ` ` + reservations[i].userLastName,
+            colorClass = colorTableRow(reservations[i].status),
+            date = reservations[i].date.split(' ')[0],
+            hour = reservations[i].date.split(' ')[1],
+            carNr = reservations[i].carNr,
+            status = reservations[i].status,
+            btn, rateBtn,
+            currentDay = moment(new Date(), "MM/DD/YYYY"),
+            currentTime = moment(new Date(), "HH:mm"),
+            rating = reservations[i].rating;
 
-        if (status == 'Pending') {
-          btn = "<span class='fa fa-trash' onclick='deleteReservation(" + reservations[i].resId + ")'></span>";
-        } else {
-          btn = "";
-        }
+          if (status == 'Pending') {
+            btn = "<span class='fa fa-trash' onclick='deleteReservation(" + reservations[i].resId + ")'></span>";
+          } else {
+            btn = "";
+          }
 
-        if (rating > 0) {
-          rateBtn = "<div class='rate_row'></div>";
-        } else {
-          if (status == 'Approved' && (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date()))).asDays() < 0)) {
-            if (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date())))._data.days == 0 ) {
-              if (moment().format('HH:mm') > hour) {
-                rateBtn = "<span class='fa fa-star' onclick='rate(" + reservations[i].resId + ")'></span>";
+          if (rating > 0) {
+            rateBtn = "<div class='rate_row'></div>";
+          } else {
+            if (status == 'Approved' && (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date()))).asDays() < 0)) {
+              if (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date())))._data.days == 0) {
+                if (moment().format('HH:mm') > hour) {
+                  rateBtn = "<span class='fa fa-star' onclick='rate(" + reservations[i].resId + ")'></span>";
+                } else {
+                  rateBtn = "";
+                }
               } else {
-                rateBtn = "";
+                rateBtn = "<span class='fa fa-star' onclick='rate(" + reservations[i].resId + ")'></span>";
               }
             } else {
-              rateBtn = "<span class='fa fa-star' onclick='rate(" + reservations[i].resId + ")'></span>";
+              rateBtn = "";
             }
-          } else {
-            rateBtn = "";
           }
-        }
 
-        table.row.add([
-            j,
-            userName,
-            reservations[i].title,
-            date,
-            hour,
-            status,
-            rateBtn,
-            btn
-          ]).draw(false)
-          .nodes()
-          .to$()
-          .addClass(colorClass)
-          .attr('id', 'td' + reservations[i].resId)
+          table.row.add([
+              j,
+              userName,
+              reservations[i].title,
+              date,
+              hour,
+              status,
+              rateBtn,
+              btn
+            ]).draw(false)
+            .nodes()
+            .to$()
+            .addClass(colorClass)
+            .attr('id', 'td' + reservations[i].resId)
 
           if (rating > 0 && status == 'Approved') {
             $("#td" + reservations[i].resId + " .rate_row").starwarsjs({
@@ -265,17 +266,17 @@ $(document).ready(function() {
               disable: 0
             });
           }
-        j++;
+          j++;
 
-      }
+        }
 
-      for (let i = 0; i < reservations.length; i++) {
-        if (reservations[i].employeeId) {
-          for (let j = 0; j < employees.length; j++) {
-            if (employees[j].userId == reservations[i].employeeId) {
-              $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
+        for (let i = 0; i < reservations.length; i++) {
+          if (reservations[i].employeeId) {
+            for (let j = 0; j < employees.length; j++) {
+              if (employees[j].userId == reservations[i].employeeId) {
+                $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
                 $("#td" + reservations[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
-              $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
+                $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
               <p><strong>Client's email</strong> ` + reservations[i].userEmail + ` <strong>Client's phone</strong> ` + reservations[i].userPhone + `</p>
               <br>
               <p><strong>Service's description</strong> ` + reservations[i].description + ` <strong>Service's price</strong> ` + reservations[i].price + `</p>
@@ -286,13 +287,13 @@ $(document).ready(function() {
               <p><strong>Car number<strong> ` + reservations[i].carNr + `</p>
               <p><strong>Mentions</strong> ` + reservations[i].mentions + `</p>
               </div></td></tr>`)
-              j = employees.length;
+                j = employees.length;
+              }
             }
-          }
-        } else {
-          $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
-          $("#td" + reservations[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
-          $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
+          } else {
+            $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
+            $("#td" + reservations[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
+            $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
           <p><strong>Client's email</strong> ` + reservations[i].userEmail + ` <strong>Client's phone</strong> ` + reservations[i].userPhone + `</p>
           <br>
           <p><strong>Service's description</strong> ` + reservations[i].description + ` <strong>Service's price</strong> ` + reservations[i].price + `</p>
@@ -300,13 +301,14 @@ $(document).ready(function() {
           <p><strong>Car number<strong> ` + reservations[i].carNr + `</p>
           <p><strong>Mentions</strong> ` + reservations[i].mentions + `</p>
           </div></td></tr>`)
+          }
         }
-      }
-    },error: function(xhr, ajaxOptions, thrownError){
-      console.log(xhr);
-      console.log(thrownError);
-          },
-  }).done(function() {
+      },
+      error: function(xhr, ajaxOptions, thrownError) {
+        console.log(xhr);
+        console.log(thrownError);
+      },
+    }).done(function() {
       page--;
       $("#user").DataTable().page(page).draw(false);
     });
@@ -333,7 +335,8 @@ function deleteReservation(resId) {
 
 function rate(resId) {
   $("#confirmRate .rate_row").empty();
-  let nrOfStars = 0, comment;
+  let nrOfStars = 0,
+    comment;
 
   $("#confirmRate").modal('show');
   $("#confirmRate .rate_row").starwarsjs({
@@ -344,7 +347,7 @@ function rate(resId) {
   });
   $("#confirmRate button.btn-primary").on('click', function() {
 
-  comment = $("[name='rComment']")[0].value;
+    comment = $("[name='rComment']")[0].value;
 
     var socket = io.connect('http://127.0.0.1:4000');
 
@@ -359,21 +362,34 @@ function rate(resId) {
 
 function getAllEmployees(employees) {
   $.ajax({
-      url: appConfig.url + appConfig.api + 'getAllEmployees',
-      type: 'GET',
-      cache: true,
-      dataType: 'json',
-      data: { token: token},
-      beforeSend: function(xhr){
-         xhr.withCredentials = true;
-      },
-      success: function(employeess) {
-        for (let i = 0; i < employeess.length; i++) {
-          employees.push(employeess[i]);
-        }
-      },
-      error: function(error) {
-        console.log(error);
+    url: appConfig.url + appConfig.api + 'getAllEmployees',
+    type: 'GET',
+    cache: true,
+    dataType: 'json',
+    data: {
+      token: token
+    },
+    beforeSend: function(xhr) {
+      xhr.withCredentials = true;
+    },
+    success: function(employeess) {
+      for (let i = 0; i < employeess.length; i++) {
+        employees.push(employeess[i]);
       }
-    })
+
+      // caches.open('vv').then(function(cache) {
+      //   fetch(appConfig.url + appConfig.api + 'getAllEmployees?token=' + token).then(function(response) {
+      //     return response.json();
+      //   }).then(function(urls) {
+      //   var url = 'http://localhost:3000/api/getAllEmployees?token=' + token,
+      //   array = [url];
+      //     cache.addAll(array);
+      //     console.log(cache)
+      //   });
+      // });
+    },
+    error: function(error) {
+      console.log(error);
+    }
+  })
 }

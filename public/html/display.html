@@ -19,12 +19,55 @@
 </head>
 
 <body>
+  <div >
+    <div class="alert alert-success alert-dismissible hidden" id="alertEdit" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>Well done!</strong> Your prifile was updated.
+    </div>
+
+    <div class="alert alert-info alert-dismissible hidden" id="alertAdd" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>Well done!</strong> You successfully submit a new reservation.
+    </div>
+
+    <div class="alert alert-info alert-info hidden" id="alertDelete" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>Well done!</strong> You successfully delete a reservation.
+    </div>
+
+    <div class="alert alert-danger alert-info hidden" id="alertError" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>Oh snap!</strong> Something went wrong. Please try again.
+    </div>
+
+    <div class="alert alert-warning alert-info hidden" id="alertOffline" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>Oh snap!</strong> You are offline now, but you can see all the reservations.
+    </div>
+
+    <div class="alert alert-info alert-info hidden" id="alertOnline" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>Heads up!</strong> You are online now.
+    </div>
+  </div>
   <div class="container">
     <div class="row overflownone">
       <div class="col-md-4 information nopaddingleft nopaddingright hidden-sm hidden-xs">
         <h3>Menu</h3>
         <ul class="nav nav-pills nav-stacked admin-menu">
-          <li class="active" data-target-id="target1"><a href="#"><i class="fa fa-calendar-alt"></i> Calendar </a></li>
+          <li data-target-id="target1"><a href="#"><i class="fa fa-calendar-alt"></i> Calendar </a></li>
           <li data-target-id="target2"><a href="#"><i class="far fa-calendar-check"></i> Reservations</a></li>
           <li data-target-id="target3"><a href="#"><i class="fa fa-users"></i> Employees </a></li>
           <li data-target-id="target4"><a href="#"><i class="fa fa-align-center"></i> Services </a></li>
@@ -96,6 +139,7 @@
               <th>Hour</th>
               <th>Status</th>
               <th>Rate</th>
+              <th>Delete</th>
             </tr>
           </thead>
           <tbody>
@@ -163,9 +207,6 @@
       <div class="col-md-9 well admin-content" id="target5">
         <div class="modal-content">
           <div class="modal-body" style="padding:40px 50px;">
-            <div class="alert alert-success" style="display: none">
-              <strong>Success!</strong>
-            </div>
             <form role="form" name="editProfileForm" method="POST">
               <div class="form-group">
                 <div class="form-group">
@@ -199,7 +240,7 @@
               </div>
               <div class="form-group hide" id="eCarsTemplate">
                 <div class="col-xs-offset-3 col-xs-5">
-                  <input class="form-control" type="text" name="cars[]" style="margin-left: -300px"  value="CJ-00-AAA" />
+                  <input class="form-control" type="text" name="cars[]" style="margin-left: -300px" value="CJ-00-AAA" />
                 </div>
                 <div class="col-xs-4">
                   <button type="button" class="btn btn-default removeButton" style="margin-left: -580px"><i class="fa fa-minus"></i></button>
@@ -236,9 +277,6 @@
       <div class="col-md-9 well admin-content" id="target6">
         <div class="modal-content">
           <div class="modal-body" style="padding:40px 50px;">
-            <div class="alert alert-success" style="display: none">
-              <strong>Success!</strong>
-            </div>
             <form role="form" name="changePassForm" method="POST" onsubmit="return false">
               <div class="form-group">
                 <label><i class="fa fa-unlock-alt" aria-hidden="true"></i>Current Password</label>
@@ -423,38 +461,39 @@
         </div>
       </div>
     </div>
+  </div>
+  <script type="text/javascript" src="../js/config.js"></script>
+  <script src="../../server/src/node_modules/socket.io-client/dist/socket.io.js"></script>
+  <!-- <script src="../../server/src/node_modules/socket.io/lib/socket.js"></script> -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js" charset="utf-8"></script>
 
-    <script type="text/javascript" src="../js/config.js"></script>
-    <script src="../../server/src/node_modules/socket.io-client/dist/socket.io.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/2.0.2/sha.js" charset="utf-8"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="http://formvalidation.io/vendor/formvalidation/js/formValidation.min.js"></script>
+  <script src="http://formvalidation.io/vendor/formvalidation/js/framework/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
+  <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="http://formvalidation.io/vendor/formvalidation/js/formValidation.min.js"></script>
-    <script src="http://formvalidation.io/vendor/formvalidation/js/framework/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
-
-    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/js/bootstrap-select.min.js"></script>
-
-
-    <script src="../js/vendor/node_modules/bootstrap-datetimepicker.min.js"></script>
-
-    <script src="https://cdn.datatables.net/fixedcolumns/3.2.4/js/dataTables.fixedColumns.min.js"></script>
+  <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/js/bootstrap-select.min.js"></script>
 
 
-    <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
-    <script src="../js/vendor/node_modules/paginationjs/dist/pagination.js"></script>
-    <script src="../js/vendor/node_modules/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
-    <script src="../js/starwars/starwars.js"></script>
-    <script type="text/javascript " src="../js/fullcalendar/fullCalendar.js "></script>
-    <script type="text/javascript " src="../js/calendar.js "></script>
-    <script type="text/javascript " src="../js/display.js "></script>
-    <script type="text/javascript " src="../js/services.js"></script>
+  <script src="../js/vendor/node_modules/bootstrap-datetimepicker.min.js"></script>
+
+  <script src="https://cdn.datatables.net/fixedcolumns/3.2.4/js/dataTables.fixedColumns.min.js"></script>
+
+
+  <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+  <script src="../js/vendor/node_modules/paginationjs/dist/pagination.js"></script>
+  <script src="../js/vendor/node_modules/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
+  <script src="../js/starwars/starwars.js"></script>
+  <script type="text/javascript " src="../js/fullcalendar/fullCalendar.js "></script>
+  <script type="text/javascript " src="../js/calendar.js "></script>
+  <script type="text/javascript " src="../js/display.js "></script>
+  <script type="text/javascript " src="../js/services.js"></script>
 </body>
 
 </html>
