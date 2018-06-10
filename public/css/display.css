@@ -25,6 +25,10 @@ body
     margin-left: 5%;  cursor: pointer;  color: red;  color: red;
 }
 
+#alertEdit, #alertRegister, #alertAdd, #alertDelete, #alertError, #alertOnline, #alertOffline {
+  margin-bottom: 0px !important;
+}
+
 #myCars
 {
     margin-top: 25px;

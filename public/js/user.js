@@ -6,7 +6,9 @@ $(document).ready(function() {
     MAX_OPTIONS = 5,
     employees = [],
     socket = io.connect('http://127.0.0.1:4000'),
-    currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+    currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx")),
+    tableRequestSequence = 0,
+    res = [];
 
   socket.on('/resAddService', function(data) {
     getAllServices();
@@ -33,7 +35,7 @@ $(document).ready(function() {
   socket.on('/resDeleteReservation', function(data) {
     if (data.token == token) {
       $("#confirmDeleteRes").modal('hide');
-      $("#alertDelete").toggleClass('hidden');  
+      $("#alertDelete").toggleClass('hidden');
       var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
       getMyReservations(currentPage);
     }
@@ -185,6 +187,7 @@ $(document).ready(function() {
         xhr.withCredentials = true;
       },
       success: function(reservations) {
+        res = reservations;
         $("#resTable").DataTable().clear();
         var table = $('#resTable').DataTable({
           columnDefs: [{
@@ -200,13 +203,8 @@ $(document).ready(function() {
             orderable: false,
             targets: -1
           }],
+          stateSave: true,
           "bDestroy": true,
-          // "fnDrawCallback": function() {
-          //     $('td').on('click', function () {
-          //         r orderNum = $(this).text();
-          //         console.log(orderNum);
-          //     });
-          // }
         });
 
 
@@ -271,48 +269,57 @@ $(document).ready(function() {
           j++;
 
         }
-
-        for (let i = 0; i < reservations.length; i++) {
-          if (reservations[i].employeeId) {
-            for (let j = 0; j < employees.length; j++) {
-              if (employees[j].userId == reservations[i].employeeId) {
-                $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
-                $("#td" + reservations[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
-                $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
-              <p><strong>Client's email</strong> ` + reservations[i].userEmail + ` <strong>Client's phone</strong> ` + reservations[i].userPhone + `</p>
-              <br>
-              <p><strong>Service's description</strong> ` + reservations[i].description + ` <strong>Service's price</strong> ` + reservations[i].price + `</p>
-              <br>
-              <p><strong>Employee's name</strong> ` + employees[j].firstName + ` ` + employees[j].lastName + `</p>
-              <p><strong>Employee's email</strong> ` + employees[j].email + ` <strong>Employee's phone</strong> ` + employees[j].phone + `</p>
-              <br>
-              <p><strong>Car number<strong> ` + reservations[i].carNr + `</p>
-              <p><strong>Mentions</strong> ` + reservations[i].mentions + `</p>
-              </div></td></tr>`)
-                j = employees.length;
-              }
-            }
-          } else {
-            $("#td" + reservations[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + reservations[i].resId)
-            $("#td" + reservations[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
-            $("#td" + reservations[i].resId).after(`<tr id="` + reservations[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
-          <p><strong>Client's email</strong> ` + reservations[i].userEmail + ` <strong>Client's phone</strong> ` + reservations[i].userPhone + `</p>
-          <br>
-          <p><strong>Service's description</strong> ` + reservations[i].description + ` <strong>Service's price</strong> ` + reservations[i].price + `</p>
-          <br>
-          <p><strong>Car number<strong> ` + reservations[i].carNr + `</p>
-          <p><strong>Mentions</strong> ` + reservations[i].mentions + `</p>
-          </div></td></tr>`)
-          }
-        }
       },
       error: function(xhr, ajaxOptions, thrownError) {
         console.log(xhr);
-        console.log(thrownError);
       },
     }).done(function() {
       page--;
       $("#user").DataTable().page(page).draw(false);
+    });
+
+    $('#resTable').on('click','tr', function() {
+      var nextRow = $(this).next()[0];
+      if (this.id == 'td' + nextRow.id) {
+        nextRow.remove();
+      } else {
+        $("#resTable tr.in").remove();
+        for (let i = 0; i < res.length; i++) {
+          if(this.id == 'td' + res[i].resId) {
+            if (res[i].employeeId) {
+              for (let j = 0; j < employees.length; j++) {
+                if (employees[j].userId == res[i].employeeId) {
+                  $("#td" + res[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + res[i].resId)
+                  $("#td" + res[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
+                  $("#td" + res[i].resId).after(`<tr id="` + res[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
+                  <p><strong>Client's email</strong> ` + res[i].userEmail + ` <strong>Client's phone</strong> ` + res[i].userPhone + `</p>
+                  <br>
+                  <p><strong>Service's description</strong> ` + res[i].description + ` <strong>Service's price</strong> ` + res[i].price + `</p>
+                  <br>
+                  <p><strong>Employee's name</strong> ` + res[j].firstName + ` ` + employees[j].lastName + `</p>
+                  <p><strong>Employee's email</strong> ` + res[j].email + ` <strong>Employee's phone</strong> ` + res[j].phone + `</p>
+                  <br>
+                  <p><strong>Car number</strong> ` + res[i].carNr + `</p>
+                  <p><strong>Mentions</strong> ` + res[i].mentions + `</p>
+                  </div></td></tr>`)
+                  j = employees.length;
+                }
+              }
+            } else {
+              $("#td" + res[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + res[i].resId)
+              $("#td" + res[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
+              $("#td" + res[i].resId).after(`<tr id="` + res[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
+              <p><strong>Client's email</strong> ` + res[i].userEmail + ` <strong>Client's phone</strong> ` + res[i].userPhone + `</p>
+              <br>
+              <p><strong>Service's description</strong> ` + res[i].description + ` <strong>Service's price</strong> ` + res[i].price + `</p>
+              <br>
+              <p><strong>Car number<strong> ` + res[i].carNr + `</p>
+              <p><strong>Mentions</strong> ` + res[i].mentions + `</p>
+              </div></td></tr>`)
+            }
+          }
+        }
+      }
     });
   }
 

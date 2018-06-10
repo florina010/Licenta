@@ -5,19 +5,19 @@ $(document).ready(function() {
     token = sessionStorage.getItem('token'),
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
     MAX_OPTIONS = 5,
+    res = [],
     socket = io.connect('http://127.0.0.1:4000');
     if(user.admin == 2) {
       socket.on('/resEditUser', function(data) {
         var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
+        $('#editUser').modal('hide');
         populateTable(currentPage);
-        $('#editUser').modal('toggle');
-        alert('user')
       });
 
       socket.on('/resAddUser', function(data) {
         var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
         populateTable(currentPage);
-        $('#newUser').modal('toggle');
+        $('#newUser').modal('hide');
       });
     }
 
@@ -91,14 +91,13 @@ $(document).ready(function() {
     });
   });
 
-  populateTable(currentPage);
+  populateTable(1);
 });
 
   function populateTable(page) {
     $.ajax({
       url: appConfig.url + appConfig.api + 'getAllEmployees?token=' + token,
       type: 'GET',
-    //  cache: true,
       dataType: 'json',
       success: function(employees) {
         $("#userTable").DataTable().clear();
@@ -142,8 +141,8 @@ $(document).ready(function() {
         console.log(error);
       }
     }).done(function() {
-      page--;
-      $("#user").DataTable().page(page).draw(false);
+    page--;
+      $("#userTable").DataTable().page(page).draw(false);
     });
   }
 
