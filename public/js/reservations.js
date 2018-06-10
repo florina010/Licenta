@@ -35,15 +35,21 @@ $(document).ready(function() {
   getAllReservations(1);
 
   function getAllReservations(page) {
+    if (user.admin == 2) {
+      var url = appConfig.url + appConfig.api + 'getAllReservations';
+    } else if (user.admin == 1) {
+      var url = appConfig.url + appConfig.api + 'getEmployeeReservations';
+    }
     $.ajax({
-      url: appConfig.url + appConfig.api + 'getAllReservations',
+      url: url,
       data: {
         token: token,
-        userId: user.userId
+        employeeId: user.userId
       },
       type: 'GET',
       dataType: 'json',
       success: function(reservations) {
+        console.log(reservations);
         res = reservations;
         $("#resTable").DataTable().clear();
        $('#resTable').find('th').eq(7).text('Change status');
@@ -138,6 +144,7 @@ $(document).ready(function() {
     });
 
     $('#resTable').on('click','tr', function() {
+      console.log(employees);
       var nextRow = $(this).next()[0];
       if (this.id == 'td' + nextRow.id) {
         nextRow.remove();
@@ -147,7 +154,7 @@ $(document).ready(function() {
           if(this.id == 'td' + res[i].resId) {
             if (res[i].employeeId) {
               for (let j = 0; j < employees.length; j++) {
-                if (employees[j].userId == res[i].employeeId) {
+                if (employees[j].userId == res[i].employeeId || res[i].employeeId == user.userId) {
                   $("#td" + res[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + res[i].resId)
                   $("#td" + res[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
                   $("#td" + res[i].resId).after(`<tr id="` + res[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
@@ -188,17 +195,16 @@ function displayApproveModal(resId, date, action) {
   var socket = io.connect('http://127.0.0.1:4000'),
     status, employeeId;
   if (action) {
-    $("#approveRes").modal('show');
-
-    $.ajax({
+    if (user.admin == 2) {
+      $("#approveRes").modal('show');
+      $.ajax({
         url: appConfig.url + appConfig.api + 'getAllFreeEmployees?token=' + token + '&date=' + date,
         type: 'GET',
-        //  cache: true,
         dataType: 'json',
         success: function(employees) {
           for (var i = 0; i < employees.length; i++) {
             var info = '09',
-              option = '<option value="' + employees[i].userId + '" title="' + info + '">' + employees[i].firstName + ' ' + employees[i].lastName + '</option>';
+            option = '<option value="' + employees[i].userId + '" title="' + info + '">' + employees[i].firstName + ' ' + employees[i].lastName + '</option>';
             $("#selectEmp").append(option)
           }
 
@@ -226,6 +232,16 @@ function displayApproveModal(resId, date, action) {
           });
         })
       });
+    } else {
+      socket.emit('/approveReservation', {
+        token: token,
+        userId: user.userId,
+        employeeId: user.userId,
+        status: 'Approved',
+        resId: resId
+      });
+    }
+
     }
     else {
       status = "Rejected";

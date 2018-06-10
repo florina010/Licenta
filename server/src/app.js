@@ -112,6 +112,18 @@ app.get("/api/getAllReservations", function(req, res) {
   });
 });
 
+app.get("/api/getEmployeeReservations", function(req, res) {
+  var token = req.query.token;
+  isValidToken(token).then(function(result) {
+    getEmployeeReservations(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
+});
+
 app.get("/api/getAllFreeEmployees", function(req, res) {
   var token = req.query.token;
   isValidToken(token).then(function(result) {
@@ -817,6 +829,34 @@ function getAllReservations(req, res) {
     }
 
     let query = `SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId`
+
+    connection.query(query, function(err, rows) {
+      connection.release();
+      if (!err) {
+        res.json(rows);
+      }
+    });
+    connection.on('error', function(err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+    });
+  });
+}
+
+
+function getEmployeeReservations(req, res) {
+
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+    }
+    let query = `SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId
+    WHERE reservations.employeeId=` + req.query.employeeId;
 
     connection.query(query, function(err, rows) {
       connection.release();

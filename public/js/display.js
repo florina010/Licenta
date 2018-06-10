@@ -107,7 +107,6 @@ $(document).ready(function() {
     });
   });
 
-
   if (user.admin == 2) {
     $("[data-target-id='target1']").css('display', 'block');
     $("#target1").css('display', 'block');
@@ -131,6 +130,16 @@ $(document).ready(function() {
     script.type = 'text/javascript';
     script.src = "../js/user.js";
     document.getElementsByTagName('body')[0].appendChild(script);
+  } else if (user.admin == 1) {
+    $("[data-target-id='target1']").css('display', 'block');
+    $("#target1").css('display', 'block');
+    var scriptRes = document.createElement('script');
+    scriptRes.type = 'text/javascript';
+    scriptRes.src = "../js/reservations.js";
+    document.getElementsByTagName('body')[0].appendChild(scriptRes);
+    $("[data-target-id='target3']").css('display', 'none');
+    $("[data-target-id='target4']").css('display', 'none');
+    $("[name='editProfileForm'] div:nth-child(4)").css('display', 'none');
   }
 
   $("[name='eFirstName']").val(user.firstName);
