@@ -71,6 +71,7 @@ $(document).ready(function() {
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
     MAX_OPTIONS = 5,
     socket = io.connect('http://127.0.0.1:4000');
+
   socket.on('/resEditProfile', function(data) {
     if (data.id == user.userId) {
       $("#alertEdit").toggleClass('hidden');
@@ -108,6 +109,8 @@ $(document).ready(function() {
 
 
   if (user.admin == 2) {
+    $("[data-target-id='target1']").css('display', 'block');
+    $("#target1").css('display', 'block');
     $("[name='editProfileForm'] div:nth-child(4)").css('display', 'none');
     var scriptEmp = document.createElement('script'),
       scriptRes = document.createElement('script');
@@ -118,6 +121,10 @@ $(document).ready(function() {
     document.getElementsByTagName('body')[0].appendChild(scriptEmp);
     document.getElementsByTagName('body')[0].appendChild(scriptRes);
   } else if (user.admin == 0) {
+    $("[data-target-id='target1']").css('display', 'none');
+    $("#target1").css('display', 'none');
+    $("[data-target-id='target2']").toggleClass('active');
+    $("#target2").css('display', 'block');
     $("[data-target-id='target3']").css('display', 'none');
     $("[data-target-id='target4']").css('display', 'none');
     var script = document.createElement('script');

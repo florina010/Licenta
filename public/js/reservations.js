@@ -9,7 +9,8 @@ $(document).ready(function() {
     socket = io.connect('http://127.0.0.1:4000'),
     currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
 
-$("[data-target='#newReservation']").css('display', 'none');
+    $("[data-target='#newReservation']").css('display', 'none');
+
   socket.on('/resAddReservation', function(data) {
     var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
     getAllReservations(currentPage);
