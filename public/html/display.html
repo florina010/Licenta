@@ -71,7 +71,7 @@
   </div>
   <div class="container">
     <div class="row overflownone">
-      <div class="col-md-4 information nopaddingleft nopaddingright hidden-sm hidden-xs">
+      <div class="col-md-4 information nopaddingleft nopaddingright" id="menuInfo">
         <h3>Menu</h3>
         <ul class="nav nav-pills nav-stacked admin-menu">
           <li class="active" data-target-id="target1"><a href="#"><i class="fa fa-calendar-alt"></i> Calendar </a></li>
@@ -81,6 +81,7 @@
           <li data-target-id="target5"><a href="#"><i class="fa fa-edit"></i> Edit profile </a></li>
           <li data-target-id="target6"><a href="#"><i class="fa fa-edit"></i> Change password </a></li>
           <li data-target-id="target7"><a href="index.html"><i class="fas fa-sign-out-alt"></i> Logout </a></li>
+  </a>
         </ul>
       </div>
       <div class="col-md-9 well admin-content" id="target1">
@@ -239,7 +240,7 @@
               <div class="form-group">
                 <label class="col-xs-3 control-label" style="padding-left: 0"><i class="fas fa-car" aria-hidden="true"></i>Cars</label>
                 <div class="col-xs-5" id="myCars">
-                  <input type="text" class="form-control" name="cars[]" style="margin-left: -300px" />
+                  <input type="text" class="form-control input-lg" name="cars[]" style="margin-left: -300px" />
                 </div>
                 <div class="col-xs-4">
                   <button type="button" class="btn btn-default addButton" style="margin-left: -580px; margin-top: 27px"><i class="fa fa-plus"></i></button>
@@ -247,31 +248,12 @@
               </div>
               <div class="form-group hide" id="eCarsTemplate">
                 <div class="col-xs-offset-3 col-xs-5">
-                  <input class="form-control" type="text" name="cars[]" style="margin-left: -300px" value="CJ-00-AAA" />
+                  <input class="form-control input-lg" type="text" name="cars[]"  style="margin-left: -300px" value="CJ-00-AAA" />
                 </div>
                 <div class="col-xs-4">
                   <button type="button" class="btn btn-default removeButton" style="margin-left: -580px"><i class="fa fa-minus"></i></button>
                 </div>
               </div>
-
-
-              <!-- <div class="form-group">
-                <label class="col-xs-3 control-label" style="padding-left: 0"><i class="fas fa-car" aria-hidden="true"></i>Cars</label>
-                <div class="col-xs-5" id="myCars">
-                  <input type="text" class="form-control" name="cars[]" style="margin-left: -300px" />
-                </div>
-                <div class="col-xs-4">
-                  <button type="button" class="btn btn-default addButton" style="margin-left: -580px; margin-top: 27px"><i class="fa fa-plus"></i></button>
-                </div>
-              </div>
-              <div class="form-group hide" id="eCarsTemplate">
-                <div class="col-xs-offset-3 col-xs-5">
-                  <input class="form-control" type="text" name="cars[]" style="margin-left: -300px" value="CJ-00-AAA" />
-                </div>
-                <div class="col-xs-4">
-                  <button type="button" class="btn btn-default removeButton" style="margin-left: -580px"><i class="fa fa-minus"></i></button>
-                </div>
-              </div> -->
 
               <button type="submit" class="btn btn-success btn-block" name="editProfile" disabled='disabled'><span class="glyphicon glyphicon-pencil"></span> Edit</button>
 
@@ -477,11 +459,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="http://formvalidation.io/vendor/formvalidation/js/formValidation.min.js"></script>
-  <script src="http://formvalidation.io/vendor/formvalidation/js/framework/bootstrap.min.js"></script>
+  <!-- <script src="http://formvalidation.io/vendor/formvalidation/js/formValidation.min.js"></script> -->
+
+  <!-- <script src="http://formvalidation.io/vendor/formvalidation/js/framework/bootstrap.min.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
   <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
-
+  <script src="../js/vendor/formvalidation.min.js"></script>
+  <script src="../js/vendor/bootstrap.min.js"></script>
   <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/js/bootstrap-select.min.js"></script>

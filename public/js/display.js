@@ -48,30 +48,17 @@ if ('serviceWorker' in navigator) {
     }, 5000);
   }
 }
-
 $(document).ready(function() {
-//   navigator.serviceWorker.register('service-worker.js').then(reg => {
-//   reg.installing; // the installing worker, or undefined
-//   reg.waiting; // the waiting worker, or undefined
-//   reg.active; // the active worker, or undefined
-//
-//   reg.addEventListener('updatefound', () => {
-//     // A wild service worker has appeared in reg.installing!
-//     const newWorker = reg.installing;
-//
-//     newWorker.state;
-//     // "installing" - the install event has fired, but not yet complete
-//     // "installed"  - install complete
-//     // "activating" - the activate event has fired, but not yet complete
-//     // "activated"  - fully active
-//     // "redundant"  - discarded. Either failed install, or it's been
-//     //                replaced by a newer version
-//
-//     newWorker.addEventListener('statechange', () => {
-//       // newWorker.state has changed
-//     });
-//   });
-// });
+  $("#menuInfo").on('click', function () {
+    if ($( window ).width() <= 1100) {
+      $(".admin-menu").toggleClass('hideUl')
+    }
+  });
+
+  if ($( window ).width() <= 1100) {
+    $(".admin-menu").toggleClass('hideUl')
+  }
+
   var navItems = $('.admin-menu li > a');
   var navListItems = $('.admin-menu li');
   var allWells = $('.admin-content');

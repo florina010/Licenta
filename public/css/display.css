@@ -235,3 +235,17 @@ input[type=number]::-webkit-outer-spin-button
 {
     margin: 0;  -webkit-appearance: none;
 }
+
+.hideUl {
+  display: none
+}
+
+
+@media only screen and (max-width: 1100px) {
+    #menuInfo {
+      display: contents;
+    }
+    #target2, #target3 {
+      width: 100%
+    }
+}
