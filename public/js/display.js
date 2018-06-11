@@ -1,30 +1,13 @@
 "use strict";
-  navigator.serviceWorker.register('service-worker.js', {scope: './'}).then(reg => {
-  reg.installing; // the installing worker, or undefined
-  reg.waiting; // the waiting worker, or undefined
-  reg.active; // the active worker, or undefined
 
-  reg.addEventListener('updatefound', () => {
-    // A wild service worker has appeared in reg.installing!
-    const newWorker = reg.installing;
-
-    newWorker.state;
-    // "installing" - the install event has fired, but not yet complete
-    // "installed"  - install complete
-    // "activating" - the activate event has fired, but not yet complete
-    // "activated"  - fully active
-    // "redundant"  - discarded. Either failed install, or it's been
-    //                replaced by a newer version
-
-    newWorker.addEventListener('statechange', () => {
-      // newWorker.state has changed
-    });
-  });
+navigator.serviceWorker.register('service-worker.js', {
+  scope: '.'
+}).then(function(registration) {
+  // The service worker has been registered!
 });
 if ('serviceWorker' in navigator) {
   var lastStatus = true;
-  setTimeout(function() {
-  }, 5000);
+  setTimeout(function() {}, 5000);
   onlineCheck();
 
   function onlineCheck() {
@@ -37,8 +20,6 @@ if ('serviceWorker' in navigator) {
       }, 3000);
       console.log('on');
     } else if ((navigator.onLine === false) && (lastStatus === true)) {
-      var socket = io.connect('http://127.0.0.1:4000');
-      socket.onclose();
       $("#alertOffline").toggleClass("hidden");
       console.log('off');
       lastStatus = false;
@@ -48,14 +29,15 @@ if ('serviceWorker' in navigator) {
     }, 5000);
   }
 }
+
 $(document).ready(function() {
-  $("#menuInfo").on('click', function () {
-    if ($( window ).width() <= 1100) {
+  $("#menuInfo").on('click', function() {
+    if ($(window).width() <= 1100) {
       $(".admin-menu").toggleClass('hideUl')
     }
   });
 
-  if ($( window ).width() <= 1100) {
+  if ($(window).width() <= 1100) {
     $(".admin-menu").toggleClass('hideUl')
   }
 
@@ -78,7 +60,9 @@ $(document).ready(function() {
     token = sessionStorage.getItem('token'),
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
     MAX_OPTIONS = 5,
-    socket = io.connect('http://127.0.0.1:4000');
+    socket = io.connect('http://127.0.0.1:4000', {
+      reconnection: false
+    });
 
   socket.on('/resEditProfile', function(data) {
     if (data.id == user.userId) {
@@ -243,40 +227,40 @@ $(document).ready(function() {
       }
     }
   }).on('click', '.addButton', function() {
-      var $template = $('#carsTemplate'),
-        $clone = $template
-        .clone()
-        .removeClass('hide')
-        .removeAttr('id')
-        .insertBefore($template),
-        $option = $clone.find('[name="cars[]"]');
+    var $template = $('#carsTemplate'),
+      $clone = $template
+      .clone()
+      .removeClass('hide')
+      .removeAttr('id')
+      .insertBefore($template),
+      $option = $clone.find('[name="cars[]"]');
 
-      $("[name='editProfileForm']").formValidation('addField', $option);
-      var currentHeight = $("[name='editProfileForm']").height();
-      $("[name='editProfileForm']").css('height', currentHeight + 40);
+    $("[name='editProfileForm']").formValidation('addField', $option);
+    var currentHeight = $("[name='editProfileForm']").height();
+    $("[name='editProfileForm']").css('height', currentHeight + 40);
 
-    }).on('click', '.removeButton', function() {
-      var $row = $(this).parents('.form-group'),
-        $option = $row.find('[name="cars[]"]');
-      $row.remove();
-      $("[name='editProfileForm']").formValidation('removeField', $option);
-      var currentHeight = $("[name='editProfileForm']").height();
-      $("[name='editProfileForm']").css('height', currentHeight - 40);
+  }).on('click', '.removeButton', function() {
+    var $row = $(this).parents('.form-group'),
+      $option = $row.find('[name="cars[]"]');
+    $row.remove();
+    $("[name='editProfileForm']").formValidation('removeField', $option);
+    var currentHeight = $("[name='editProfileForm']").height();
+    $("[name='editProfileForm']").css('height', currentHeight - 40);
 
-    }).on('added.field.fv', function(e, data) {
-      if (data.field === 'cars[]') {
-        if ($("[name='editProfileForm']").find(':visible[name="cars[]"]').length >= MAX_OPTIONS) {
-          $("[name='editProfileForm']").find('.addButton').attr('disabled', 'disabled');
-        }
+  }).on('added.field.fv', function(e, data) {
+    if (data.field === 'cars[]') {
+      if ($("[name='editProfileForm']").find(':visible[name="cars[]"]').length >= MAX_OPTIONS) {
+        $("[name='editProfileForm']").find('.addButton').attr('disabled', 'disabled');
       }
+    }
 
-    }).on('removed.field.fv', function(e, data) {
-      if (data.field === 'cars[]') {
-        if ($('[name="editProfileForm"]').find(':visible[name="cars[]"]').length < MAX_OPTIONS) {
-          $('[name="editProfileForm"]').find('.addButton').removeAttr('disabled');
-        }
+  }).on('removed.field.fv', function(e, data) {
+    if (data.field === 'cars[]') {
+      if ($('[name="editProfileForm"]').find(':visible[name="cars[]"]').length < MAX_OPTIONS) {
+        $('[name="editProfileForm"]').find('.addButton').removeAttr('disabled');
       }
-    }).on('change', function(e, data) {
+    }
+  }).on('change', function(e, data) {
     $("[name='editProfileForm']").formValidation('revalidateField', 'eFirstName');
     $("[name='editProfileForm']").formValidation('revalidateField', 'eLastName');
     $("[name='editProfileForm']").formValidation('revalidateField', 'eEmail');
@@ -296,7 +280,9 @@ $(document).ready(function() {
       i = 0,
       carsArr = [],
       carsObj = {},
-      socket = io.connect('http://127.0.0.1:4000');
+      socket = io.connect('http://127.0.0.1:4000', {
+        reconnection: false
+      });
     $.map(cars, function(car) {
       if (car.value) {
         carsArr.push({
@@ -387,7 +373,9 @@ $(document).ready(function() {
       $('[name="changePass"]').attr('disabled', false);
     }
   }).off().on('submit', function(e, data) {
-    var socket = io.connect('http://127.0.0.1:4000'),
+    var socket = io.connect('http://127.0.0.1:4000', {
+        reconnection: false
+      }),
       hashObj = new jsSHA("SHA-512", "TEXT", {
         numRounds: 1
       }),
@@ -460,7 +448,7 @@ $(document).ready(function() {
 
     $(".removeButton").on('click', function() {
       var $row = $(this).parents('.form-group'),
-      $option = $row.find('[name="cars[]"]');
+        $option = $row.find('[name="cars[]"]');
       $row.remove();
 
       var currentHeight = $("[name='editProfileForm']").height();

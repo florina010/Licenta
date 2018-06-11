@@ -1,25 +1,28 @@
 "use strict";
 
 $(document).ready(function() {
+
   var user = JSON.parse(sessionStorage.getItem('user')),
     token = sessionStorage.getItem('token'),
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
     MAX_OPTIONS = 5,
     res = [],
-    socket = io.connect('http://127.0.0.1:4000');
-    if(user.admin == 2) {
-      socket.on('/resEditUser', function(data) {
-        var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
-        $('#editUser').modal('hide');
-        populateTable(currentPage);
-      });
+    socket = io.connect('http://127.0.0.1:4000', {
+      reconnection: false
+    });
+  if (user.admin == 2) {
+    socket.on('/resEditUser', function(data) {
+      var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
+      $('#editUser').modal('hide');
+      populateTable(currentPage);
+    });
 
-      socket.on('/resAddUser', function(data) {
-        var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
-        populateTable(currentPage);
-        $('#newUser').modal('hide');
-      });
-    }
+    socket.on('/resAddUser', function(data) {
+      var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
+      populateTable(currentPage);
+      $('#newUser').modal('hide');
+    });
+  }
 
   $("[name='addUserForm']").formValidation({
     framework: 'bootstrap',
@@ -94,57 +97,57 @@ $(document).ready(function() {
   populateTable(1);
 });
 
-  function populateTable(page) {
-    $.ajax({
-      url: appConfig.url + appConfig.api + 'getAllEmployees?token=' + token,
-      type: 'GET',
-      dataType: 'json',
-      success: function(employees) {
-        $("#userTable").DataTable().clear();
-          var table = $('#userTable').DataTable({
-            "aoColumnDefs": [{
-              bSortable: false,
-              aTargets: [-1]
-            }, ],
-            "columnDefs": [{
-              orderable: false,
-              targets: -1
-            }],
-            "bDestroy": true
-          });
+function populateTable(page) {
+  $.ajax({
+    url: appConfig.url + appConfig.api + 'getAllEmployees?token=' + token,
+    type: 'GET',
+    dataType: 'json',
+    success: function(employees) {
+      $("#userTable").DataTable().clear();
+      var table = $('#userTable').DataTable({
+        "aoColumnDefs": [{
+          bSortable: false,
+          aTargets: [-1]
+        }, ],
+        "columnDefs": [{
+          orderable: false,
+          targets: -1
+        }],
+        "bDestroy": true
+      });
 
-          var j = 1,
-            active;
-          for (var i = 0; i < employees.length; i++) {
-            if (employees[i].isActive) {
-              active = 'Yes';
-            } else {
-              active = 'No';
-            }
+      var j = 1,
+        active;
+      for (var i = 0; i < employees.length; i++) {
+        if (employees[i].isActive) {
+          active = 'Yes';
+        } else {
+          active = 'No';
+        }
 
-            table.row.add([
-                j,
-                employees[i].firstName,
-                employees[i].lastName,
-                employees[i].email,
-                employees[i].phone,
-                active,
-                '<a class="btn btn-defaul glyphicon glyphicon-pencil" href="#" data-toggle="modal" data-target="#editUser" onclick="editUserA(this, ' + employees[i].userId + ')"></a>'
-              ]).draw(false)
-              .nodes()
-              .to$()
-              .attr('role', 'button');
-            j++;
-          }
-        },
-      error: function(error) {
-        console.log(error);
+        table.row.add([
+            j,
+            employees[i].firstName,
+            employees[i].lastName,
+            employees[i].email,
+            employees[i].phone,
+            active,
+            '<a class="btn btn-defaul glyphicon glyphicon-pencil" href="#" data-toggle="modal" data-target="#editUser" onclick="editUserA(this, ' + employees[i].userId + ')"></a>'
+          ]).draw(false)
+          .nodes()
+          .to$()
+          .attr('role', 'button');
+        j++;
       }
-    }).done(function() {
+    },
+    error: function(error) {
+      console.log(error);
+    }
+  }).done(function() {
     page--;
-      $("#userTable").DataTable().page(page).draw(false);
-    });
-  }
+    $("#userTable").DataTable().page(page).draw(false);
+  });
+}
 
 function editUserA(elem, employee) {
   var tr = $(elem).closest("tr");
@@ -224,7 +227,9 @@ function editUserA(elem, employee) {
       $("[name='submitEdit']").attr('disabled', false);
     }
   }).on('submit', function(e, data) {
-    var socket = io.connect('http://127.0.0.1:4000'),
+    var socket = io.connect('http://127.0.0.1:4000', {
+        reconnection: false
+      }),
       isActive;
 
     if (($("#active").parent().hasClass('active'))) {

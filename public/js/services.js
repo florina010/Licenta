@@ -1,5 +1,27 @@
 "use strict";
-
+//
+// navigator.serviceWorker.register('service-worker.js').then(reg => {
+// reg.installing; // the installing worker, or undefined
+// reg.waiting; // the waiting worker, or undefined
+// reg.active; // the active worker, or undefined
+//
+// reg.addEventListener('updatefound', () => {
+//   // A wild service worker has appeared in reg.installing!
+//   const newWorker = reg.installing;
+//
+//   newWorker.state;
+//   // "installing" - the install event has fired, but not yet complete
+//   // "installed"  - install complete
+//   // "activating" - the activate event has fired, but not yet complete
+//   // "activated"  - fully active
+//   // "redundant"  - discarded. Either failed install, or it's been
+//   //                replaced by a newer version
+//
+//   newWorker.addEventListener('statechange', () => {
+//     // newWorker.state has changed
+//   });
+// });
+// });
 $(document).ready(function() {
 
   $(document).on('click', '.list-group-item', function(e) {
@@ -10,7 +32,9 @@ $(document).ready(function() {
   var user = JSON.parse(sessionStorage.getItem('user')),
     token = sessionStorage.getItem('token'),
     MAX_OPTIONS = 5,
-    socket = io.connect('http://127.0.0.1:4000');
+    socket = io.connect('http://127.0.0.1:4000', {
+      reconnection: false
+    });
 
   socket.on('/resAddService', function(data) {
     var page = $("#pagination li.active a")[0].innerHTML;
@@ -72,7 +96,9 @@ $(document).ready(function() {
     var title = $("[name='sTitle']").val(),
       description = $("[name='sDescription']").val(),
       price = $("[name='sPrice']").val(),
-      socket = io.connect('http://127.0.0.1:4000');
+      socket = io.connect('http://127.0.0.1:4000', {
+        reconnection: false
+      });
     socket.emit('/addService', {
       token: token,
       title: title,
@@ -82,17 +108,15 @@ $(document).ready(function() {
   });
 });
 
-
-
 function getAllServices(page) {
-  var   token = sessionStorage.getItem('token');
+  var token = sessionStorage.getItem('token');
   $.ajax({
     url: appConfig.url + appConfig.api + 'getAllServices?token=' + token,
     type: 'GET',
-  //  cache: true,
+    //  cache: true,
     dataType: 'json',
-    beforeSend: function(xhr){
-       xhr.withCredentials = true;
+    beforeSend: function(xhr) {
+      xhr.withCredentials = true;
     },
     success: function(services) {
       $('#pagination').pagination({
@@ -177,7 +201,9 @@ function getAllServices(page) {
                 description = $("#" + e.target.id + " [name='eDescription']").val(),
                 price = $("#" + e.target.id + " [name='ePrice']").val(),
                 serviceId = e.target.id,
-                socket = io.connect('http://127.0.0.1:4000');
+                socket = io.connect('http://127.0.0.1:4000', {
+                  reconnection: false
+                });
               socket.emit('/editService', {
                 token: token,
                 serviceId: serviceId,
@@ -201,7 +227,9 @@ function deleteService(serviceId) {
 
   $("#modal-btn-delete-answer").off().on('click', function() {
 
-    var socket = io.connect('http://127.0.0.1:4000');
+    var socket = io.connect('http://127.0.0.1:4000', {
+      reconnection: false
+    });
     socket.emit('/deleteService', {
       token: token,
       serviceId: serviceId

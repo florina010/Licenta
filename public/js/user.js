@@ -1,11 +1,34 @@
 "use strict";
-
+// navigator.serviceWorker.register('service-worker.js').then(reg => {
+// reg.installing; // the installing worker, or undefined
+// reg.waiting; // the waiting worker, or undefined
+// reg.active; // the active worker, or undefined
+//
+// reg.addEventListener('updatefound', () => {
+//   // A wild service worker has appeared in reg.installing!
+//   const newWorker = reg.installing;
+//
+//   newWorker.state;
+//   // "installing" - the install event has fired, but not yet complete
+//   // "installed"  - install complete
+//   // "activating" - the activate event has fired, but not yet complete
+//   // "activated"  - fully active
+//   // "redundant"  - discarded. Either failed install, or it's been
+//   //                replaced by a newer version
+//
+//   newWorker.addEventListener('statechange', () => {
+//     // newWorker.state has changed
+//   });
+// });
+// });
 $(document).ready(function() {
   var user = JSON.parse(sessionStorage.getItem('user')),
     token = sessionStorage.getItem('token'),
     MAX_OPTIONS = 5,
     employees = [],
-    socket = io.connect('http://127.0.0.1:4000'),
+    socket = io.connect('http://127.0.0.1:4000', {
+      reconnection: false
+    }),
     currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx")),
     tableRequestSequence = 0,
     res = [];
@@ -121,7 +144,9 @@ $(document).ready(function() {
     }
   }).off().on('submit', function(e, data) {
     e.preventDefault();
-    var socket = io.connect('http://127.0.0.1:4000'),
+    var socket = io.connect('http://127.0.0.1:4000', {
+        reconnection: false
+      }),
       serviceId = $("#selectList option:selected")[0].value,
       date = $("#datetimepicker").val(),
       carNr = $("#selectCar option:selected")[0].innerText,
@@ -278,14 +303,14 @@ $(document).ready(function() {
       $("#user").DataTable().page(page).draw(false);
     });
 
-    $('#resTable').on('click','tr', function() {
+    $('#resTable').on('click', 'tr', function() {
       var nextRow = $(this).next()[0];
       if (this.id == 'td' + nextRow.id) {
         nextRow.remove();
       } else {
         $("#resTable tr.in").remove();
         for (let i = 0; i < res.length; i++) {
-          if(this.id == 'td' + res[i].resId) {
+          if (this.id == 'td' + res[i].resId) {
             if (res[i].employeeId) {
               for (let j = 0; j < employees.length; j++) {
                 if (employees[j].userId == res[i].employeeId) {
@@ -333,7 +358,9 @@ function deleteReservation(resId) {
 
   $("#modal-btn-delete-answer").on('click', function() {
 
-    var socket = io.connect('http://127.0.0.1:4000');
+    var socket = io.connect('http://127.0.0.1:4000', {
+      reconnection: false
+    });
 
     socket.emit('/deleteReservation', {
       token: token,
@@ -358,7 +385,9 @@ function rate(resId) {
 
     comment = $("[name='rComment']")[0].value;
 
-    var socket = io.connect('http://127.0.0.1:4000');
+    var socket = io.connect('http://127.0.0.1:4000', {
+      reconnection: false
+    });
 
     socket.emit('/rate', {
       token: token,

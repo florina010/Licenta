@@ -1,4 +1,26 @@
 "use strict";
+// navigator.serviceWorker.register('service-worker.js').then(reg => {
+// reg.installing; // the installing worker, or undefined
+// reg.waiting; // the waiting worker, or undefined
+// reg.active; // the active worker, or undefined
+//
+// reg.addEventListener('updatefound', () => {
+//   // A wild service worker has appeared in reg.installing!
+//   const newWorker = reg.installing;
+//
+//   newWorker.state;
+//   // "installing" - the install event has fired, but not yet complete
+//   // "installed"  - install complete
+//   // "activating" - the activate event has fired, but not yet complete
+//   // "activated"  - fully active
+//   // "redundant"  - discarded. Either failed install, or it's been
+//   //                replaced by a newer version
+//
+//   newWorker.addEventListener('statechange', () => {
+//     // newWorker.state has changed
+//   });
+// });
+// });
 
 $(document).ready(function() {
   var user = JSON.parse(sessionStorage.getItem('user')),
@@ -6,10 +28,12 @@ $(document).ready(function() {
     MAX_OPTIONS = 5,
     employees = [],
     res = [],
-    socket = io.connect('http://127.0.0.1:4000'),
+    socket = io.connect('http://127.0.0.1:4000', {
+      reconnection: false
+    }),
     currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
 
-    $("[data-target='#newReservation']").css('display', 'none');
+  $("[data-target='#newReservation']").css('display', 'none');
 
   socket.on('/resAddReservation', function(data) {
     var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
@@ -52,7 +76,7 @@ $(document).ready(function() {
         console.log(reservations);
         res = reservations;
         $("#resTable").DataTable().clear();
-       $('#resTable').find('th').eq(7).text('Change status');
+        $('#resTable').find('th').eq(7).text('Change status');
         var table = $('#resTable').DataTable({
           columnDefs: [{
             width: '20%',
@@ -84,31 +108,31 @@ $(document).ready(function() {
             currentTime = moment(new Date(), "HH:mm"),
             rating = reservations[i].rating;
 
-            if (status == 'Approved') {
-              approveButtons = "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
-            } else if (status == "Rejected") {
-              approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
-            } else {
-              approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
-              approveButtons += "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
-            }
-            if (rating > 0) {
-              rateBtn = "<div class='rate_row'></div>";
-            } else {
-              if (status == 'Approved' && (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date()))).asDays() < 0)) {
-                if (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date())))._data.days == 0) {
-                  if (moment().format('HH:mm') > hour) {
-                    rateBtn = "<span class='fa fa-star' onclick='rate(" + reservations[i].resId + ")'></span>";
-                  } else {
-                    rateBtn = "";
-                  }
-                } else {
+          if (status == 'Approved') {
+            approveButtons = "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
+          } else if (status == "Rejected") {
+            approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
+          } else {
+            approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
+            approveButtons += "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
+          }
+          if (rating > 0) {
+            rateBtn = "<div class='rate_row'></div>";
+          } else {
+            if (status == 'Approved' && (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date()))).asDays() < 0)) {
+              if (moment.duration(moment(reservations[i].date, 'MM/DD/YYYY').diff(moment(new Date())))._data.days == 0) {
+                if (moment().format('HH:mm') > hour) {
                   rateBtn = "<span class='fa fa-star' onclick='rate(" + reservations[i].resId + ")'></span>";
+                } else {
+                  rateBtn = "";
                 }
               } else {
-                rateBtn = "";
+                rateBtn = "<span class='fa fa-star' onclick='rate(" + reservations[i].resId + ")'></span>";
               }
+            } else {
+              rateBtn = "";
             }
+          }
 
 
           table.row.add([
@@ -126,12 +150,12 @@ $(document).ready(function() {
             .addClass(colorClass)
             .attr('id', 'td' + reservations[i].resId)
 
-            if (rating > 0 && status == 'Approved') {
-              $("#td" + reservations[i].resId + " .rate_row").starwarsjs({
-                stars: rating,
-                disable: 0
-              });
-            }
+          if (rating > 0 && status == 'Approved') {
+            $("#td" + reservations[i].resId + " .rate_row").starwarsjs({
+              stars: rating,
+              disable: 0
+            });
+          }
           j++;
         }
       },
@@ -143,7 +167,7 @@ $(document).ready(function() {
       $("#resTable").DataTable().page(page).draw(false);
     });
 
-    $('#resTable').on('click','tr', function() {
+    $('#resTable').on('click', 'tr', function() {
       console.log(employees);
       var nextRow = $(this).next()[0];
       if (this.id == 'td' + nextRow.id) {
@@ -151,7 +175,7 @@ $(document).ready(function() {
       } else {
         $("#resTable tr.in").remove();
         for (let i = 0; i < res.length; i++) {
-          if(this.id == 'td' + res[i].resId) {
+          if (this.id == 'td' + res[i].resId) {
             if (res[i].employeeId) {
               for (let j = 0; j < employees.length; j++) {
                 if (employees[j].userId == res[i].employeeId || res[i].employeeId == user.userId) {
@@ -192,7 +216,9 @@ $(document).ready(function() {
 
 
 function displayApproveModal(resId, date, action) {
-  var socket = io.connect('http://127.0.0.1:4000'),
+  var socket = io.connect('http://127.0.0.1:4000', {
+      reconnection: false
+    }),
     status, employeeId;
   if (action) {
     if (user.admin == 2) {
@@ -204,7 +230,7 @@ function displayApproveModal(resId, date, action) {
         success: function(employees) {
           for (var i = 0; i < employees.length; i++) {
             var info = '09',
-            option = '<option value="' + employees[i].userId + '" title="' + info + '">' + employees[i].firstName + ' ' + employees[i].lastName + '</option>';
+              option = '<option value="' + employees[i].userId + '" title="' + info + '">' + employees[i].firstName + ' ' + employees[i].lastName + '</option>';
             $("#selectEmp").append(option)
           }
 
@@ -242,38 +268,37 @@ function displayApproveModal(resId, date, action) {
       });
     }
 
+  } else {
+    status = "Rejected";
+    socket.emit('/approveReservation', {
+      token: token,
+      userId: user.userId,
+      employeeId: 0,
+      status: status,
+      resId: resId
+    });
+  }
+}
+
+
+function colorTableRow(status) {
+  return (status == 'Approved') ? "info" : (status == "Rejected" ? "danger" : "white");
+}
+
+function getAllEmployees(employees) {
+  $.ajax({
+    url: appConfig.url + appConfig.api + 'getAllEmployees?token=' + token,
+    type: 'GET',
+    cache: true,
+    contentType: "application/json; charset=utf-8",
+    dataType: 'json',
+    success: function(employeess) {
+      for (let i = 0; i < employeess.length; i++) {
+        employees.push(employeess[i]);
+      }
+    },
+    error: function(error) {
+      console.log(error);
     }
-    else {
-      status = "Rejected";
-      socket.emit('/approveReservation', {
-        token: token,
-        userId: user.userId,
-        employeeId: 0,
-        status: status,
-        resId: resId
-      });
-    }
-  }
-
-
-  function colorTableRow(status) {
-    return (status == 'Approved') ? "info" : (status == "Rejected" ? "danger" : "white");
-  }
-
-  function getAllEmployees(employees) {
-    $.ajax({
-        url: appConfig.url + appConfig.api + 'getAllEmployees?token=' + token,
-        type: 'GET',
-         cache: true,
-         contentType: "application/json; charset=utf-8",
-        dataType: 'json',
-        success: function(employeess) {
-          for (let i = 0; i < employeess.length; i++) {
-            employees.push(employeess[i]);
-          }
-        },
-        error: function(error) {
-          console.log(error);
-        }
-      })
-  }
+  })
+}
