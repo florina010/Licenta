@@ -24,6 +24,26 @@ $(document).ready(function() {
     });
   }
 
+  $('#selectMonth option').each(function(op) {
+    if (this.value == moment().format('M')) {
+      $(this).prop('selected', 'true');
+    }
+  })
+  $('#selectMonth').multiselect({
+    maxHeight: 300,
+    onChange: function() {
+
+    }
+  });
+
+  $("#reportsTable").DataTable( {
+    dom: 'Bfrtip',
+        buttons: [
+            'print'
+        ]
+    } );
+
+
   $("[name='addUserForm']").formValidation({
     framework: 'bootstrap',
     excluded: ':disabled',
@@ -97,6 +117,7 @@ $(document).ready(function() {
   populateTable(1);
 });
 
+
 function populateTable(page) {
   $.ajax({
     url: appConfig.url + appConfig.api + 'getAllEmployees?token=' + token,
@@ -115,6 +136,34 @@ function populateTable(page) {
         }],
         "bDestroy": true
       });
+
+      for (var i = 0; i < employees.length; i++) {
+        var info = '09',
+          option = '<option value="' + employees[i].userId + '" title="' + info + '">' + employees[i].firstName + ' ' + employees[i].lastName + '</option>';
+        $("#selectEmployees").append(option);
+      }
+      $('#selectEmployees').multiselect({
+        maxHeight: 300,
+        enableFiltering: true,
+        includeSelectAllOption: true,
+        selectAllValue: 0,
+        onChange: function() {
+          $("#target8 ul.multiselect-container li.active a label input").each(function() {
+            console.log(this.value);
+          });
+        },
+        onSelectAll: function() {
+          $("#target8 ul.multiselect-container li.active a label input").each(function() {
+            console.log(this.value);
+          });
+        },
+        onDeselectAll: function() {
+          $("#target8 ul.multiselect-container li.active a label input").each(function() {
+            console.log(this.value);
+          });
+        }
+      });
+
 
       var j = 1,
         active;

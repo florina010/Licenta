@@ -1,8 +1,6 @@
 "use strict";
 
-navigator.serviceWorker.register('service-worker.js', {
-  scope: '.'
-}).then(function(registration) {
+navigator.serviceWorker.register('../service-worker.js').then(function(registration) {
   // The service worker has been registered!
 });
 if ('serviceWorker' in navigator) {
@@ -118,12 +116,14 @@ $(document).ready(function() {
     $("#target2").css('display', 'block');
     $("[data-target-id='target3']").css('display', 'none');
     $("[data-target-id='target4']").css('display', 'none');
+    $("[data-target-id='target8']").css('display', 'none');
     var script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = "../js/user.js";
     document.getElementsByTagName('body')[0].appendChild(script);
   } else if (user.admin == 1) {
     $("[data-target-id='target1']").css('display', 'block');
+    $("[data-target-id='target8']").css('display', 'none');
     $("#target1").css('display', 'block');
     var scriptRes = document.createElement('script');
     scriptRes.type = 'text/javascript';

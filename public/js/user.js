@@ -1,26 +1,5 @@
 "use strict";
-// navigator.serviceWorker.register('service-worker.js').then(reg => {
-// reg.installing; // the installing worker, or undefined
-// reg.waiting; // the waiting worker, or undefined
-// reg.active; // the active worker, or undefined
-//
-// reg.addEventListener('updatefound', () => {
-//   // A wild service worker has appeared in reg.installing!
-//   const newWorker = reg.installing;
-//
-//   newWorker.state;
-//   // "installing" - the install event has fired, but not yet complete
-//   // "installed"  - install complete
-//   // "activating" - the activate event has fired, but not yet complete
-//   // "activated"  - fully active
-//   // "redundant"  - discarded. Either failed install, or it's been
-//   //                replaced by a newer version
-//
-//   newWorker.addEventListener('statechange', () => {
-//     // newWorker.state has changed
-//   });
-// });
-// });
+
 $(document).ready(function() {
   var user = JSON.parse(sessionStorage.getItem('user')),
     token = sessionStorage.getItem('token'),
@@ -75,7 +54,7 @@ $(document).ready(function() {
 
   getAllEmployees(employees);
   getAllServices();
-  getMyReservations(currentPage);
+  getMyReservations(1);
 
   $("[name='rFirstName']").val(user.firstName);
   $("[name='rLastName']").val(user.lastName);
@@ -155,6 +134,7 @@ $(document).ready(function() {
       email = $("[name='rEmail']").val(),
       phone = $("[name='rPhone']").val(),
       mentions = $("[name='rMentions']").val();
+
     socket.emit('/addReservation', {
       token: token,
       userId: user.userId,
@@ -300,7 +280,7 @@ $(document).ready(function() {
       },
     }).done(function() {
       page--;
-      $("#user").DataTable().page(page).draw(false);
+      $("#resTable").DataTable().page(page).draw(false);
     });
 
     $('#resTable').on('click', 'tr', function() {

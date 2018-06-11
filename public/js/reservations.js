@@ -1,26 +1,4 @@
 "use strict";
-// navigator.serviceWorker.register('service-worker.js').then(reg => {
-// reg.installing; // the installing worker, or undefined
-// reg.waiting; // the waiting worker, or undefined
-// reg.active; // the active worker, or undefined
-//
-// reg.addEventListener('updatefound', () => {
-//   // A wild service worker has appeared in reg.installing!
-//   const newWorker = reg.installing;
-//
-//   newWorker.state;
-//   // "installing" - the install event has fired, but not yet complete
-//   // "installed"  - install complete
-//   // "activating" - the activate event has fired, but not yet complete
-//   // "activated"  - fully active
-//   // "redundant"  - discarded. Either failed install, or it's been
-//   //                replaced by a newer version
-//
-//   newWorker.addEventListener('statechange', () => {
-//     // newWorker.state has changed
-//   });
-// });
-// });
 
 $(document).ready(function() {
   var user = JSON.parse(sessionStorage.getItem('user')),
@@ -73,7 +51,6 @@ $(document).ready(function() {
       type: 'GET',
       dataType: 'json',
       success: function(reservations) {
-        console.log(reservations);
         res = reservations;
         $("#resTable").DataTable().clear();
         $('#resTable').find('th').eq(7).text('Change status');
@@ -168,7 +145,6 @@ $(document).ready(function() {
     });
 
     $('#resTable').on('click', 'tr', function() {
-      console.log(employees);
       var nextRow = $(this).next()[0];
       if (this.id == 'td' + nextRow.id) {
         nextRow.remove();
@@ -245,7 +221,7 @@ function displayApproveModal(resId, date, action) {
       }).then(function() {
         $("[name='submitApprove']").on('click', function() {
 
-          employeeId = $("ul.multiselect-container:first li.active a label input")[0].value;
+          employeeId = $("#approveRes ul.multiselect-container:first li.active a label input")[0].value;
           status = 'Approved';
           $("#approveRes").modal('hide');
 
