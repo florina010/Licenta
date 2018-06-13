@@ -85,7 +85,7 @@ div.col-sm-4 div.input-group button.multiselect:first-of-type
 [name='rPrice']
 {
     font-size: 18px;
-    display: block; width: 53% !important;  margin-bottom: 5px;  padding: 3px 8px;  letter-spacing: 1px;  color: #000;  border: 0;  border-bottom: 2px solid #000;  background: 0;
+    width: 53% !important;  margin-bottom: 5px;  padding: 3px 8px;  letter-spacing: 1px;  color: #000;  border: 0;  border-bottom: 2px solid #000;  background: 0;
 }
 
 [name='editProfileForm'] input,
@@ -106,13 +106,13 @@ div.col-sm-4 div.input-group button.multiselect:first-of-type
 [name='editProfile'],
 [name='changePassForm'] button
 {
-    width: 30%;
+    width: 25%;
 }
 
 [name='editProfileForm'] input,
 [name='changePassForm'] input
 {
-    width: 45%;  height: 8%;
+    width: 35%;  height: 8%;
 }
 
 [name='addUserForm'] input
@@ -212,10 +212,9 @@ div.col-sm-4 div.input-group button.multiselect:first-of-type
     border: none !important;  background-color: #51505a !important;
 }
 
-/* .modal-body .col-xs-4
-{
-    float: none;
-} */
+#target2 button {
+  margin-bottom: 1%;
+}
 
 .information
 {
@@ -240,6 +239,18 @@ input[type=number]::-webkit-outer-spin-button
   display: none
 }
 
+#reportDate, [name='reports'] {
+  display: inline;
+  width: 8%;
+}
+
+#target8 .row > div:first-of-type {
+  margin-bottom: 2%
+}
+
+#target8 .row > div:first-of-type > div {
+  margin-top: 1%;
+}
 
 @media only screen and (max-width: 1100px) {
     #menuInfo {

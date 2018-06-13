@@ -136,6 +136,18 @@ app.get("/api/getAllFreeEmployees", function(req, res) {
   });
 });
 
+app.get("/api/getReport", function(req, res) {
+  var token = req.query.token;
+  isValidToken(token).then(function(result) {
+    getReport(req, res);
+  }, function(error) {
+    res.json({
+      "code": 110,
+      "status": "Your session has expired and you are loged out. - redirect la index in FE"
+    })
+  });
+});
+
 var server = require('http').createServer(app);
 var io = require('socket.io').listen(server);
 var port = process.env.PORT || 4000;
@@ -746,7 +758,7 @@ function getAllEmployees(req, res) {
       return;
     }
 
-    var queryString = "SELECT * FROM users WHERE token != '" + params.token + "' AND users.admin = 1  ORDER BY users.isActive DESC";
+    var queryString = "SELECT * FROM users WHERE users.admin = 1  ORDER BY users.isActive DESC";
 
     connection.query(queryString, function(err, rows) {
       connection.release();
@@ -847,7 +859,6 @@ function getAllReservations(req, res) {
 
 
 function getEmployeeReservations(req, res) {
-
   pool.getConnection(function(err, connection) {
     if (err) {
       res.json({
@@ -899,6 +910,63 @@ function getAllFreeEmployees(req, res) {
         "status": "Error in connection database"
       });
     });
+  });
+}
+
+function getReport(req, res) {
+  pool.getConnection(function(err, connection) {
+    if (err) {
+      res.json({
+        "code": 100,
+        "status": "Error in connection database"
+      });
+    }
+
+    let params = req.query, query, response = [], date;
+    for (let i = 0; i < params.employeesIds.length; i++) {
+      if (params.date && !params.month) {
+        query = `select (SELECT COUNT(*) FROM reservations wHERE reservations.date LIKE '%` + params.date  +`%' AND reservations.employeeId = ` + params.employeesIds[i]+`) as count,
+        reservations.employeeId, users.firstName, users.lastName, reservations.rating, reservations.date from reservations JOIN users ON
+        reservations.employeeId = users.userId WHERE reservations.date LIKE '%` + params.date + `%' AND reservations.employeeId =` + params.employeesIds[i];
+      } else if (params.month) {
+          date = params.month < 10 ? '0' + params.month : params.month;
+          query = `select (SELECT COUNT(*) FROM reservations wHERE reservations.date LIKE '` + date  +`%' AND reservations.employeeId = ` + params.employeesIds[i]+`) as count,
+          reservations.employeeId, users.firstName, users.lastName, reservations.rating, reservations.date from reservations JOIN users ON
+          reservations.employeeId = users.userId WHERE reservations.date LIKE '` + date + `%' AND reservations.employeeId =` + params.employeesIds[i];
+      }
+      connection.query(query, function(err, rows) {
+        if (!err) {
+          var data = [];
+          if (rows.length == 1) {
+            response.push({
+              employeeId: params.employeesIds[i],
+              datas: rows[0]
+            })
+          } else if (rows.length > 1){
+            for (let j = 0; j < rows.length; j++) {
+              if (rows[j].employeeId == params.employeesIds[i]) {
+                data.push(rows[j])
+              }
+            }
+              response.push({
+                employeeId: params.employeesIds[i],
+                datas: data
+              })
+
+          }
+        }
+        if (i == params.employeesIds.length -1 ){
+          res.json(response);
+        }
+      });
+      connection.on('error', function(err) {
+        res.json({
+          "code": 100,
+          "status": "Error in connection database"
+        });
+      });
+    }
+    connection.release()
   });
 }
 

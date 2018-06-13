@@ -1,8 +1,5 @@
 "use strict";
 
-navigator.serviceWorker.register('../service-worker.js').then(function(registration) {
-  // The service worker has been registered!
-});
 if ('serviceWorker' in navigator) {
   var lastStatus = true;
   setTimeout(function() {}, 5000);
@@ -29,14 +26,19 @@ if ('serviceWorker' in navigator) {
 }
 
 $(document).ready(function() {
+  setInterval(function() {
+    navigator.serviceWorker.register('../service-worker.js').then(function(registration) {
+      // The service worker has been registered!
+    });
+  }, 5000);
   $("#menuInfo").on('click', function() {
     if ($(window).width() <= 1100) {
       $(".admin-menu").toggleClass('hideUl')
     }
   });
 
-  if ($(window).width() <= 1100) {
-    $(".admin-menu").toggleClass('hideUl')
+  if ($(window).width() > 1100) {
+    $(".admin-menu").removeClass('hideUl')
   }
 
   var navItems = $('.admin-menu li > a');

@@ -15,6 +15,13 @@ $(document).ready(function() {
 
   socket.on('/resAddReservation', function(data) {
     var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+    if (window.Notification && Notification.permission !== "denied") {
+      Notification.requestPermission(function(status) { // status is "granted", if accepted by user
+        var n = new Notification('Title', {
+          body: 'New reservation!'
+        });
+      });
+    }
     getAllReservations(currentPage);
   });
 
@@ -158,15 +165,15 @@ $(document).ready(function() {
                   $("#td" + res[i].resId + " td:not(:last-of-type)").attr('data-toggle', 'collapse').attr('data-target', '#' + res[i].resId)
                   $("#td" + res[i].resId + " td:nth-child(7)").removeAttr('data-toggle').removeAttr('data-target')
                   $("#td" + res[i].resId).after(`<tr id="` + res[i].resId + `" class="collapse" aria-expanded="false"><td colspan="8"><div>
-                  <p><strong>Client's email</strong> ` + res[i].userEmail + ` <strong>Client's phone</strong> ` + res[i].userPhone + `</p>
+                  <p><strong>Client's email:</strong> ` + res[i].userEmail + ` <strong>Client's phone:</strong> ` + res[i].userPhone + `</p>
                   <br>
-                  <p><strong>Service's description</strong> ` + res[i].description + ` <strong>Service's price</strong> ` + res[i].price + `</p>
+                  <p><strong>Service's description:</strong> ` + res[i].description + ` <strong>Service's price:</strong> ` + res[i].price + `</p>
                   <br>
-                  <p><strong>Employee's name</strong> ` + res[j].firstName + ` ` + employees[j].lastName + `</p>
-                  <p><strong>Employee's email</strong> ` + res[j].email + ` <strong>Employee's phone</strong> ` + res[j].phone + `</p>
+                  <p><strong>Employee's name:</strong> ` + employees[j].firstName + ` ` + employees[j].lastName + `</p>
+                  <p><strong>Employee's email:</strong> ` + employees[j].email + ` <strong>Employee's phone:</strong> ` + employees[j].phone + `</p>
                   <br>
-                  <p><strong>Car number</strong> ` + res[i].carNr + `</p>
-                  <p><strong>Mentions</strong> ` + res[i].mentions + `</p>
+                  <p><strong>Car number:</strong> ` + res[i].carNr + `</p>
+                  <p><strong>Mentions:</strong> ` + res[i].mentions + `</p>
                   </div></td></tr>`)
                   j = employees.length;
                 }

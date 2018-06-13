@@ -24,24 +24,137 @@ $(document).ready(function() {
     });
   }
 
+  $('#reportDate').datetimepicker({
+    format: 'MM/DD/YYYY',
+    maxDate: new Date(),
+  });
+  $("[name='reports']").on('click', function() {
+    var employeesIds = [],
+      month = 0,
+      date = 0;
+    $("#target8 ul.multiselect-container:first li.active a label input").each(function() {
+      employeesIds.push(this.value);
+    });
+
+    if (employeesIds[0] == 0) {
+      employeesIds.shift()
+    }
+
+    if ($("#target8 #day").attr('checked', false)) {
+      month = $("#target8 ul.multiselect-container:last li.active a label input").val();
+    }
+
+    if ($("#target8 #day").attr('checked', true)) {
+      date = $("#reportDate").val();
+    }
+    $.ajax({
+      url: appConfig.url + appConfig.api + 'getReport',
+      data: {
+        token: token,
+        employeesIds: employeesIds,
+        month: month,
+        date: date
+      },
+      type: 'GET',
+      dataType: 'json',
+      beforeSend: function(xhr) {
+        xhr.withCredentials = true;
+      },
+      success: function(reports) {
+        $("#reportsTable").DataTable().clear();
+        var table = $('#reportsTable').DataTable({
+          columnDefs: [{
+            width: '20%',
+            targets: 0
+          }],
+          fixedColumns: true,
+          "aoColumnDefs": [{
+            bSortable: false,
+            aTargets: [-1]
+          }, ],
+          "columnDefs": [{
+            orderable: false,
+            targets: -1
+          }],
+          stateSave: true,
+          "bDestroy": true,
+          dom: 'Bfrtip',
+          buttons: [
+            'excel', 'pdf', 'print'
+        ]
+        });
+
+        var j = 1;
+        for (var i = 0; i < reports.length; i++) {
+          var reservationsNr = 0,
+            starsNr = 0,
+            minNr = 0,
+            name = 0;
+          if (reports[i].datas.length > 1) {
+            for (let l = 0; l < reports[i].datas.length; l++) {
+              reservationsNr = reports[i].datas[l].count;
+              minNr = reservationsNr * 20;
+              starsNr += reports[i].datas[l].rating;
+              name = reports[i].datas[l].firstName + ' ' + reports[i].datas[l].lastName;
+            }
+          } else {
+            reservationsNr = reports[i].datas.count;
+            minNr = reservationsNr * 20;
+            starsNr = reports[i].datas.rating;
+            name = reports[i].datas.firstName + ' ' + reports[i].datas.lastName;
+          }
+          table.row.add([
+              j,
+              name,
+              minNr,
+              reservationsNr,
+              starsNr
+            ]).draw(false)
+            .nodes()
+            .to$()
+
+          j++;
+
+        }
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    });
+
+  })
+
+  $("#target8 #month").attr('checked', true);
+  $("#target8 #month").parent().addClass('active focus');
+  $("#target8 #day").attr('checked', false);
+  $("#target8 #day").parent().removeClass('active focus');
+  $("#reportDate").css('display', 'none');
+
+  $("#target8 #month").on('click', function() {
+    $("#target8 #day").attr('checked', false);
+    $("#target8 #day").parent().removeClass('active focus');
+    $("#reportDate").css('display', 'none');
+    $("#target8 button.multiselect").css('display', 'block');
+  });
+
+  $("#target8 #day").on('click', function() {
+    $("#target8 #month").attr('checked', false);
+    $("#target8 #month").parent().removeClass('active focus');
+    $("#target8 button.multiselect:not(:first)").css('display', 'none');
+    $("#reportDate").css('display', 'inline');
+  });
+
+
   $('#selectMonth option').each(function(op) {
     if (this.value == moment().format('M')) {
       $(this).prop('selected', 'true');
     }
   })
   $('#selectMonth').multiselect({
-    maxHeight: 300,
-    onChange: function() {
-
-    }
+    maxHeight: 300
   });
 
-  $("#reportsTable").DataTable( {
-    dom: 'Bfrtip',
-        buttons: [
-            'print'
-        ]
-    } );
+  $("#reportsTable").DataTable({});
 
 
   $("[name='addUserForm']").formValidation({
@@ -142,28 +255,13 @@ function populateTable(page) {
           option = '<option value="' + employees[i].userId + '" title="' + info + '">' + employees[i].firstName + ' ' + employees[i].lastName + '</option>';
         $("#selectEmployees").append(option);
       }
+
       $('#selectEmployees').multiselect({
         maxHeight: 300,
         enableFiltering: true,
         includeSelectAllOption: true,
-        selectAllValue: 0,
-        onChange: function() {
-          $("#target8 ul.multiselect-container li.active a label input").each(function() {
-            console.log(this.value);
-          });
-        },
-        onSelectAll: function() {
-          $("#target8 ul.multiselect-container li.active a label input").each(function() {
-            console.log(this.value);
-          });
-        },
-        onDeselectAll: function() {
-          $("#target8 ul.multiselect-container li.active a label input").each(function() {
-            console.log(this.value);
-          });
-        }
+        selectAllValue: 0
       });
-
 
       var j = 1,
         active;
