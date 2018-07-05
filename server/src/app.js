@@ -23,7 +23,6 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.use(function(req, res, next) {
-    console.log("/" + req.method);
     next();
 });
 app.use((req, res, next) => {
@@ -545,7 +544,7 @@ function editUser(data, callback) {
 
     let query, response, datas, table = 'users';
 
-    if (!data.isActive) {
+    if ((data.isActive != 0 && data.active != 1) && !data.isActive) {
       response = 'profile';
       query = 'UPDATE ?? SET firstName = ?, lastName = ?, email = ?, phone = ?, cars = ? WHERE userId = ?';
 
@@ -813,7 +812,7 @@ function getMyReservations(req, res) {
 
     let params = req.query, query;
 
-    query = `SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId WHERE reservations.userId = ?`;
+    query = `SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId WHERE reservations.userId = ? ORDER BY status = 'Pending' DESC, status = 'Approved' DESC`;
 
     connection.query(query, [params.userId], function(err, rows) {
       connection.release();
@@ -840,7 +839,7 @@ function getAllReservations(req, res) {
       });
     }
 
-    let query = `SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId`
+    let query = `SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId ORDER BY status = 'Pending' DESC `
 
     connection.query(query, function(err, rows) {
       connection.release();
@@ -867,7 +866,7 @@ function getEmployeeReservations(req, res) {
       });
     }
     let query = `SELECT reservations.*, services.description, services.price, services.title FROM reservations  JOIN services ON reservations.serviceId = services.serviceId
-    WHERE reservations.employeeId=` + req.query.employeeId;
+    WHERE reservations.employeeId=` + req.query.employeeId + ` OR reservations.status = 'Pending' ORDER BY status = 'Pending' DESC`;
 
     connection.query(query, function(err, rows) {
       connection.release();

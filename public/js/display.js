@@ -13,11 +13,16 @@ if ('serviceWorker' in navigator) {
       setTimeout(function() {
         window.location.reload(true)
       }, 3000);
-      console.log('on');
     } else if ((navigator.onLine === false) && (lastStatus === true)) {
       $("#alertOffline").toggleClass("hidden");
-      console.log('off');
       lastStatus = false;
+      $("[name='addReservation']").attr('disabled', 'disabled');
+      $("[name='submitApprove']").attr('disabled', 'disabled');
+      $("[name='submitAdd']").attr('disabled', 'disabled');
+      $("[name='editProfile']").attr('disabled', 'disabled');
+      $("[name='changePass']").attr('disabled', 'disabled');
+      $("#modal-btn-delete-answer").attr('disabled', 'disabled');
+      $("[name='reports']").attr('disabled', 'disabled');
     }
     setTimeout(function() {
       onlineCheck()
@@ -59,29 +64,41 @@ $(document).ready(function() {
   var user = JSON.parse(sessionStorage.getItem('user')),
     token = sessionStorage.getItem('token'),
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
-    MAX_OPTIONS = 5,
-    socket = io.connect('http://127.0.0.1:4000', {
-      reconnection: false
-    });
+    MAX_OPTIONS = 5, socket;
 
-  socket.on('/resEditProfile', function(data) {
-    if (data.id == user.userId) {
-      $("#alertEdit").toggleClass('hidden');
-      if (data.cars) {
-        user['cars'] = JSON.parse(data.cars).cars;
-      }
-      user.email = data.email;
-      user.firstName = data.firstName;
-      user.lastName = data.lastName;
-      user.phone = data.phone;
-      sessionStorage.setItem('user', JSON.stringify(user));
-      $("#selectCar").empty();
-      for (var i = 0; i < user.cars.length; i++) {
-        var option = '<option value="' + user.cars[i].id + '">' + user.cars[i].number + '</option>';
-        $("#selectCar").append(option)
-      }
+    if (navigator.onLine === true) {
+      socket = io.connect('http://127.0.0.1:4000', {
+        reconnection: false
+      });
+      socket.on('/resEditProfile', function(data) {
+        if (data.id == user.userId) {
+          $('[name="editProfileForm"] i').css('display', 'none');
+          $('[name="editProfile"]').attr('disabled', 'disabled');
+          $("#alertEdit").toggleClass('hidden');
+          if (data.cars) {
+            user['cars'] = JSON.parse(data.cars).cars;
+          }
+          user.email = data.email;
+          user.firstName = data.firstName;
+          user.lastName = data.lastName;
+          user.phone = data.phone;
+          sessionStorage.setItem('user', JSON.stringify(user));
+          $("#selectCar").empty();
+          for (var i = 0; i < user.cars.length; i++) {
+            var option = '<option value="' + user.cars[i].id + '">' + user.cars[i].number + '</option>';
+            $("#selectCar").append(option)
+          }
+        }
+      });
     }
-  });
+
+    if (user.admin == 2) {
+      document.title = 'Admin Page';
+    } else if (user.admin == 1) {
+      document.title = 'Employee Page';
+    } else {
+      document.title = 'User Page'
+    }
 
   for (var i = 0; i < user.cars.length; i++) {
     var option = '<option value="' + user.cars[i].id + '">' + user.cars[i].number + '</option>';
@@ -240,6 +257,7 @@ $(document).ready(function() {
     $("[name='editProfileForm']").formValidation('addField', $option);
     var currentHeight = $("[name='editProfileForm']").height();
     $("[name='editProfileForm']").css('height', currentHeight + 40);
+    $("[name='editProfile']").css('margin-top', '5%');
 
   }).on('click', '.removeButton', function() {
     var $row = $(this).parents('.form-group'),
@@ -399,7 +417,9 @@ $(document).ready(function() {
         email: email,
         password: password
       }).done(function(data) {
-        $("#alertEdit").toggleClass('hidden');
+        $("#alertPass").toggleClass('hidden');
+        $("[name='changePassForm'] i").css('display', 'none');
+        $("[name='changePass']").attr('disabled', 'disabled');
         user.password = password;
         sessionStorage.setItem('user', JSON.stringify(user));
         $(".overlay-id6 .alert-success").css('display', 'block');
@@ -455,7 +475,6 @@ $(document).ready(function() {
 
       var currentHeight = $("[name='editProfileForm']").height();
       $("[name='editProfileForm']").css('height', currentHeight - 40);
-
     });
   });
 });

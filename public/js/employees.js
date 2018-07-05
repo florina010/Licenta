@@ -7,22 +7,26 @@ $(document).ready(function() {
     currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx")),
     MAX_OPTIONS = 5,
     res = [],
-    socket = io.connect('http://127.0.0.1:4000', {
-      reconnection: false
-    });
-  if (user.admin == 2) {
-    socket.on('/resEditUser', function(data) {
-      var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
-      $('#editUser').modal('hide');
-      populateTable(currentPage);
-    });
+    socket;
 
-    socket.on('/resAddUser', function(data) {
-      var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
-      populateTable(currentPage);
-      $('#newUser').modal('hide');
-    });
-  }
+    if (navigator.onLine === true) {
+      socket = io.connect('http://127.0.0.1:4000', {
+        reconnection: false
+      });
+      if (user.admin == 2) {
+        socket.on('/resEditUser', function(data) {
+          var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
+          $('#editUser').modal('hide');
+          populateTable(currentPage);
+        });
+
+        socket.on('/resAddUser', function(data) {
+          var currentPage = parseInt($("#userTable_paginate span .current").attr("data-dt-idx"));
+          populateTable(currentPage);
+          $('#newUser').modal('hide');
+        });
+      }
+    }
 
   $('#reportDate').datetimepicker({
     format: 'MM/DD/YYYY',
@@ -31,7 +35,8 @@ $(document).ready(function() {
   $("[name='reports']").on('click', function() {
     var employeesIds = [],
       month = 0,
-      date = 0;
+      date = 0,
+      reportDetails;
     $("#target8 ul.multiselect-container:first li.active a label input").each(function() {
       employeesIds.push(this.value);
     });
@@ -42,68 +47,87 @@ $(document).ready(function() {
 
     if ($("#target8 #day").attr('checked', false)) {
       month = $("#target8 ul.multiselect-container:last li.active a label input").val();
+      reportDetails = "Report for month: " + $("#target8 button.multiselect:last span")[0].innerHTML;
     }
 
     if ($("#target8 #day").attr('checked', true)) {
       date = $("#reportDate").val();
+      if (date) {
+        reportDetails = "Report for: " + date;
+        month = "";
+      }
     }
-    $.ajax({
-      url: appConfig.url + appConfig.api + 'getReport',
-      data: {
-        token: token,
-        employeesIds: employeesIds,
-        month: month,
-        date: date
-      },
-      type: 'GET',
-      dataType: 'json',
-      beforeSend: function(xhr) {
-        xhr.withCredentials = true;
-      },
-      success: function(reports) {
-        $("#reportsTable").DataTable().clear();
-        var table = $('#reportsTable').DataTable({
-          columnDefs: [{
-            width: '20%',
-            targets: 0
-          }],
-          fixedColumns: true,
-          "aoColumnDefs": [{
-            bSortable: false,
-            aTargets: [-1]
-          }, ],
-          "columnDefs": [{
-            orderable: false,
-            targets: -1
-          }],
-          stateSave: true,
-          "bDestroy": true,
-          dom: 'Bfrtip',
-          buttons: [
-            'excel', 'pdf', 'print'
-        ]
-        });
+    if (employeesIds.length > 0) {
+      $.ajax({
+        url: appConfig.url + appConfig.api + 'getReport',
+        data: {
+          token: token,
+          employeesIds: employeesIds,
+          month: month,
+          date: date
+        },
+        type: 'GET',
+        dataType: 'json',
+        beforeSend: function(xhr) {
+          xhr.withCredentials = true;
+        },
+        success: function(reports) {
+          $("#reportsTable").DataTable().clear();
+          var table = $('#reportsTable').DataTable({
+            columnDefs: [{
+              width: '20%',
+              targets: 0
+            }],
+            "aoColumnDefs": [{
+              bSortable: false,
+              aTargets: [-1]
+            }, ],
+            "columnDefs": [{
+              orderable: false,
+              targets: -1
+            }],
+            stateSave: true,
+            "bDestroy": true,
+            dom: 'Bfrtip',
+            buttons: [
+              'pdf', 'excel',
+              {
+              extend:  'print',
+              customize: function ( win ) {
+                    $(win.document.body)
+                        .css( 'font-size', '10pt' )
+                        .prepend(
+                            '<div style="font-size: 24px"><strong>'+ reportDetails+'</strong></div>'
+                        );
 
-        var j = 1;
-        for (var i = 0; i < reports.length; i++) {
-          var reservationsNr = 0,
+                    $(win.document.body).find( 'table' )
+                        .addClass( 'compact' )
+                        .css( 'font-size', 'inherit' );
+                }
+              }
+            ]
+          });
+
+          var j = 1;
+          for (var i = 0; i < reports.length; i++) {
+            var reservationsNr = 0,
             starsNr = 0,
             minNr = 0,
             name = 0;
-          if (reports[i].datas.length > 1) {
-            for (let l = 0; l < reports[i].datas.length; l++) {
-              reservationsNr = reports[i].datas[l].count;
+            if (reports[i].datas.length > 1) {
+              for (let l = 0; l < reports[i].datas.length; l++) {
+                reservationsNr = reports[i].datas[l].count;
+                minNr = reservationsNr * 20;
+                starsNr += reports[i].datas[l].rating;
+                name = reports[i].datas[l].firstName + ' ' + reports[i].datas[l].lastName;
+              }
+            } else {
+              reservationsNr = reports[i].datas.count;
               minNr = reservationsNr * 20;
-              starsNr += reports[i].datas[l].rating;
-              name = reports[i].datas[l].firstName + ' ' + reports[i].datas[l].lastName;
+              starsNr = reports[i].datas.rating;
+              name = reports[i].datas.firstName + ' ' + reports[i].datas.lastName;
             }
-          } else {
-            reservationsNr = reports[i].datas.count;
-            minNr = reservationsNr * 20;
-            starsNr = reports[i].datas.rating;
-            name = reports[i].datas.firstName + ' ' + reports[i].datas.lastName;
-          }
-          table.row.add([
+            table.row.add([
               j,
               name,
               minNr,
@@ -113,14 +137,17 @@ $(document).ready(function() {
             .nodes()
             .to$()
 
-          j++;
+            j++;
 
+          }
+        },
+        error: function(error) {
+          console.log(error);
         }
-      },
-      error: function(error) {
-        console.log(error);
-      }
-    });
+      });
+    } else {
+      alert('Please select at least one employee.')
+    }
 
   })
 
@@ -384,7 +411,6 @@ function editUserA(elem, employee) {
     } else if ($("#inactive").parent().hasClass('active')) {
       isActive = 0;
     }
-
 
     var firstName = $("[name='euFirstName']").val(),
       lastName = $("[name='euLastName']").val(),

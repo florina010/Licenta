@@ -6,39 +6,42 @@ $(document).ready(function() {
     MAX_OPTIONS = 5,
     employees = [],
     res = [],
-    socket = io.connect('http://127.0.0.1:4000', {
-      reconnection: false
-    }),
+    socket,
     currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
 
   $("[data-target='#newReservation']").css('display', 'none');
 
-  socket.on('/resAddReservation', function(data) {
-    var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
-    if (window.Notification && Notification.permission !== "denied") {
-      Notification.requestPermission(function(status) { // status is "granted", if accepted by user
-        var n = new Notification('Title', {
-          body: 'New reservation!'
-        });
-      });
-    }
-    getAllReservations(currentPage);
-  });
+  if (navigator.onLine) {
+     socket = io.connect('http://127.0.0.1:4000', {
+       reconnection: false
+     });
+     socket.on('/resAddReservation', function(data) {
+       var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+       if (window.Notification && Notification.permission !== "denied") {
+         Notification.requestPermission(function(status) {
+           var n = new Notification('Title', {
+             body: 'New reservation!'
+           });
+         });
+       }
+       getAllReservations(currentPage);
+     });
 
-  socket.on('/resApproveReservation', function(data) {
-    var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
-    getAllReservations(currentPage);
-  });
+     socket.on('/resApproveReservation', function(data) {
+       var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+       getAllReservations(currentPage);
+     });
 
-  socket.on('/resDeleteReservation', function(data) {
-    var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
-    getAllReservations(currentPage);
-  });
+     socket.on('/resDeleteReservation', function(data) {
+       var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+       getAllReservations(currentPage);
+     });
 
-  socket.on('/resRate', function(data) {
-    var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
-    getAllReservations(currentPage);
-  });
+     socket.on('/resRate', function(data) {
+       var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+       getAllReservations(currentPage);
+     });
+  }
 
   getAllEmployees(employees);
   getAllReservations(1);
@@ -57,6 +60,7 @@ $(document).ready(function() {
       },
       type: 'GET',
       dataType: 'json',
+      cache: true,
       success: function(reservations) {
         res = reservations;
         $("#resTable").DataTable().clear();
@@ -66,7 +70,6 @@ $(document).ready(function() {
             width: '20%',
             targets: 0
           }],
-          fixedColumns: true,
           "aoColumnDefs": [{
             bSortable: false,
             aTargets: [-1]
@@ -92,13 +95,22 @@ $(document).ready(function() {
             currentTime = moment(new Date(), "HH:mm"),
             rating = reservations[i].rating;
 
-          if (status == 'Approved') {
-            approveButtons = "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
-          } else if (status == "Rejected") {
-            approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
-          } else {
-            approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
-            approveButtons += "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
+          if (user.admin == 2) {
+            if (status == 'Approved') {
+              approveButtons = "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
+            } else if (status == "Rejected") {
+              approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
+            } else {
+              approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
+              approveButtons += "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
+            }
+          } else if (user.admin == 1) {
+            if (status == 'Pending') {
+              approveButtons = "<span class='fa fa-check' onclick='displayApproveModal(" + reservations[i].resId + ",\"" + reservations[i].date + "\", 1)'></span>";
+              approveButtons += "<span class='fa fa-times' onclick='displayApproveModal(" + reservations[i].resId + ", 0)'></span>";
+            } else {
+              approveButtons = "";
+            }
           }
           if (rating > 0) {
             rateBtn = "<div class='rate_row'></div>";
@@ -153,9 +165,6 @@ $(document).ready(function() {
 
     $('#resTable').on('click', 'tr', function() {
       var nextRow = $(this).next()[0];
-      if (this.id == 'td' + nextRow.id) {
-        nextRow.remove();
-      } else {
         $("#resTable tr.in").remove();
         for (let i = 0; i < res.length; i++) {
           if (this.id == 'td' + res[i].resId) {
@@ -174,6 +183,7 @@ $(document).ready(function() {
                   <br>
                   <p><strong>Car number:</strong> ` + res[i].carNr + `</p>
                   <p><strong>Mentions:</strong> ` + res[i].mentions + `</p>
+                  <p><strong>Comment:</strong> ` + res[i].comment + `</p>
                   </div></td></tr>`)
                   j = employees.length;
                 }
@@ -186,12 +196,11 @@ $(document).ready(function() {
               <br>
               <p><strong>Service's description</strong> ` + res[i].description + ` <strong>Service's price</strong> ` + res[i].price + `</p>
               <br>
-              <p><strong>Car number<strong> ` + res[i].carNr + `</p>
-              <p><strong>Mentions</strong> ` + res[i].mentions + `</p>
+              <p><strong>Car number: </strong> ` + res[i].carNr + `</p>
+              <p><strong>Mentions: </strong> ` + res[i].mentions + `</p>
               </div></td></tr>`)
             }
           }
-        }
       }
     });
   }

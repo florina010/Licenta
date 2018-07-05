@@ -1,27 +1,4 @@
 "use strict";
-//
-// navigator.serviceWorker.register('service-worker.js').then(reg => {
-// reg.installing; // the installing worker, or undefined
-// reg.waiting; // the waiting worker, or undefined
-// reg.active; // the active worker, or undefined
-//
-// reg.addEventListener('updatefound', () => {
-//   // A wild service worker has appeared in reg.installing!
-//   const newWorker = reg.installing;
-//
-//   newWorker.state;
-//   // "installing" - the install event has fired, but not yet complete
-//   // "installed"  - install complete
-//   // "activating" - the activate event has fired, but not yet complete
-//   // "activated"  - fully active
-//   // "redundant"  - discarded. Either failed install, or it's been
-//   //                replaced by a newer version
-//
-//   newWorker.addEventListener('statechange', () => {
-//     // newWorker.state has changed
-//   });
-// });
-// });
 $(document).ready(function() {
 
   $(document).on('click', '.list-group-item', function(e) {
@@ -32,19 +9,29 @@ $(document).ready(function() {
   var user = JSON.parse(sessionStorage.getItem('user')),
     token = sessionStorage.getItem('token'),
     MAX_OPTIONS = 5,
-    socket = io.connect('http://127.0.0.1:4000', {
-      reconnection: false
-    });
+    socket;
 
-  socket.on('/resAddService', function(data) {
-    var page = $("#pagination li.active a")[0].innerHTML;
-    getAllServices(page);
-  });
+    if (navigator.onLine === true) {
+      socket = io.connect('http://127.0.0.1:4000', {
+        reconnection: false
+      });
+      socket.on('/resAddService', function(data) {
+        if (user.admin == 2) {
+          $("#alertAddS").toggleClass('hidden');
+          $("#newService").toggleClass('in')
+          var page = $("#pagination li.active a")[0].innerHTML;
+          getAllServices(page);
+        }
+      });
 
-  socket.on('/resEditService', function(data) {
-    var page = $("#pagination li.active a")[0].innerHTML;
-    getAllServices(page);
-  });
+      socket.on('/resEditService', function(data) {
+        if (user.admin == 2) {
+          $("#alertEditS").toggleClass('hidden');
+          var page = $("#pagination li.active a")[0].innerHTML;
+          getAllServices(page);
+        }
+      });
+    }
 
   getAllServices(1);
 
@@ -79,7 +66,7 @@ $(document).ready(function() {
             message: 'The price is required'
           },
           numeric: {
-            message: 'The price must be a numeric number'
+            message: 'The price must be a number'
           }
         }
       }
@@ -113,7 +100,6 @@ function getAllServices(page) {
   $.ajax({
     url: appConfig.url + appConfig.api + 'getAllServices?token=' + token,
     type: 'GET',
-    //  cache: true,
     dataType: 'json',
     beforeSend: function(xhr) {
       xhr.withCredentials = true;
@@ -183,7 +169,7 @@ function getAllServices(page) {
                       message: 'The price is required'
                     },
                     numeric: {
-                      message: 'The price must be a numeric number'
+                      message: 'The price must be a number'
                     }
                   }
                 }

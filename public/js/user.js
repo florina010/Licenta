@@ -5,50 +5,55 @@ $(document).ready(function() {
     token = sessionStorage.getItem('token'),
     MAX_OPTIONS = 5,
     employees = [],
-    socket = io.connect('http://127.0.0.1:4000', {
-      reconnection: false
-    }),
+    socket,
     currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx")),
     tableRequestSequence = 0,
     res = [];
 
-  socket.on('/resAddService', function(data) {
-    getAllServices();
-  });
+    if (navigator.onLine === true) {
+      socket = io.connect('http://127.0.0.1:4000', {
+        reconnection: false
+      });
+      socket.on('/resAddService', function(data) {
+        getAllServices();
+      });
 
-  socket.on('/resEditService', function(data) {
-    getAllServices();
-  });
+      socket.on('/resEditService', function(data) {
+        getAllServices();
+      });
 
-  socket.on('/resApproveReservation', function(data) {
-    var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
-    if (window.Notification && Notification.permission !== "denied") {
-      Notification.requestPermission(function(status) { // status is "granted", if accepted by user
-        var n = new Notification('Title', {
-          body: 'Status changed for one of your reservations!'
-        });
+      socket.on('/resApproveReservation', function(data) {
+        var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+        if (window.Notification && Notification.permission !== "denied") {
+          Notification.requestPermission(function(status) {
+            var n = new Notification('Title', {
+              body: 'Status changed for one of your reservations!'
+            });
+          });
+        }
+        getMyReservations(currentPage);
+      });
+
+      socket.on('/resRate', function(data) {
+        $("#confirmRate").modal('hide');
+        $("#alertRate").toggleClass('hidden');
+        var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+        getMyReservations(currentPage);
+      });
+
+      socket.on('/resDeleteService', function(data) {
+        getAllServices();
+      });
+
+      socket.on('/resDeleteReservation', function(data) {
+        if (data.token == token) {
+          $("#confirmDeleteRes").modal('hide');
+          $("#alertDelete").toggleClass('hidden');
+          var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
+          getMyReservations(currentPage);
+        }
       });
     }
-    getMyReservations(currentPage);
-  });
-
-  socket.on('/resRate', function(data) {
-    var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
-    getMyReservations(currentPage);
-  });
-
-  socket.on('/resDeleteService', function(data) {
-    getAllServices();
-  });
-
-  socket.on('/resDeleteReservation', function(data) {
-    if (data.token == token) {
-      $("#confirmDeleteRes").modal('hide');
-      $("#alertDelete").toggleClass('hidden');
-      var currentPage = parseInt($("#resTable_paginate span .current").attr("data-dt-idx"));
-      getMyReservations(currentPage);
-    }
-  });
 
   $("#selectList").on('change', function() {
     var selectedOption = $("#selectList option:selected"),
@@ -206,7 +211,6 @@ $(document).ready(function() {
             width: '20%',
             targets: 0
           }],
-          fixedColumns: true,
           "aoColumnDefs": [{
             bSortable: false,
             aTargets: [-1]
@@ -292,9 +296,6 @@ $(document).ready(function() {
 
     $('#resTable').on('click', 'tr', function() {
       var nextRow = $(this).next()[0];
-      if (this.id == 'td' + nextRow.id) {
-        nextRow.remove();
-      } else {
         $("#resTable tr.in").remove();
         for (let i = 0; i < res.length; i++) {
           if (this.id == 'td' + res[i].resId) {
@@ -313,6 +314,7 @@ $(document).ready(function() {
                   <br>
                   <p><strong>Car number:</strong> ` + res[i].carNr + `</p>
                   <p><strong>Mentions:</strong> ` + res[i].mentions + `</p>
+                  <p><strong>Comment:</strong> ` + res[i].comment + `</p>
                   </div></td></tr>`)
                   j = employees.length;
                 }
@@ -325,10 +327,10 @@ $(document).ready(function() {
               <br>
               <p><strong>Service's description:</strong> ` + res[i].description + ` <strong>Service's price:</strong> ` + res[i].price + ` RON</p>
               <br>
-              <p><strong>Car number:<strong> ` + res[i].carNr + `</p>
+              <p><strong>Car number:</strong> ` + res[i].carNr + `</p>
               <p><strong>Mentions:</strong> ` + res[i].mentions + `</p>
+              <p><strong>Comment:</strong> ` + res[i].comment + `</p>
               </div></td></tr>`)
-            }
           }
         }
       }

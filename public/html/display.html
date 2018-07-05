@@ -3,7 +3,6 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Admin page</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css" />
 
@@ -24,28 +23,49 @@
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <strong>Your prifile was updated.</strong>
+      <strong>Your profile has been updated.</strong>
     </div>
 
-    <div class="alert alert-success alert-dismissible hidden" id="alertRegister" role="alert">
+    <div class="alert alert-success alert-dismissible hidden" id="alertPass" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <strong>Your account has been created successfully.</strong>
+      <strong>Your password has been changed.</strong>
     </div>
 
     <div class="alert alert-info alert-dismissible hidden" id="alertAdd" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <strong>You successfully submit a new reservation.</strong>
+      <strong>You successfully submitted a new reservation.</strong>
     </div>
 
     <div class="alert alert-info alert-info hidden" id="alertDelete" role="alert">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
-      <strong>You successfully delete a reservation.</strong>
+      <strong>You successfully deleted a reservation.</strong>
+    </div>
+
+    <div class="alert alert-info alert-info hidden" id="alertAddS" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>You successfully added a new service.</strong>
+    </div>
+
+    <div class="alert alert-info alert-info hidden" id="alertEditS" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>You successfully edited a service.</strong>
+    </div>
+
+    <div class="alert alert-success alert-dismissible hidden" id="alertRate" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <strong>Your rating has been saved.</strong>
     </div>
 
     <div class="alert alert-danger alert-info hidden" id="alertError" role="alert">
@@ -256,6 +276,7 @@
                 <div class="col-xs-3">
                   <button type="button" class="btn btn-default removeButton" style="margin-left: -580px"><i class="fa fa-minus"></i></button>
                 </div>
+                <br>
               </div>
               <br><br><br><br>
               <button type="submit" class="btn btn-success" name="editProfile" disabled='disabled'><span class="glyphicon glyphicon-pencil"></span> Edit</button>
@@ -507,9 +528,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <!-- <script src="http://formvalidation.io/vendor/formvalidation/js/formValidation.min.js"></script> -->
-
-  <!-- <script src="http://formvalidation.io/vendor/formvalidation/js/framework/bootstrap.min.js"></script> -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
   <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
   <script src="../js/vendor/formvalidation.min.js"></script>
@@ -517,8 +535,6 @@
   <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
   <script type="text/javascript" src="https://cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/js/bootstrap-select.min.js"></script>
-
-
   <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/1.5.1/js/dataTables.buttons.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.flash.min.js"></script>
@@ -527,12 +543,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.32/vfs_fonts.js"></script>
   <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.html5.min.js"></script>
   <script src="https://cdn.datatables.net/buttons/1.5.1/js/buttons.print.min.js"></script>
-
   <script src="../js/vendor/node_modules/bootstrap-datetimepicker.min.js"></script>
-
   <script src="https://cdn.datatables.net/fixedcolumns/3.2.4/js/dataTables.fixedColumns.min.js"></script>
-
-
   <script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
   <script src="../js/vendor/node_modules/paginationjs/dist/pagination.js"></script>
   <script src="../js/vendor/node_modules/bootstrap-multiselect/dist/js/bootstrap-multiselect.js"></script>
